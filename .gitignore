@@ -1,0 +1,26 @@
+# Android Studio auto-generated
+*.iml
+.gradle
+/local.properties
+/.idea/workspace.xml
+/.idea/libraries
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+
+# Java class files
+*.class
+
+# Gradle files
+.gradle/
+build/
+
+# IntelliJ
+.idea/
+
+# vim temporary files
+*.swp
+*~
+
+
