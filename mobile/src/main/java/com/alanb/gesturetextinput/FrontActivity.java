@@ -1,7 +1,9 @@
 package com.alanb.gesturetextinput;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -9,6 +11,10 @@ import android.widget.ListView;
 
 public class FrontActivity extends AppCompatActivity
 {
+    public enum MenuItem
+    {
+        PalmSwipe, WatchWrite, OneDInput
+    }
     private String[] m_menu_str = {"PalmSwipe", "4-Key Watchwrite", "1D Input"};
     private ListView m_inputListView;
     private ArrayAdapter<String> m_adapter;
@@ -26,7 +32,17 @@ public class FrontActivity extends AppCompatActivity
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
             {
-                // TODO
+                Intent intent = null;
+                switch (i)
+                {
+                    case 1:
+                        intent = new Intent(getApplicationContext(), WatchWriteActivity.class);
+                        break;
+                }
+                if (intent != null)
+                {
+                    startActivity(intent);
+                }
             }
         });
 
