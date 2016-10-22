@@ -108,12 +108,14 @@
             android:layout_weight="0.5"
             android:orientation="horizontal">
             <RelativeLayout
+                android:id="@+id/touchArea1"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="0.5"
                 android:background="@color/colorTouchBackground">
             </RelativeLayout>
             <RelativeLayout
+                android:id="@+id/touchArea2"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="0.5"
@@ -126,12 +128,14 @@
             android:layout_weight="0.5"
             android:orientation="horizontal">
             <RelativeLayout
+                android:id="@+id/touchArea3"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="0.5"
                 android:background="@color/colorTouchPink">
             </RelativeLayout>
             <RelativeLayout
+                android:id="@+id/touchArea4"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="0.5"
