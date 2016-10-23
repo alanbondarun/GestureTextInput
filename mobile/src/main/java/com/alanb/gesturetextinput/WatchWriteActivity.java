@@ -7,6 +7,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.FileNotFoundException;
@@ -18,6 +19,7 @@ public class WatchWriteActivity extends AppCompatActivity {
     private final String TAG = this.getClass().getName();
     private LinearLayout m_touchAreaAll;
     private ArrayList<RelativeLayout> m_touchAreas;
+    private ArrayList<TextView> m_viewTexts;
 
     public enum TouchEvent
     {
@@ -42,45 +44,72 @@ public class WatchWriteActivity extends AppCompatActivity {
         m_touchAreas.add((RelativeLayout) findViewById(R.id.touchArea3));
         m_touchAreas.add((RelativeLayout) findViewById(R.id.touchArea4));
 
+        m_viewTexts = new ArrayList<>();
+        m_viewTexts.add((TextView) findViewById(R.id.w_char_indi_1));
+        m_viewTexts.add((TextView) findViewById(R.id.w_char_indi_2));
+        m_viewTexts.add((TextView) findViewById(R.id.w_char_indi_3));
+        m_viewTexts.add((TextView) findViewById(R.id.w_char_indi_4));
+
+        for (int ci=0; ci<4; ci++)
+        {
+            m_viewTexts.get(ci).setText(m_rootNode.getShowStr(ci));
+        }
+
         m_touchAreaAll.setOnTouchListener(new View.OnTouchListener() {
+            private TouchEvent prev_e = TouchEvent.DROP;
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                double xrel = motionEvent.getX() / view.getWidth();
-                double yrel = motionEvent.getY() / view.getHeight();
-                if (0 < xrel && xrel <= 0.5)
+                TouchEvent cur_e = TouchEvent.DROP;
+                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN
+                        || motionEvent.getAction() == MotionEvent.ACTION_MOVE)
                 {
-                    if (0 < yrel && yrel <= 0.5)
+                    double xrel = motionEvent.getX() / view.getWidth();
+                    double yrel = motionEvent.getY() / view.getHeight();
+                    if (0 < xrel && xrel <= 0.5)
                     {
-                        WatchWriteActivity.this.processTouch(TouchEvent.AREA1);
+                        if (0 < yrel && yrel <= 0.5)
+                        {
+                            cur_e = TouchEvent.AREA1;
+                        }
+                        else if (0.5 < yrel && yrel < 1)
+                        {
+                            cur_e = TouchEvent.AREA3;
+                        }
+                        else
+                        {
+                            cur_e = TouchEvent.DROP;
+                        }
                     }
-                    else if (0.5 < yrel && yrel < 1)
+                    else if (0.5 < xrel && xrel < 1)
                     {
-                        WatchWriteActivity.this.processTouch(TouchEvent.AREA3);
+                        if (0 < yrel && yrel <= 0.5)
+                        {
+                            cur_e = TouchEvent.AREA2;
+                        }
+                        else if (0.5 < yrel && yrel < 1)
+                        {
+                            cur_e = TouchEvent.AREA4;
+                        }
+                        else
+                        {
+                            cur_e = TouchEvent.DROP;
+                        }
                     }
                     else
                     {
-                        WatchWriteActivity.this.processTouch(TouchEvent.DROP);
-                    }
-                }
-                else if (0.5 < xrel && xrel < 1)
-                {
-                    if (0 < yrel && yrel <= 0.5)
-                    {
-                        WatchWriteActivity.this.processTouch(TouchEvent.AREA2);
-                    }
-                    else if (0.5 < yrel && yrel < 1)
-                    {
-                        WatchWriteActivity.this.processTouch(TouchEvent.AREA4);
-                    }
-                    else
-                    {
-                        WatchWriteActivity.this.processTouch(TouchEvent.DROP);
+                        cur_e = TouchEvent.DROP;
                     }
                 }
                 else
                 {
-                    WatchWriteActivity.this.processTouch(TouchEvent.DROP);
+                    cur_e = TouchEvent.DROP;
                 }
+                if (cur_e != prev_e)
+                {
+                    WatchWriteActivity.this.processTouch(cur_e);
+                    prev_e = cur_e;
+                }
+
                 return true;
             }
         });
@@ -90,7 +119,22 @@ public class WatchWriteActivity extends AppCompatActivity {
     {
         switch (te)
         {
-            // TODO
+            // TODO cases
+            case AREA1:
+                Log.d(TAG, "1");
+                break;
+            case AREA2:
+                Log.d(TAG, "2");
+                break;
+            case AREA3:
+                Log.d(TAG, "3");
+                break;
+            case AREA4:
+                Log.d(TAG, "4");
+                break;
+            case DROP:
+                Log.d(TAG, "drop");
+                break;
         }
     }
 }
