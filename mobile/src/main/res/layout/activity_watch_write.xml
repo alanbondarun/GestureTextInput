@@ -99,45 +99,14 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="12sp"
         android:orientation="vertical"
+        android:background="@color/colorTouchBackground"
         android:layout_width="24mm"
         android:layout_height="24mm">
-
-        <LinearLayout
+        <android.gesture.GestureOverlayView
+            android:id="@+id/w_gesture_view"
+            android:gestureColor="#000000"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="0.5"
-            android:orientation="horizontal">
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="0.5"
-                android:background="@color/colorTouchBackground">
-            </RelativeLayout>
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="0.5"
-                android:background="@color/colorTouchPink">
-            </RelativeLayout>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="0.5"
-            android:orientation="horizontal">
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="0.5"
-                android:background="@color/colorTouchPink">
-            </RelativeLayout>
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="0.5"
-                android:background="@color/colorTouchBackground">
-            </RelativeLayout>
-        </LinearLayout>
-
+            android:layout_height="match_parent">
+        </android.gesture.GestureOverlayView>
     </LinearLayout>
 </RelativeLayout>
