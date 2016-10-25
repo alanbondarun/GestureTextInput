@@ -12,6 +12,7 @@ import android.text.method.Touch;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.w3c.dom.Text;
@@ -21,22 +22,22 @@ import java.util.Iterator;
 
 public class WatchWriteActivity extends AppCompatActivity {
     private final String TAG = this.getClass().getName();
+    private final double TOUCH_SIZE_RATIO = 0.4;
 
     public enum TouchEvent
     {
-        AREA1, AREA2, AREA3, AREA4, DROP, END
+        AREA1, AREA2, AREA3, AREA4, AREA_OTHER, DROP, END
     }
 
-    private GestureOverlayView m_gestureView;
-    private GestureLibrary m_gestureLib;
+    private LinearLayout m_touchInputView;
     private ArrayList<TouchEvent> m_gestureTouchAreas;
     private KeyNode m_rootNode, m_curNode;
-    private boolean m_gesturePredictionNeeded = false;
     private TextView m_inputText;
+    private ArrayList<TextView> m_viewTexts;
 
     private View.OnTouchListener m_touchListener = new View.OnTouchListener()
     {
-        private TouchEvent prev_e = TouchEvent.DROP;
+        private TouchEvent prev_e = TouchEvent.AREA_OTHER;
         @Override
         public boolean onTouch(View view, MotionEvent motionEvent)
         {
@@ -46,34 +47,41 @@ public class WatchWriteActivity extends AppCompatActivity {
             {
                 double xrel = motionEvent.getX() / view.getWidth();
                 double yrel = motionEvent.getY() / view.getHeight();
-                if (0 < xrel && xrel <= 0.5)
+                if (0 <= xrel && xrel <= 1 && 0 <= yrel && yrel <= 1)
                 {
-                    if (0 < yrel && yrel <= 0.5)
+                    if (yrel <= TOUCH_SIZE_RATIO)
                     {
-                        cur_e = TouchEvent.AREA1;
+                        if (xrel <= TOUCH_SIZE_RATIO)
+                        {
+                            cur_e = TouchEvent.AREA1;
+                        }
+                        else if (xrel >= 1.0 - TOUCH_SIZE_RATIO)
+                        {
+                            cur_e = TouchEvent.AREA2;
+                        }
+                        else
+                        {
+                            cur_e = TouchEvent.AREA_OTHER;
+                        }
                     }
-                    else if (0.5 < yrel && yrel < 1)
+                    else if (yrel >= 1.0 - TOUCH_SIZE_RATIO)
                     {
-                        cur_e = TouchEvent.AREA3;
+                        if (xrel <= TOUCH_SIZE_RATIO)
+                        {
+                            cur_e = TouchEvent.AREA3;
+                        }
+                        else if (xrel >= 1.0 - TOUCH_SIZE_RATIO)
+                        {
+                            cur_e = TouchEvent.AREA4;
+                        }
+                        else
+                        {
+                            cur_e = TouchEvent.AREA_OTHER;
+                        }
                     }
                     else
                     {
-                        cur_e = TouchEvent.DROP;
-                    }
-                }
-                else if (0.5 < xrel && xrel < 1)
-                {
-                    if (0 < yrel && yrel <= 0.5)
-                    {
-                        cur_e = TouchEvent.AREA2;
-                    }
-                    else if (0.5 < yrel && yrel < 1)
-                    {
-                        cur_e = TouchEvent.AREA4;
-                    }
-                    else
-                    {
-                        cur_e = TouchEvent.DROP;
+                        cur_e = TouchEvent.AREA_OTHER;
                     }
                 }
                 else
@@ -87,53 +95,11 @@ public class WatchWriteActivity extends AppCompatActivity {
             }
             if (cur_e != prev_e)
             {
-                receiveTouchPos(cur_e);
+                processTouchPos(cur_e);
             }
             prev_e = cur_e;
 
-            return false;
-        }
-    };
-
-    private GestureOverlayView.OnGesturePerformedListener m_gesturePerformedListener =
-            new GestureOverlayView.OnGesturePerformedListener()
-    {
-        @Override
-        public void onGesturePerformed(GestureOverlayView gestureOverlayView, Gesture gesture)
-        {
-            ArrayList<Prediction> pred_list = m_gestureLib.recognize(gesture);
-            if (pred_list.size() > 0)
-            {
-                Log.d(TAG, "gesture predicted");
-                for (int ci=0; ci<java.lang.Math.min(5, pred_list.size()); ci++)
-                {
-                    Log.d(TAG, ci + "th: " + pred_list.get(ci).name + ", score: " + pred_list.get(ci).score);
-                }
-            }
-            else
-            {
-                Log.d(TAG, "gesture prediction failed");
-            }
-            recognizeInput(pred_list);
-        }
-    };
-
-    private GestureOverlayView.OnGesturingListener m_onGesturingListener =
-            new GestureOverlayView.OnGesturingListener()
-    {
-        @Override
-        public void onGesturingStarted(GestureOverlayView gestureOverlayView)
-        {
-            m_gesturePredictionNeeded = true;
-        }
-
-        @Override
-        public void onGesturingEnded(GestureOverlayView gestureOverlayView)
-        {
-            if (!m_gesturePredictionNeeded)
-            {
-                recognizeInput(null);
-            }
+            return true;
         }
     };
 
@@ -148,255 +114,77 @@ public class WatchWriteActivity extends AppCompatActivity {
         m_gestureTouchAreas = new ArrayList<>();
 
         m_inputText = (TextView) findViewById(R.id.w_input_text);
-        m_gestureLib = GestureLibraries.fromRawResource(this, R.raw.gestures);
-        m_gestureLib.load();
+        m_touchInputView = (LinearLayout) findViewById(R.id.w_char_touch);
+        m_touchInputView.setOnTouchListener(m_touchListener);
 
-        m_gestureView = (GestureOverlayView) findViewById(R.id.w_gesture_view);
-        m_gestureView.setOnTouchListener(m_touchListener);
-        m_gestureView.addOnGesturePerformedListener(m_gesturePerformedListener);
-        m_gestureView.addOnGesturingListener(m_onGesturingListener);
+        m_viewTexts = new ArrayList<>();
+        m_viewTexts.add((TextView) findViewById(R.id.w_char_indi_1));
+        m_viewTexts.add((TextView) findViewById(R.id.w_char_indi_2));
+        m_viewTexts.add((TextView) findViewById(R.id.w_char_indi_3));
+        m_viewTexts.add((TextView) findViewById(R.id.w_char_indi_4));
+        updateShowText(m_rootNode);
     }
 
-    public void receiveTouchPos(TouchEvent te)
+    public void processTouchPos(TouchEvent te)
     {
         if (te == TouchEvent.END)
         {
-            Log.d(TAG, "Touch End");
+            Log.d(TAG, "Input Result: " + m_curNode.getCharVal());
+            m_inputText.setText(m_inputText.getText() + String.valueOf(m_curNode.getCharVal()));
+
+            // initialization for next touch(or gesture) input
+            m_gestureTouchAreas.clear();
+            m_curNode = m_rootNode;
+            updateShowText(m_curNode);
         }
         if (te == TouchEvent.DROP)
         {
             m_gestureTouchAreas.add(te);
         }
-        else if (te != TouchEvent.END)
+        else if (te != TouchEvent.END && te != TouchEvent.AREA_OTHER)
         {
             if (m_gestureTouchAreas.size() <= 0 ||
                     m_gestureTouchAreas.get(m_gestureTouchAreas.size()-1) != TouchEvent.DROP)
             {
-                m_gestureTouchAreas.add(te);
-                Log.d(TAG, "Touch add: " + te);
-            }
-        }
-    }
-
-    public void recognizeInput(ArrayList<Prediction> pred_list)
-    {
-        Character result = null;
-        if (pred_list == null)
-        {
-            result = calcInputChar(m_gestureTouchAreas);
-        }
-        else
-        {
-            for (Prediction p : pred_list)
-            {
-                // check if the given prediction contradicts the given touch area
-                ArrayList<ArrayList<TouchEvent>> touch_list = calcMatchingEventList(p.name.split("-"));
-                for (ArrayList<TouchEvent> tlist : touch_list)
+                KeyNode next_node = null;
+                switch (te)
                 {
-                    if (hasSubsequence(m_gestureTouchAreas, tlist))
-                    {
-                        result = calcInputChar(tlist);
+                    case AREA1:
+                        next_node = m_curNode.getNextNode(0);
                         break;
-                    }
+                    case AREA2:
+                        next_node = m_curNode.getNextNode(1);
+                        break;
+                    case AREA3:
+                        next_node = m_curNode.getNextNode(2);
+                        break;
+                    case AREA4:
+                        next_node = m_curNode.getNextNode(3);
+                        break;
                 }
-                if (result != null)
+                if (next_node != null)
                 {
-                    break;
+                    m_curNode = next_node;
+                    updateShowText(next_node);
+                    m_gestureTouchAreas.add(te);
+                }
+                else
+                {
+                    m_gestureTouchAreas.add(TouchEvent.DROP);
+                    Log.d(TAG, "Touch drop: end reached");
                 }
             }
         }
-        if (result == null)
-        {
-            Log.d(TAG, "Input Failed");
-        }
-        else
-        {
-            Log.d(TAG, "Input Result: " + result);
-            m_inputText.setText(m_inputText.getText() + String.valueOf(result));
-        }
-
-        // initialization for next touch(or gesture) input
-        m_gestureTouchAreas.clear();
-        m_gesturePredictionNeeded = false;
     }
 
-    private ArrayList< ArrayList<TouchEvent> > calcMatchingEventList(String[] name_str_list)
+    private void updateShowText(KeyNode node)
     {
-        ArrayList<ArrayList<TouchEvent>> seq_list = new ArrayList<>();
-        TouchEvent[] valid_touches = {
-                TouchEvent.AREA1, TouchEvent.AREA2, TouchEvent.AREA3, TouchEvent.AREA4
-        };
-
-        for (TouchEvent te: valid_touches)
+        if (node.getNextNodeNum() > 0 && node.getNextNode(0) != null)
         {
-            ArrayList<TouchEvent> tseq = new ArrayList<>();
-            tseq.add(te);
-            seq_list.add(tseq);
-        }
-
-        for (String name: name_str_list)
-        {
-            ArrayList< ArrayList<TouchEvent> > next_seqs = new ArrayList<>();
-            switch (name)
+            for (int ci = 0; ci < 4; ci++)
             {
-                case "T":
-                    for (ArrayList<TouchEvent> te: seq_list)
-                    {
-                        if (te.get(te.size()-1) == TouchEvent.AREA3)
-                        {
-                            te.add(TouchEvent.AREA1);
-                            next_seqs.add(te);
-                        }
-                        else if (te.get(te.size()-1) == TouchEvent.AREA4)
-                        {
-                            te.add(TouchEvent.AREA2);
-                            next_seqs.add(te);
-                        }
-                    }
-                    break;
-                case "B":
-                    for (ArrayList<TouchEvent> te: seq_list)
-                    {
-                        if (te.get(te.size()-1) == TouchEvent.AREA1)
-                        {
-                            te.add(TouchEvent.AREA3);
-                            next_seqs.add(te);
-                        }
-                        else if (te.get(te.size()-1) == TouchEvent.AREA2)
-                        {
-                            te.add(TouchEvent.AREA4);
-                            next_seqs.add(te);
-                        }
-                    }
-                    break;
-                case "L":
-                    for (ArrayList<TouchEvent> te: seq_list)
-                    {
-                        if (te.get(te.size()-1) == TouchEvent.AREA2)
-                        {
-                            te.add(TouchEvent.AREA1);
-                            next_seqs.add(te);
-                        }
-                        else if (te.get(te.size()-1) == TouchEvent.AREA4)
-                        {
-                            te.add(TouchEvent.AREA3);
-                            next_seqs.add(te);
-                        }
-                    }
-                    break;
-                case "R":
-                    for (ArrayList<TouchEvent> te: seq_list)
-                    {
-                        if (te.get(te.size()-1) == TouchEvent.AREA1)
-                        {
-                            te.add(TouchEvent.AREA2);
-                            next_seqs.add(te);
-                        }
-                        else if (te.get(te.size()-1) == TouchEvent.AREA3)
-                        {
-                            te.add(TouchEvent.AREA4);
-                            next_seqs.add(te);
-                        }
-                    }
-                    break;
-                case "1D":
-                    for (ArrayList<TouchEvent> te: seq_list)
-                    {
-                        if (te.get(te.size()-1) == TouchEvent.AREA3)
-                        {
-                            te.add(TouchEvent.AREA2);
-                            next_seqs.add(te);
-                        }
-                    }
-                    break;
-                case "5D":
-                    for (ArrayList<TouchEvent> te: seq_list)
-                    {
-                        if (te.get(te.size()-1) == TouchEvent.AREA1)
-                        {
-                            te.add(TouchEvent.AREA4);
-                            next_seqs.add(te);
-                        }
-                    }
-                    break;
-                case "7D":
-                    for (ArrayList<TouchEvent> te: seq_list)
-                    {
-                        if (te.get(te.size()-1) == TouchEvent.AREA2)
-                        {
-                            te.add(TouchEvent.AREA3);
-                            next_seqs.add(te);
-                        }
-                    }
-                    break;
-                case "0D":
-                    for (ArrayList<TouchEvent> te: seq_list)
-                    {
-                        if (te.get(te.size()-1) == TouchEvent.AREA4)
-                        {
-                            te.add(TouchEvent.AREA1);
-                            next_seqs.add(te);
-                        }
-                    }
-                    break;
-            }
-            seq_list = next_seqs;
-        }
-
-        return seq_list;
-    }
-
-    private Character calcInputChar(ArrayList<TouchEvent> touch_list)
-    {
-        KeyNode key = m_rootNode;
-        Character ic = null;
-        for (TouchEvent te: touch_list)
-        {
-            switch (te)
-            {
-                case AREA1:
-                    key = key.getNextNode(0);
-                    break;
-                case AREA2:
-                    key = key.getNextNode(1);
-                    break;
-                case AREA3:
-                    key = key.getNextNode(2);
-                    break;
-                case AREA4:
-                    key = key.getNextNode(3);
-                    break;
-                default:
-                    ic = key.getCharVal();
-                    key = null;
-            }
-            if (ic != null || key == null)
-            {
-                break;
+                m_viewTexts.get(ci).setText(node.getNextNode(ci).getShowStr());
             }
         }
-        if (key != null && ic == null)
-        {
-            ic = key.getCharVal();
-        }
-        return ic;
-    }
-
-    private boolean hasSubsequence(ArrayList<TouchEvent> a_src, ArrayList<TouchEvent> a_sub)
-    {
-        int idx_src = 0;
-        int idx_sub = 0;
-        while (idx_src < a_src.size() && idx_sub < a_sub.size())
-        {
-            while (idx_src < a_src.size() && a_src.get(idx_src) != a_sub.get(idx_sub))
-            {
-                idx_src++;
-            }
-            if (idx_src < a_src.size())
-            {
-                idx_src++; idx_sub++;
-            }
-        }
-        return idx_sub >= a_sub.size();
     }
 }

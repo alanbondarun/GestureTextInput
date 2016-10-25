@@ -53,7 +53,7 @@
                     android:text="N-Z"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/w_char_indi_21"
+                    android:id="@+id/w_char_indi_2"
                     android:layout_centerVertical="true"
                     android:layout_centerHorizontal="true"
                     android:textSize="24sp" />
@@ -99,15 +99,8 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="12sp"
         android:orientation="vertical"
-        android:background="@drawable/w_touch_back"
         android:layout_width="24mm"
-        android:layout_height="24mm">
-        <android.gesture.GestureOverlayView
-            android:id="@+id/w_gesture_view"
-            android:gestureColor="#000000"
-            android:eventsInterceptionEnabled="false"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-        </android.gesture.GestureOverlayView>
+        android:layout_height="24mm"
+        android:background="@drawable/w_touch_back">
     </LinearLayout>
 </RelativeLayout>
