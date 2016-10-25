@@ -18,6 +18,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".WatchWriteActivity"></activity>
+        <activity android:name=".OneDActivity"
+            android:screenOrientation="landscape"
+            android:configChanges="keyboardHidden|orientation">
+        </activity>
     </application>
 
 </manifest>

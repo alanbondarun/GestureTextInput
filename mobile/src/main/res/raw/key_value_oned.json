@@ -1,0 +1,168 @@
+{
+  "keys": [
+    {
+      "show_str": "A-J",
+      "input_char": "a",
+      "keys": [
+        {
+          "show_str": "A"
+        },
+        {
+          "show_str": "B-C",
+          "input_char": "c",
+          "keys": [
+            {
+              "show_str": "B",
+              "input_char": "b"
+            },
+            {
+              "show_str": "C"
+            },
+            {
+              "show_str": ""
+            },
+            {
+              "show_str": ""
+            }
+          ]
+        },
+        {
+          "show_str": "D-F",
+          "input_char": "f",
+          "keys": [
+            {
+              "show_str": "D",
+              "input_char": "d"
+            },
+            {
+              "show_str": "E",
+              "input_char": "e"
+            },
+            {
+              "show_str": "F"
+            },
+            {
+              "show_str": ""
+            }
+          ]
+        },
+        {
+          "show_str": "G-J",
+          "input_char": "j",
+          "keys": [
+            {
+              "show_str": "G",
+              "input_char": "g"
+            },
+            {
+              "show_str": "H",
+              "input_char": "h"
+            },
+            {
+              "show_str": "I",
+              "input_char": "i"
+            },
+            {
+              "show_str": "J"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "show_str": "K-V",
+      "input_char": "o",
+      "keys": [
+        {
+          "show_str": "K-N",
+          "input_char": "k",
+          "keys": [
+            {
+              "show_str": "K"
+            },
+            {
+              "show_str": "L",
+              "input_char": "l"
+            },
+            {
+              "show_str": "M",
+              "input_char": "m"
+            },
+            {
+              "show_str": "N",
+              "input_char": "n"
+            }
+          ]
+        },
+        {
+          "show_str": "O"
+        },
+        {
+          "show_str": "P-R",
+          "input_char": "r",
+          "keys": [
+            {
+              "show_str": "P",
+              "input_char": "p"
+            },
+            {
+              "show_str": "Q",
+              "input_char": "q"
+            },
+            {
+              "show_str": "R"
+            },
+            {
+              "show_str": ""
+            }
+          ]
+        },
+        {
+          "show_str": "S-V",
+          "input_char": "v",
+          "keys": [
+            {
+              "show_str": "S",
+              "input_char": "s"
+            },
+            {
+              "show_str": "T",
+              "input_char": "t"
+            },
+            {
+              "show_str": "U",
+              "input_char": "u"
+            },
+            {
+              "show_str": "V"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "show_str": "W-Z",
+      "input_char": "y",
+      "keys": [
+        {
+          "show_str": "W",
+          "input_char": "w"
+        },
+        {
+          "show_str": "X",
+          "input_char": "x"
+        },
+        {
+          "show_str": "Y"
+        },
+        {
+          "show_str": "Z",
+          "input_char": "z"
+        }
+      ]
+    },
+    {
+      "show_str": ""
+    }
+  ]
+}
