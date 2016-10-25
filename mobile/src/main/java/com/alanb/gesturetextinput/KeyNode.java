@@ -1,48 +1,39 @@
 package com.alanb.gesturetextinput;
 
 import android.content.Context;
-import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.InputStreamReader;
 
 public class KeyNode
 {
-    public enum Act
-    {
-        INPUT_CHAR, DEL, PARENT
-    }
-    private String[] showStr;
+    private String showStr;
     private KeyNode[] nextNode;
-    private Act act;
-    private char charVal;
+    private Character charVal;
+    private KeyNode parentNode;
 
-    public KeyNode(String[] str, KeyNode[] node, Act act)
+    public KeyNode(String str, KeyNode[] node, KeyNode parent)
     {
-        this(str, node, act, '0');
+        this(str, node, parent, null);
     }
 
-    public KeyNode(String[] str, KeyNode[] node, Act act, char cval)
+    public KeyNode(String str, KeyNode[] node, KeyNode parent, Character cval)
     {
         this.showStr = str;
         this.nextNode = node;
-        this.act = act;
+        this.parentNode = parent;
         this.charVal = cval;
     }
 
-    public String getShowStr(int idx)
+    public int getNextNodeNum()
     {
-        if (idx >= 0 && idx < this.showStr.length)
-            return this.showStr[idx];
-        return null;
+        if (this.nextNode == null)
+            return 0;
+        return this.nextNode.length;
     }
 
     public KeyNode getNextNode(int idx)
@@ -52,22 +43,19 @@ public class KeyNode
         return null;
     }
 
+    public String getShowStr() { return this.showStr; }
     public char getCharVal()
     {
         return this.charVal;
     }
+    public KeyNode getParent() { return this.parentNode; }
 
-    public Act getAct()
-    {
-        return this.act;
-    }
-
-    private static String readJSONFile(Context context)
+    private static String readJSONFile(Context context, int rid)
     {
         StringBuilder sb = new StringBuilder();
         try
         {
-            BufferedReader br = new BufferedReader(new InputStreamReader(context.getResources().openRawResource(R.raw.key_value)));
+            BufferedReader br = new BufferedReader(new InputStreamReader(context.getResources().openRawResource(rid)));
             String line = null;
             while ((line = br.readLine()) != null)
             {
@@ -86,32 +74,30 @@ public class KeyNode
         KeyNode node = null;
         try
         {
+            String n_show_str = null;
+            if (!jobj.isNull("show_str"))
+                n_show_str = jobj.getString("show_str");
+            Character n_input_char = null;
+            if (!jobj.isNull("input_char"))
+                n_input_char = jobj.getString("input_char").charAt(0);
+            KeyNode[] narray = null;
             if (!jobj.isNull("keys"))
             {
                 JSONArray jarray = jobj.getJSONArray("keys");
-                String[] a_show_str = new String[jarray.length()];
-                KeyNode[] a_next_node = new KeyNode[jarray.length()];
+                narray = new KeyNode[jarray.length()];
                 for (int ci=0; ci<jarray.length(); ci++)
                 {
-                    JSONObject sub_obj = jarray.getJSONObject(ci);
-
-                    if (sub_obj.isNull("show_str"))
-                        a_show_str[ci] = "";
-                    else
-                        a_show_str[ci] = sub_obj.getString("show_str");
-
-                    if (sub_obj.isNull("input_char"))
-                    {
-                        a_next_node[ci] = keyFromJSON(sub_obj);
-                    }
-                    else
-                    {
-                        String input_char = sub_obj.getString("input_char");
-                        a_next_node[ci] = new KeyNode(new String[4], new KeyNode[4], Act.INPUT_CHAR,
-                                input_char.charAt(0));
-                    }
+                    narray[ci] = keyFromJSON(jarray.getJSONObject(ci));
                 }
-                node = new KeyNode(a_show_str, a_next_node, Act.PARENT);
+            }
+
+            node = new KeyNode(n_show_str, narray, null, n_input_char);
+            if (narray != null)
+            {
+                for (int ci=0; ci<narray.length; ci++)
+                {
+                    narray[ci].parentNode = node;
+                }
             }
         }
         catch (JSONException e)
@@ -121,12 +107,12 @@ public class KeyNode
         return node;
     }
 
-    public static KeyNode generateKeyTree(Context context)
+    public static KeyNode generateKeyTree(Context context, int rid)
     {
         KeyNode rootNode = null;
         try
         {
-            rootNode = keyFromJSON(new JSONObject(readJSONFile(context)));
+            rootNode = keyFromJSON(new JSONObject(readJSONFile(context, rid)));
         }
         catch (JSONException e)
         {
