@@ -99,12 +99,13 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="12sp"
         android:orientation="vertical"
-        android:background="@color/colorTouchBackground"
+        android:background="@drawable/w_touch_back"
         android:layout_width="24mm"
         android:layout_height="24mm">
         <android.gesture.GestureOverlayView
             android:id="@+id/w_gesture_view"
             android:gestureColor="#000000"
+            android:eventsInterceptionEnabled="false"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
         </android.gesture.GestureOverlayView>
