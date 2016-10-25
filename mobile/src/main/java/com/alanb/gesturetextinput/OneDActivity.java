@@ -118,7 +118,7 @@ public class OneDActivity extends AppCompatActivity {
     {
         if (te.val == TouchEvent.DROP || te.val == TouchEvent.END)
         {
-            if (m_curNode != m_rootNode)
+            if (m_curNode != m_rootNode && (m_curNode != null && m_curNode.getCharVal() != null))
             {
                 Log.d(TAG, "input char = " + m_curNode.getCharVal());
                 m_inputText.setText(m_inputText.getText() + String.valueOf(m_curNode.getCharVal()));
@@ -136,6 +136,7 @@ public class OneDActivity extends AppCompatActivity {
         }
         else
         {
+            KeyNode next_node = null;
             if (m_touchArray.size() <= 0 || m_touchArray.get(m_touchArray.size()-1).val != TouchEvent.DROP)
             {
                 Log.d(TAG, "Touch = " + te.val);
@@ -146,22 +147,29 @@ public class OneDActivity extends AppCompatActivity {
                     if (dx1/abs(dx1) == dx2/abs(dx2))
                     {
                         m_touchArray.set(m_touchArray.size()-1, te);
-                        m_curNode = m_curNode.getParent().getNextNode(te.val);
-                        updateShowText();
+                        next_node = m_curNode.getParent().getNextNode(te.val);
                     }
                     else
                     {
                         m_touchArray.add(te);
-                        m_curNode = m_curNode.getNextNode(te.val);
-                        updateShowText();
+                        next_node = m_curNode.getNextNode(te.val);
                     }
                 }
                 else
                 {
                     m_touchArray.add(te);
-                    m_curNode = m_curNode.getNextNode(te.val);
-                    updateShowText();
+                    next_node = m_curNode.getNextNode(te.val);
                 }
+            }
+            if (next_node != null)
+            {
+                m_curNode = next_node;
+                updateShowText();
+            }
+            else
+            {
+                m_touchArray.add(new TouchEvent(TouchEvent.DROP));
+                Log.d(TAG, "Touch drop: end reached");
             }
         }
     }
