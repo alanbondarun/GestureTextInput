@@ -1,24 +1,14 @@
 package com.alanb.gesturetextinput;
 
-import android.gesture.Gesture;
-import android.gesture.GestureLibraries;
-import android.gesture.GestureLibrary;
-import android.gesture.GestureOverlayView;
-import android.gesture.Prediction;
-import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.method.Touch;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
-import java.util.Iterator;
 
 public class WatchWriteActivity extends AppCompatActivity {
     private final String TAG = this.getClass().getName();
@@ -129,8 +119,11 @@ public class WatchWriteActivity extends AppCompatActivity {
     {
         if (te == TouchEvent.END)
         {
-            Log.d(TAG, "Input Result: " + m_curNode.getCharVal());
-            m_inputText.setText(m_inputText.getText() + String.valueOf(m_curNode.getCharVal()));
+            if (m_curNode.getCharVal() != null)
+            {
+                Log.d(TAG, "Input Result: " + m_curNode.getCharVal());
+                m_inputText.setText(m_inputText.getText() + String.valueOf(m_curNode.getCharVal()));
+            }
 
             // initialization for next touch(or gesture) input
             m_gestureTouchAreas.clear();

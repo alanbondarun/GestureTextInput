@@ -38,13 +38,13 @@ public class KeyNode
 
     public KeyNode getNextNode(int idx)
     {
-        if (idx >= 0 && idx < this.nextNode.length)
+        if (this.nextNode != null && idx >= 0 && idx < this.nextNode.length)
             return this.nextNode[idx];
         return null;
     }
 
     public String getShowStr() { return this.showStr; }
-    public char getCharVal()
+    public Character getCharVal()
     {
         return this.charVal;
     }
