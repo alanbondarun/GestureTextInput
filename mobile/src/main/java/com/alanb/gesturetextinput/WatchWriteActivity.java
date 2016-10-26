@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import static java.lang.Math.max;
 
 public class WatchWriteActivity extends AppCompatActivity {
     private final String TAG = this.getClass().getName();
@@ -119,7 +120,13 @@ public class WatchWriteActivity extends AppCompatActivity {
     {
         if (te == TouchEvent.END)
         {
-            if (m_curNode.getCharVal() != null)
+            if (m_curNode.getAct() == KeyNode.Act.DELETE)
+            {
+                Log.d(TAG, "Delete one character");
+                CharSequence cs = m_inputText.getText();
+                m_inputText.setText(cs.subSequence(0, max(0, cs.length() - 1)));
+            }
+            else if (m_curNode.getCharVal() != null)
             {
                 Log.d(TAG, "Input Result: " + m_curNode.getCharVal());
                 m_inputText.setText(m_inputText.getText() + String.valueOf(m_curNode.getCharVal()));

@@ -145,7 +145,8 @@
       ]
     },
     {
-      "show_str": "Del"
+      "show_str": "Del",
+      "act": "delete"
     },
     {
       "show_str": ""

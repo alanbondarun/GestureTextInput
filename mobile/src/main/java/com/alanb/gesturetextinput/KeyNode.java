@@ -11,22 +11,41 @@ import java.io.InputStreamReader;
 
 public class KeyNode
 {
+    public enum Act
+    {
+        OTHER, DELETE
+    }
     private String showStr;
     private KeyNode[] nextNode;
     private Character charVal;
     private KeyNode parentNode;
+    private Act act;
 
     public KeyNode(String str, KeyNode[] node, KeyNode parent)
     {
-        this(str, node, parent, null);
+        this(str, node, parent, null, Act.OTHER);
     }
 
     public KeyNode(String str, KeyNode[] node, KeyNode parent, Character cval)
+    {
+        this(str, node, parent, cval, Act.OTHER);
+    }
+
+    public KeyNode(String str, KeyNode[] node, KeyNode parent, Act act)
+    {
+        this(str, node, parent, null, act);
+    }
+
+    public KeyNode(String str, KeyNode[] node, KeyNode parent, Character cval, Act act)
     {
         this.showStr = str;
         this.nextNode = node;
         this.parentNode = parent;
         this.charVal = cval;
+        if (act == null)
+            this.act = Act.OTHER;
+        else
+            this.act = act;
     }
 
     public int getNextNodeNum()
@@ -43,6 +62,7 @@ public class KeyNode
         return null;
     }
 
+    public Act getAct() { return this.act; }
     public String getShowStr() { return this.showStr; }
     public Character getCharVal()
     {
@@ -90,8 +110,16 @@ public class KeyNode
                     narray[ci] = keyFromJSON(jarray.getJSONObject(ci));
                 }
             }
+            Act act = null;
+            if (!jobj.isNull("act"))
+            {
+                if (jobj.getString("act").equals("delete"))
+                {
+                    act = Act.DELETE;
+                }
+            }
 
-            node = new KeyNode(n_show_str, narray, null, n_input_char);
+            node = new KeyNode(n_show_str, narray, null, n_input_char, act);
             if (narray != null)
             {
                 for (int ci=0; ci<narray.length; ci++)

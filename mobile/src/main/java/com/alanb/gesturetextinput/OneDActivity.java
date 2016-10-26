@@ -17,6 +17,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import static java.lang.Math.abs;
+import static java.lang.Math.max;
 import static java.lang.Math.min;
 
 public class OneDActivity extends AppCompatActivity {
@@ -118,10 +119,19 @@ public class OneDActivity extends AppCompatActivity {
     {
         if (te.val == TouchEvent.DROP || te.val == TouchEvent.END)
         {
-            if (m_curNode != m_rootNode && (m_curNode != null && m_curNode.getCharVal() != null))
+            if (m_curNode != m_rootNode && m_curNode != null)
             {
-                Log.d(TAG, "input char = " + m_curNode.getCharVal());
-                m_inputText.setText(m_inputText.getText() + String.valueOf(m_curNode.getCharVal()));
+                if (m_curNode.getAct() == KeyNode.Act.DELETE)
+                {
+                    Log.d(TAG, "Delete one character");
+                    CharSequence cs = m_inputText.getText();
+                    m_inputText.setText(cs.subSequence(0, max(0, cs.length() - 1)));
+                }
+                else if (m_curNode.getCharVal() != null)
+                {
+                    Log.d(TAG, "input char = " + m_curNode.getCharVal());
+                    m_inputText.setText(m_inputText.getText() + String.valueOf(m_curNode.getCharVal()));
+                }
             }
             m_curNode = m_rootNode;
             updateShowText();

@@ -162,7 +162,8 @@
       ]
     },
     {
-      "show_str": ""
+      "show_str": "Del",
+      "act": "delete"
     }
   ]
 }
