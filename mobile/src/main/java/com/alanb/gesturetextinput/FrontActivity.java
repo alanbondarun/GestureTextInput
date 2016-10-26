@@ -35,6 +35,9 @@ public class FrontActivity extends AppCompatActivity
                 Intent intent = null;
                 switch (i)
                 {
+                    case 0:
+                        intent = new Intent(getApplicationContext(), PalmActivity.class);
+                        break;
                     case 1:
                         intent = new Intent(getApplicationContext(), WatchWriteActivity.class);
                         break;
