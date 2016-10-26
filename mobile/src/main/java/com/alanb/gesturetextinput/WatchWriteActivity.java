@@ -1,5 +1,7 @@
 package com.alanb.gesturetextinput;
 
+import android.graphics.Color;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -179,11 +181,30 @@ public class WatchWriteActivity extends AppCompatActivity {
 
     private void updateShowText(KeyNode node)
     {
-        if (node.getNextNodeNum() > 0 && node.getNextNode(0) != null)
+        if (m_curNode.isLeaf())
+        {            KeyNode np = m_curNode.getParent();
+            if (np != null)
+            {
+                for (int ci=0; ci < np.getNextNodeNum(); ci++)
+                {
+                    if (np.getNextNode(ci) == m_curNode)
+                    {
+                        m_viewTexts.get(ci).setBackgroundColor(ContextCompat.getColor(
+                                getApplicationContext(), R.color.colorTouchBackground));
+                    }
+                    else
+                    {
+                        m_viewTexts.get(ci).setBackgroundColor(Color.TRANSPARENT);
+                    }
+                }
+            }
+        }
+        else
         {
             for (int ci = 0; ci < 4; ci++)
             {
                 m_viewTexts.get(ci).setText(node.getNextNode(ci).getShowStr());
+                m_viewTexts.get(ci).setBackgroundColor(Color.TRANSPARENT);
             }
         }
     }

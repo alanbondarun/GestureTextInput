@@ -1,5 +1,7 @@
 package com.alanb.gesturetextinput;
 
+import android.graphics.Color;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -105,12 +107,32 @@ public class OneDActivity extends AppCompatActivity {
 
     public void updateShowText()
     {
-        if (m_curNode.getNextNodeNum() > 0 && m_curNode.getNextNode(0) != null)
+        if (m_curNode.isLeaf())
+        {
+            KeyNode np = m_curNode.getParent();
+            if (np != null)
+            {
+                for (int ci=0; ci < np.getNextNodeNum(); ci++)
+                {
+                    if (np.getNextNode(ci) == m_curNode)
+                    {
+                        m_viewTexts.get(ci).setBackgroundColor(ContextCompat.getColor(
+                                getApplicationContext(), R.color.colorTouchBackground));
+                    }
+                    else
+                    {
+                        m_viewTexts.get(ci).setBackgroundColor(Color.TRANSPARENT);
+                    }
+                }
+            }
+        }
+        else
         {
             // update only for non-leaf node
             for (int ci=0; ci<min(m_curNode.getNextNodeNum(), 4); ci++)
             {
                 m_viewTexts.get(ci).setText(m_curNode.getNextNode(ci).getShowStr());
+                m_viewTexts.get(ci).setBackgroundColor(Color.TRANSPARENT);
             }
         }
     }

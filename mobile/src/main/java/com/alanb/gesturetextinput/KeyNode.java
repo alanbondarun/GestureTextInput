@@ -62,6 +62,11 @@ public class KeyNode
         return null;
     }
 
+    public boolean isLeaf()
+    {
+        return this.nextNode == null;
+    }
+
     public Act getAct() { return this.act; }
     public String getShowStr() { return this.showStr; }
     public Character getCharVal()

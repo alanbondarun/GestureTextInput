@@ -34,8 +34,9 @@
             android:layout_weight="0.25">
             <TextView
                 android:text=""
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
                 android:id="@+id/o_char_indi_1"
                 android:layout_centerVertical="true"
                 android:layout_centerHorizontal="true"
@@ -47,8 +48,9 @@
             android:layout_weight="0.25">
             <TextView
                 android:text=""
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
                 android:id="@+id/o_char_indi_2"
                 android:layout_centerVertical="true"
                 android:layout_centerHorizontal="true"
@@ -60,8 +62,9 @@
             android:layout_weight="0.25">
             <TextView
                 android:text="Del"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
                 android:id="@+id/o_char_indi_3"
                 android:layout_centerVertical="true"
                 android:layout_centerHorizontal="true"
@@ -73,8 +76,9 @@
             android:layout_weight="0.25">
             <TextView
                 android:text=""
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
                 android:id="@+id/o_char_indi_4"
                 android:layout_centerVertical="true"
                 android:layout_centerHorizontal="true"
