@@ -2,11 +2,14 @@ package com.alanb.gesturetextinput;
 
 import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -103,6 +106,12 @@ public class OneDActivity extends AppCompatActivity {
                 return true;
             }
         });
+
+        FrameLayout touch_layout = (FrameLayout) findViewById(R.id.o_touch_point_area);
+        TouchFeedbackView feedback_view = new TouchFeedbackView(this);
+        feedback_view.setLayoutParams(new ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        touch_layout.addView(feedback_view);
     }
 
     public void updateShowText()
