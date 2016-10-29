@@ -32,6 +32,7 @@ public class OneDActivity extends AppCompatActivity {
     private KeyNode m_rootNode, m_curNode;
     private ArrayList<TouchEvent> m_touchArray;
     private TextView m_inputText;
+    private final boolean upperTouchFeedback = true;
 
     public class TouchEvent
     {
@@ -110,7 +111,15 @@ public class OneDActivity extends AppCompatActivity {
 
         TouchFeedbackFrameLayout feedbackFrameLayout = (TouchFeedbackFrameLayout)
                 findViewById(R.id.o_touch_point_area);
-        feedbackFrameLayout.attachFeedbackTo(feedbackFrameLayout);
+        if (upperTouchFeedback)
+        {
+            FrameLayout upperFrame = (FrameLayout) findViewById(R.id.o_upper_frame);
+            feedbackFrameLayout.attachFeedbackTo(upperFrame);
+        }
+        else
+        {
+            feedbackFrameLayout.attachFeedbackTo(feedbackFrameLayout);
+        }
     }
 
     public void updateShowText()
