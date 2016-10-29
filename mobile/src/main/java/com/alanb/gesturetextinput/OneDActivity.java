@@ -38,16 +38,17 @@ public class OneDActivity extends AppCompatActivity {
     {
         final static int DROP = -1;
         final static int END = -2;
+        final static int MULTITOUCH = -3;
         public final int val;
         public TouchEvent(int v)
         {
-            if (-2 <= v && v < 4)
+            if (-3 <= v && v < 4)
             {
                 this.val = v;
             }
             else
             {
-                this.val = -2;
+                this.val = -1;
             }
         }
     }
@@ -77,26 +78,42 @@ public class OneDActivity extends AppCompatActivity {
 
         m_touchAreaAll.setOnTouchListener(new View.OnTouchListener() {
             private TouchEvent prev_e = new TouchEvent(TouchEvent.DROP);
+            private boolean multi_occurred = false;
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 TouchEvent cur_e;
-                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN
-                        || motionEvent.getAction() == MotionEvent.ACTION_MOVE)
+                if (multi_occurred && (motionEvent.getAction() == MotionEvent.ACTION_DOWN
+                        || motionEvent.getAction() == MotionEvent.ACTION_MOVE))
                 {
-                    double xrel = motionEvent.getX() / view.getWidth();
-                    double yrel = motionEvent.getY() / view.getHeight();
-                    if (0 <= xrel && xrel <= 1 && 0 <= yrel && yrel <= 1)
-                    {
-                        cur_e = new TouchEvent((int)(xrel * 4.0));
-                    }
-                    else
-                    {
-                        cur_e = new TouchEvent(TouchEvent.DROP);
-                    }
+                    cur_e = new TouchEvent(TouchEvent.MULTITOUCH);
                 }
                 else
                 {
-                    cur_e = new TouchEvent(TouchEvent.END);
+                    multi_occurred = false;
+                    if (motionEvent.getPointerCount() >= 2)
+                    {
+                        // multi-touch detected, cancel the input
+                        multi_occurred = true;
+                        cur_e = new TouchEvent(TouchEvent.MULTITOUCH);
+                    }
+                    else if (motionEvent.getAction() == MotionEvent.ACTION_DOWN
+                            || motionEvent.getAction() == MotionEvent.ACTION_MOVE)
+                    {
+                        double xrel = motionEvent.getX() / view.getWidth();
+                        double yrel = motionEvent.getY() / view.getHeight();
+                        if (0 <= xrel && xrel <= 1 && 0 <= yrel && yrel <= 1)
+                        {
+                            cur_e = new TouchEvent((int) (xrel * 4.0));
+                        }
+                        else
+                        {
+                            cur_e = new TouchEvent(TouchEvent.DROP);
+                        }
+                    }
+                    else
+                    {
+                        cur_e = new TouchEvent(TouchEvent.END);
+                    }
                 }
                 if (cur_e.val != prev_e.val)
                 {
@@ -104,7 +121,6 @@ public class OneDActivity extends AppCompatActivity {
                     prev_e = cur_e;
                 }
 
-                Log.d(TAG, "touch area onTouch");
                 return true;
             }
         });
@@ -183,10 +199,17 @@ public class OneDActivity extends AppCompatActivity {
                 m_touchArray.add(te);
             }
         }
+        else if (te.val == TouchEvent.MULTITOUCH)
+        {
+            m_curNode = m_rootNode;
+            updateShowText();
+            m_touchArray.clear();
+            m_touchArray.add(te);
+        }
         else
         {
             KeyNode next_node = null;
-            if (m_touchArray.size() <= 0 || m_touchArray.get(m_touchArray.size()-1).val != TouchEvent.DROP)
+            if (m_touchArray.size() <= 0 || m_touchArray.get(m_touchArray.size()-1).val >= 0)
             {
                 Log.d(TAG, "Touch = " + te.val);
                 if (m_touchArray.size() >= 2)
