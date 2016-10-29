@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -27,6 +28,7 @@ public class WatchWriteActivity extends AppCompatActivity {
     private KeyNode m_rootNode, m_curNode;
     private TextView m_inputText;
     private ArrayList<TextView> m_viewTexts;
+    private final boolean upperTouchFeedback = true;
 
     private View.OnTouchListener m_touchListener = new View.OnTouchListener()
     {
@@ -116,6 +118,18 @@ public class WatchWriteActivity extends AppCompatActivity {
         m_viewTexts.add((TextView) findViewById(R.id.w_char_indi_3));
         m_viewTexts.add((TextView) findViewById(R.id.w_char_indi_4));
         updateShowText(m_rootNode);
+
+        TouchFeedbackFrameLayout feedbackFrameLayout = (TouchFeedbackFrameLayout)
+                findViewById(R.id.w_touch_frame);
+        if (upperTouchFeedback)
+        {
+            FrameLayout upperFrame = (FrameLayout) findViewById(R.id.w_upper_frame);
+            feedbackFrameLayout.attachFeedbackTo(upperFrame);
+        }
+        else
+        {
+            feedbackFrameLayout.attachFeedbackTo(feedbackFrameLayout);
+        }
     }
 
     public void processTouchPos(TouchEvent te)
