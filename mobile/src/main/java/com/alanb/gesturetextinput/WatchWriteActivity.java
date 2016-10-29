@@ -20,7 +20,7 @@ public class WatchWriteActivity extends AppCompatActivity {
 
     public enum TouchEvent
     {
-        AREA1, AREA2, AREA3, AREA4, AREA_OTHER, DROP, END
+        AREA1, AREA2, AREA3, AREA4, AREA_OTHER, DROP, END, MULTITOUCH
     }
 
     private LinearLayout m_touchInputView;
@@ -33,41 +33,61 @@ public class WatchWriteActivity extends AppCompatActivity {
     private View.OnTouchListener m_touchListener = new View.OnTouchListener()
     {
         private TouchEvent prev_e = TouchEvent.AREA_OTHER;
+        private boolean multi_occurred = false;
         @Override
         public boolean onTouch(View view, MotionEvent motionEvent)
         {
             TouchEvent cur_e;
-            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN
-                    || motionEvent.getAction() == MotionEvent.ACTION_MOVE)
+            if (multi_occurred && (motionEvent.getAction() == MotionEvent.ACTION_DOWN
+                    || motionEvent.getAction() == MotionEvent.ACTION_MOVE))
             {
-                double xrel = motionEvent.getX() / view.getWidth();
-                double yrel = motionEvent.getY() / view.getHeight();
-                if (0 <= xrel && xrel <= 1 && 0 <= yrel && yrel <= 1)
+                cur_e = TouchEvent.MULTITOUCH;
+            }
+            else
+            {
+                multi_occurred = false;
+                if (motionEvent.getPointerCount() >= 2)
                 {
-                    if (yrel <= TOUCH_SIZE_RATIO)
+                    // multi-touch occurred, cancel the input
+                    multi_occurred = true;
+                    cur_e = TouchEvent.MULTITOUCH;
+                }
+                else if (motionEvent.getAction() == MotionEvent.ACTION_DOWN
+                        || motionEvent.getAction() == MotionEvent.ACTION_MOVE)
+                {
+                    double xrel = motionEvent.getX() / view.getWidth();
+                    double yrel = motionEvent.getY() / view.getHeight();
+                    if (0 <= xrel && xrel <= 1 && 0 <= yrel && yrel <= 1)
                     {
-                        if (xrel <= TOUCH_SIZE_RATIO)
+                        if (yrel <= TOUCH_SIZE_RATIO)
                         {
-                            cur_e = TouchEvent.AREA1;
+                            if (xrel <= TOUCH_SIZE_RATIO)
+                            {
+                                cur_e = TouchEvent.AREA1;
+                            }
+                            else if (xrel >= 1.0 - TOUCH_SIZE_RATIO)
+                            {
+                                cur_e = TouchEvent.AREA2;
+                            }
+                            else
+                            {
+                                cur_e = TouchEvent.AREA_OTHER;
+                            }
                         }
-                        else if (xrel >= 1.0 - TOUCH_SIZE_RATIO)
+                        else if (yrel >= 1.0 - TOUCH_SIZE_RATIO)
                         {
-                            cur_e = TouchEvent.AREA2;
-                        }
-                        else
-                        {
-                            cur_e = TouchEvent.AREA_OTHER;
-                        }
-                    }
-                    else if (yrel >= 1.0 - TOUCH_SIZE_RATIO)
-                    {
-                        if (xrel <= TOUCH_SIZE_RATIO)
-                        {
-                            cur_e = TouchEvent.AREA3;
-                        }
-                        else if (xrel >= 1.0 - TOUCH_SIZE_RATIO)
-                        {
-                            cur_e = TouchEvent.AREA4;
+                            if (xrel <= TOUCH_SIZE_RATIO)
+                            {
+                                cur_e = TouchEvent.AREA3;
+                            }
+                            else if (xrel >= 1.0 - TOUCH_SIZE_RATIO)
+                            {
+                                cur_e = TouchEvent.AREA4;
+                            }
+                            else
+                            {
+                                cur_e = TouchEvent.AREA_OTHER;
+                            }
                         }
                         else
                         {
@@ -76,17 +96,13 @@ public class WatchWriteActivity extends AppCompatActivity {
                     }
                     else
                     {
-                        cur_e = TouchEvent.AREA_OTHER;
+                        cur_e = TouchEvent.DROP;
                     }
                 }
                 else
                 {
-                    cur_e = TouchEvent.DROP;
+                    cur_e = TouchEvent.END;
                 }
-            }
-            else
-            {
-                cur_e = TouchEvent.END;
             }
             if (cur_e != prev_e)
             {
@@ -153,14 +169,22 @@ public class WatchWriteActivity extends AppCompatActivity {
             m_curNode = m_rootNode;
             updateShowText(m_curNode);
         }
-        if (te == TouchEvent.DROP)
+        else if (te == TouchEvent.DROP)
         {
             m_gestureTouchAreas.add(te);
         }
-        else if (te != TouchEvent.END && te != TouchEvent.AREA_OTHER)
+        else if (te == TouchEvent.MULTITOUCH)
+        {
+            m_curNode = m_rootNode;
+            updateShowText(m_curNode);
+            m_gestureTouchAreas.clear();
+            m_gestureTouchAreas.add(te);
+        }
+        else if (te != TouchEvent.AREA_OTHER)
         {
             if (m_gestureTouchAreas.size() <= 0 ||
-                    m_gestureTouchAreas.get(m_gestureTouchAreas.size()-1) != TouchEvent.DROP)
+                    (m_gestureTouchAreas.get(m_gestureTouchAreas.size()-1) != TouchEvent.DROP &&
+                    m_gestureTouchAreas.get(m_gestureTouchAreas.size()-1) != TouchEvent.MULTITOUCH))
             {
                 KeyNode next_node = null;
                 switch (te)
