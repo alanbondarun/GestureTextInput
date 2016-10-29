@@ -27,67 +27,42 @@
             android:id="@+id/o_char_view"
             android:layout_below="@+id/o_input_text"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="10dip"
+            android:layout_marginTop="12dip"
             android:orientation="horizontal"
-            android:layout_width="400dip"
-            android:layout_height="40dip">
-
-            <RelativeLayout
+            android:layout_width="440dip"
+            android:layout_height="60dip">
+            <TextView
+                android:text=""
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="0.25">
-                <TextView
-                    android:text=""
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:id="@+id/o_char_indi_1"
-                    android:layout_centerVertical="true"
-                    android:layout_centerHorizontal="true"
-                    android:textSize="24sp" />
-            </RelativeLayout>
-            <RelativeLayout
+                android:layout_weight="0.25"
+                android:gravity="center"
+                android:id="@+id/o_char_indi_1"
+                android:textSize="24sp" />
+            <TextView
+                android:text=""
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="0.25">
-                <TextView
-                    android:text=""
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:id="@+id/o_char_indi_2"
-                    android:layout_centerVertical="true"
-                    android:layout_centerHorizontal="true"
-                    android:textSize="24sp" />
-            </RelativeLayout>
-            <RelativeLayout
+                android:layout_weight="0.25"
+                android:gravity="center"
+                android:id="@+id/o_char_indi_2"
+                android:textSize="24sp" />
+            <TextView
+                android:text=""
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="0.25">
-                <TextView
-                    android:text=""
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:id="@+id/o_char_indi_3"
-                    android:layout_centerVertical="true"
-                    android:layout_centerHorizontal="true"
-                    android:textSize="24sp" />
-            </RelativeLayout>
-            <RelativeLayout
+                android:layout_weight="0.25"
+                android:gravity="center"
+                android:id="@+id/o_char_indi_3"
+                android:textSize="24sp" />
+            <TextView
+                android:text=""
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="0.25">
-                <TextView
-                    android:text=""
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:id="@+id/o_char_indi_4"
-                    android:layout_centerVertical="true"
-                    android:layout_centerHorizontal="true"
-                    android:textSize="24sp" />
-            </RelativeLayout>
+                android:layout_weight="0.25"
+                android:gravity="center"
+                android:id="@+id/o_char_indi_4"
+                android:textSize="24sp" />
         </LinearLayout>
     </RelativeLayout>
 
