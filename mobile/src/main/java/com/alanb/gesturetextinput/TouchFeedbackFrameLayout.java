@@ -35,4 +35,11 @@ public class TouchFeedbackFrameLayout extends FrameLayout
         m_feedback_view.setCursorPos(motionEvent);
         return false;
     }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent motionEvent)
+    {
+        m_feedback_view.setCursorPos(motionEvent);
+        return true;
+    }
 }

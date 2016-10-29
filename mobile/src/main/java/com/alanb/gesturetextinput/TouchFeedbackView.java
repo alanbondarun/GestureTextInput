@@ -46,7 +46,7 @@ public class TouchFeedbackView extends View
         if (m_activated)
         {
             ShapeDrawable cursor = new ShapeDrawable(new OvalShape());
-            cursor.getPaint().setColor(Color.BLUE);
+            cursor.getPaint().setColor(Color.argb(85, 0, 0, 0));
             cursor.setBounds((int) (m_posx - 50), (int) (m_posy - 50),
                     (int) (m_posx + 50), (int) (m_posy + 50));
             cursor.draw(canvas);
