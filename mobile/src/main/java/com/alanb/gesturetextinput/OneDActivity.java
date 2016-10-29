@@ -103,15 +103,14 @@ public class OneDActivity extends AppCompatActivity {
                     prev_e = cur_e;
                 }
 
+                Log.d(TAG, "touch area onTouch");
                 return true;
             }
         });
 
-        FrameLayout touch_layout = (FrameLayout) findViewById(R.id.o_touch_point_area);
-        TouchFeedbackView feedback_view = new TouchFeedbackView(this);
-        feedback_view.setLayoutParams(new ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        touch_layout.addView(feedback_view);
+        TouchFeedbackFrameLayout feedbackFrameLayout = (TouchFeedbackFrameLayout)
+                findViewById(R.id.o_touch_point_area);
+        feedbackFrameLayout.attachFeedbackTo(feedbackFrameLayout);
     }
 
     public void updateShowText()

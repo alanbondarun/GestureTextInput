@@ -13,26 +13,29 @@ import android.view.View;
 
 public class TouchFeedbackView extends View
 {
+    boolean m_activated = false;
     float m_posx=100, m_posy=100;
 
-    OnTouchListener m_touchListener = new OnTouchListener()
+    public void setCursorPos(MotionEvent motionEvent)
     {
-        @Override
-        public boolean onTouch(View view, MotionEvent motionEvent)
+        if (motionEvent.getAction() == MotionEvent.ACTION_DOWN
+                || motionEvent.getAction() == MotionEvent.ACTION_MOVE)
         {
+            m_activated = true;
             m_posx = motionEvent.getX();
             m_posy = motionEvent.getY();
-
-            invalidate();
-            return true;
         }
-    };
+        else
+        {
+            m_activated = false;
+        }
+
+        invalidate();
+    }
 
     public TouchFeedbackView(Context context)
     {
         super(context);
-
-        this.setOnTouchListener(m_touchListener);
     }
 
     @Override
@@ -40,10 +43,13 @@ public class TouchFeedbackView extends View
     {
         super.onDraw(canvas);
 
-        ShapeDrawable cursor = new ShapeDrawable(new OvalShape());
-        cursor.getPaint().setColor(Color.BLUE);
-        cursor.setBounds((int)(m_posx - 50), (int)(m_posy - 50),
-                (int)(m_posx + 50), (int)(m_posy + 50));
-        cursor.draw(canvas);
+        if (m_activated)
+        {
+            ShapeDrawable cursor = new ShapeDrawable(new OvalShape());
+            cursor.getPaint().setColor(Color.BLUE);
+            cursor.setBounds((int) (m_posx - 50), (int) (m_posy - 50),
+                    (int) (m_posx + 50), (int) (m_posy + 50));
+            cursor.draw(canvas);
+        }
     }
 }

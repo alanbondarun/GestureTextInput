@@ -91,7 +91,7 @@
         </LinearLayout>
     </RelativeLayout>
 
-    <FrameLayout
+    <com.alanb.gesturetextinput.TouchFeedbackFrameLayout
         android:id="@+id/o_touch_point_area"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -138,6 +138,6 @@
                 </RelativeLayout>
             </LinearLayout>
         </RelativeLayout>
-    </FrameLayout>
+    </com.alanb.gesturetextinput.TouchFeedbackFrameLayout>
 
 </LinearLayout>
