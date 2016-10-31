@@ -16,7 +16,8 @@
               "input_char": "b"
             },
             {
-              "show_str": "C"
+              "show_str": "C",
+              "input_char": "c"
             },
             {
               "show_str": ""
@@ -39,7 +40,8 @@
               "input_char": "e"
             },
             {
-              "show_str": "F"
+              "show_str": "F",
+              "input_char": "f"
             },
             {
               "show_str": ""
@@ -63,7 +65,8 @@
               "input_char": "i"
             },
             {
-              "show_str": "J"
+              "show_str": "J",
+              "input_char": "j"
             }
           ]
         }
@@ -78,7 +81,8 @@
           "input_char": "k",
           "keys": [
             {
-              "show_str": "K"
+              "show_str": "K",
+              "input_char": "k"
             },
             {
               "show_str": "L",
@@ -110,7 +114,8 @@
               "input_char": "q"
             },
             {
-              "show_str": "R"
+              "show_str": "R",
+              "input_char": "r"
             },
             {
               "show_str": ""
@@ -134,7 +139,8 @@
               "input_char": "u"
             },
             {
-              "show_str": "V"
+              "show_str": "V",
+              "input_char": "v"
             }
           ]
         }
@@ -153,7 +159,8 @@
           "input_char": "x"
         },
         {
-          "show_str": "Y"
+          "show_str": "Y",
+          "input_char": "y"
         },
         {
           "show_str": "Z",

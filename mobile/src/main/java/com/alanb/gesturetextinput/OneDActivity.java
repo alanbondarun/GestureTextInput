@@ -172,7 +172,7 @@ public class OneDActivity extends AppCompatActivity {
 
     public void processTouch(TouchEvent te)
     {
-        if (te.val == TouchEvent.DROP || te.val == TouchEvent.END)
+        if (te.val == TouchEvent.END)
         {
             if (m_curNode != m_rootNode && m_curNode != null)
             {
@@ -190,14 +190,11 @@ public class OneDActivity extends AppCompatActivity {
             }
             m_curNode = m_rootNode;
             updateShowText();
-            if (te.val == TouchEvent.END)
-            {
-                m_touchArray.clear();
-            }
-            else
-            {
-                m_touchArray.add(te);
-            }
+            m_touchArray.clear();
+        }
+        else if (te.val == TouchEvent.DROP)
+        {
+            m_touchArray.add(te);
         }
         else if (te.val == TouchEvent.MULTITOUCH)
         {
@@ -218,25 +215,36 @@ public class OneDActivity extends AppCompatActivity {
                     int dx2 = m_touchArray.get(m_touchArray.size()-1).val - m_touchArray.get(m_touchArray.size()-2).val;
                     if (dx1/abs(dx1) == dx2/abs(dx2))
                     {
-                        m_touchArray.set(m_touchArray.size()-1, te);
                         next_node = m_curNode.getParent().getNextNode(te.val);
                     }
                     else
                     {
-                        m_touchArray.add(te);
                         next_node = m_curNode.getNextNode(te.val);
                     }
                 }
                 else
                 {
-                    m_touchArray.add(te);
                     next_node = m_curNode.getNextNode(te.val);
                 }
             }
+
+            KeyNode sibling_node = m_curNode.getParent();
+            if (sibling_node != null)
+            {
+                sibling_node = sibling_node.getNextNode(te.val);
+            }
+
             if (next_node != null)
             {
                 m_curNode = next_node;
                 updateShowText();
+                m_touchArray.add(te);
+            }
+            else if (sibling_node != null)
+            {
+                m_curNode = sibling_node;
+                updateShowText();
+                m_touchArray.add(te);
             }
             else
             {
