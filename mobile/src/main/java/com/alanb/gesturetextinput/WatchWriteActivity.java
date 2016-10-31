@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import static java.lang.Math.max;
+import static java.lang.Math.subtractExact;
 
 public class WatchWriteActivity extends AppCompatActivity {
     private final String TAG = this.getClass().getName();
@@ -187,25 +188,42 @@ public class WatchWriteActivity extends AppCompatActivity {
                     m_gestureTouchAreas.get(m_gestureTouchAreas.size()-1) != TouchEvent.MULTITOUCH))
             {
                 KeyNode next_node = null;
+                KeyNode sibling_node = m_curNode.getParent();
                 switch (te)
                 {
                     case AREA1:
                         next_node = m_curNode.getNextNode(0);
+                        if (sibling_node != null)
+                            sibling_node = sibling_node.getNextNode(0);
                         break;
                     case AREA2:
                         next_node = m_curNode.getNextNode(1);
+                        if (sibling_node != null)
+                            sibling_node = sibling_node.getNextNode(1);
                         break;
                     case AREA3:
                         next_node = m_curNode.getNextNode(2);
+                        if (sibling_node != null)
+                            sibling_node = sibling_node.getNextNode(2);
                         break;
                     case AREA4:
                         next_node = m_curNode.getNextNode(3);
+                        if (sibling_node != null)
+                            sibling_node = sibling_node.getNextNode(3);
                         break;
                 }
                 if (next_node != null)
                 {
                     m_curNode = next_node;
                     updateShowText(next_node);
+                    m_gestureTouchAreas.add(te);
+                }
+                else if (sibling_node != null)
+                {
+                    m_curNode = sibling_node;
+                    updateShowText(sibling_node);
+                    if (m_gestureTouchAreas.size() >= 1)
+                        m_gestureTouchAreas.remove(m_gestureTouchAreas.size()-1);
                     m_gestureTouchAreas.add(te);
                 }
                 else
