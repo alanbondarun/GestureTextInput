@@ -7,14 +7,17 @@
     android:layout_height="match_parent"
     tools:context="com.alanb.gesturetextinput.MainActivity"
     tools:deviceIds="wear">
-    <LinearLayout
-        android:id="@+id/w_char_touch"
-        android:layout_below="@+id/w_char_view"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="48dip"
-        android:layout_gravity="center_horizontal"
-        android:orientation="vertical"
-        android:layout_width="20mm"
-        android:layout_height="20mm">
-    </LinearLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:id="@+id/w_char_touch"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center"
+            android:orientation="vertical"
+            android:layout_width="132dip"
+            android:layout_height="132dip">
+        </LinearLayout>
+    </RelativeLayout>
 </android.support.wearable.view.BoxInsetLayout>
