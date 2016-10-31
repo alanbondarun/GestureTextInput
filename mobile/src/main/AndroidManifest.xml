@@ -22,10 +22,7 @@
             android:screenOrientation="landscape"
             android:configChanges="keyboardHidden|orientation">
         </activity>
-        <activity android:name=".PalmActivity"
-            android:screenOrientation="landscape"
-            android:configChanges="keyboardHidden|orientation">
-        </activity>
+        <activity android:name=".PalmActivity"></activity>
     </application>
 
 </manifest>
