@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -26,6 +27,8 @@ public class PalmActivity extends AppCompatActivity
     private GestureLibrary m_gestureLib;
     private ArrayList<GesturePoint> m_curGPoints;
     private TextView m_inputText;
+    private boolean useTouchFeedback = false;
+    private boolean upperTouchFeedback = true;
 
     private void predictGesture(ArrayList<GesturePoint> points)
     {
@@ -90,5 +93,20 @@ public class PalmActivity extends AppCompatActivity
         m_gestureView = (GestureOverlayView) findViewById(R.id.p_gesture_view);
         m_gestureView.setOnTouchListener(m_gestureViewTouchListener);
         m_inputText = (TextView) findViewById(R.id.p_input_text);
+
+        if (useTouchFeedback)
+        {
+            TouchFeedbackFrameLayout feedbackFrameLayout = (TouchFeedbackFrameLayout)
+                    findViewById(R.id.p_touch_point_area);
+            if (upperTouchFeedback)
+            {
+                FrameLayout upperFrame = (FrameLayout) findViewById(R.id.p_upper_frame);
+                feedbackFrameLayout.attachFeedbackTo(upperFrame);
+            }
+            else
+            {
+                feedbackFrameLayout.attachFeedbackTo(feedbackFrameLayout);
+            }
+        }
     }
 }
