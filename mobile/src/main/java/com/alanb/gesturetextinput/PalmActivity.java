@@ -30,11 +30,101 @@ public class PalmActivity extends AppCompatActivity
     private boolean useTouchFeedback = false;
     private boolean upperTouchFeedback = true;
 
-    private void predictGesture(ArrayList<GesturePoint> points)
+    private final float[][] gesture_vertices = {
+            {900, 500, 500, 100, 100, 100},
+            {900, 500, 500, 100},
+            {900, 500, 500, 100, 900, 100},
+
+            {900, 500, 900, 100, 500, 100},
+            {500, 500, 500, 100},
+            {500, 500, 500, 100, 900, 100},
+
+            {100, 500, 500, 100, 100, 100},
+            {100, 500, 500, 100},
+            {100, 500, 500, 100, 100, 900},
+
+            {900, 500, 500, 500, 500, 100},
+            {900, 500, 500, 500, 100, 100},
+            {900, 500, 500, 500},
+            {900, 100, 500, 100, 500, 500},
+            {900, 100, 500, 100, 900, 500},
+
+            {500, 500, 900, 500, 500, 100},
+            {500, 500, 900, 500, 900, 100},
+            {500, 500, 900, 500},
+            {500, 100, 900, 100, 500, 500},
+            {500, 100, 900, 100, 900, 500},
+
+            {900, 100, 500, 500, 100, 500},
+            {900, 100, 500, 500},
+            {900, 100, 500, 500, 900, 500},
+
+            {900, 100, 900, 500, 500, 500},
+            {900, 100, 900, 500},
+            {500, 100, 500, 500, 900, 500},
+
+            {100, 100, 500, 500, 100, 500},
+            {100, 100, 500, 500},
+            {100, 100, 500, 500, 900, 500}
+    };
+    private final String[] gesture_labels = {
+            "Q", "W", "E",
+            "R", "T", "Y",
+            "U", "I", "O",
+            "A", "S", "D", "F", "G",
+            "H", "J", "K", "L", "P",
+            "Z", "X", "C",
+            "V", "B", "N",
+            "M", ".", "del"
+    };
+
+    private final float GESTURE_SPEED = 1.6f;
+    private final float SAMPLE_PER_SEC = 120f;
+    private GestureStore m_gestureStore;
+
+    private GestureStore createGestureLibFromSource()
+    {
+        GestureStore store = new GestureStore();
+        for (int ci=0; ci<gesture_labels.length; ci++)
+        {
+            ArrayList<GesturePoint> points = new ArrayList<>();
+            long tt = 0;
+            for (int cj=0; cj<(gesture_vertices[ci].length / 2) - 1; cj++)
+            {
+                long tadd = 0;
+                double tx = gesture_vertices[ci][cj*2];
+                double ty = gesture_vertices[ci][cj*2 + 1];
+                double dx = gesture_vertices[ci][cj*2 + 2] - tx;
+                double dy = gesture_vertices[ci][cj*2 + 3] - ty;
+                double dist = Math.sqrt(dx*dx + dy*dy);
+                double udx = dx / dist;
+                double udy = dy / dist;
+                double tdd = 0;
+                while (tdd/dist < 1)
+                {
+                    points.add(new GesturePoint((float)(tx), (float)(ty),
+                            tt + (long)(tadd*(1000f/SAMPLE_PER_SEC))));
+                    tadd++;
+                    tx += (udx * GESTURE_SPEED * 1000f / SAMPLE_PER_SEC);
+                    ty += (udy * GESTURE_SPEED * 1000f / SAMPLE_PER_SEC);
+                    tdd += (GESTURE_SPEED * 1000f / SAMPLE_PER_SEC);
+                }
+                tt += (dist/GESTURE_SPEED);
+            }
+
+            Log.d(TAG, "points = " + points);
+            Gesture gesture = new Gesture();
+            gesture.addStroke(new GestureStroke(points));
+            store.addGesture(gesture_labels[ci], gesture);
+        }
+        return store;
+    }
+
+    private void predictGesture(ArrayList<GesturePoint> points, GestureStore store)
     {
         Gesture gesture = new Gesture();
         gesture.addStroke(new GestureStroke(points));
-        ArrayList<Prediction> pred_list = m_gestureLib.recognize(gesture);
+        ArrayList<Prediction> pred_list = store.recognize(gesture);
         if (pred_list.size() > 0)
         {
             Log.d(TAG, "gesture predicted, stroke=" + gesture.getStrokesCount());
@@ -73,7 +163,7 @@ public class PalmActivity extends AppCompatActivity
             }
             else
             {
-                predictGesture(m_curGPoints);
+                predictGesture(m_curGPoints, m_gestureStore);
                 m_curGPoints.clear();
             }
             return false;
@@ -88,6 +178,8 @@ public class PalmActivity extends AppCompatActivity
 
         m_gestureLib = GestureLibraries.fromRawResource(this, R.raw.palm_gestures);
         m_gestureLib.load();
+
+        m_gestureStore = createGestureLibFromSource();
 
         m_curGPoints = new ArrayList<>();
         m_gestureView = (GestureOverlayView) findViewById(R.id.p_gesture_view);
