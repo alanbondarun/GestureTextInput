@@ -35,6 +35,7 @@ public class WatchCooperatingActivity extends AppCompatActivity
     private KeyNode m_curNode;
     private TextView m_inputText;
     private ArrayList<TextView> m_viewTexts;
+    private TouchFeedbackFrameLayout m_feedbackFrameLayout;
 
     private GoogleApiClient.ConnectionCallbacks connectionCallbacks =
             new GoogleApiClient.ConnectionCallbacks()
@@ -81,6 +82,16 @@ public class WatchCooperatingActivity extends AppCompatActivity
                         Log.d(TAG, "Touch Received = " + touch_str);
                         processTouchEvent(WatchWriteInputView.TouchEvent.valueOf(touch_str));
                     }
+                    else if (item.getUri().getPath().compareTo("/touchpos") == 0)
+                    {
+                        DataMap dataMap = DataMapItem.fromDataItem(item).getDataMap();
+
+                        float xpos = dataMap.getFloat(getResources().getString(R.string.wear_xpos_key));
+                        float ypos = dataMap.getFloat(getResources().getString(R.string.wear_ypos_key));
+                        int action = dataMap.getInt(getResources().getString(R.string.wear_action_key));
+                        m_feedbackFrameLayout.setCursor(xpos * m_feedbackFrameLayout.getWidth(),
+                                ypos * m_feedbackFrameLayout.getHeight(), action);
+                    }
                 }
             }
         }
@@ -105,6 +116,9 @@ public class WatchCooperatingActivity extends AppCompatActivity
         m_viewTexts.add((TextView) findViewById(R.id.c_char_indi_4));
 
         updateCurNode(m_rootNode);
+
+        m_feedbackFrameLayout = (TouchFeedbackFrameLayout) findViewById(R.id.c_touch_frame);
+        m_feedbackFrameLayout.attachFeedbackTo(m_feedbackFrameLayout);
 
         GoogleApiClient.Builder g_builder = new GoogleApiClient.Builder(this);
         g_builder.addApi(Wearable.API);

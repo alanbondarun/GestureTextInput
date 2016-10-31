@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.wearable.activity.WearableActivity;
 import android.support.wearable.view.BoxInsetLayout;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -24,11 +25,14 @@ import java.util.Date;
 import java.util.Locale;
 
 public class MainActivity extends WearableActivity
-    implements  WatchWriteInputView.OnTouchEventListener
 {
     private final String TAG = this.getClass().getName();
     private BoxInsetLayout mContainerView;
     private GoogleApiClient m_googleApiClient = null;
+    private LinearLayout m_charTouchLayout;
+
+    private float m_touchX;
+    private float m_touchY;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,11 +41,13 @@ public class MainActivity extends WearableActivity
         setAmbientEnabled();
 
         WatchWriteInputView.Builder wwbuilder = new WatchWriteInputView.Builder(this);
-        wwbuilder.setOnTouchEventListener(this);
+        wwbuilder.setOnTouchEventListener(wwTouchEventListener);
+        wwbuilder.setOnTouchListener(wwTouchListener);
         wwbuilder.setBackground(R.drawable.w_touch_back);
         WatchWriteInputView touchInputView = wwbuilder.build();
 
-        ((LinearLayout)(findViewById(R.id.w_char_touch))).addView(touchInputView);
+        m_charTouchLayout = (LinearLayout)(findViewById(R.id.w_char_touch));
+        m_charTouchLayout.addView(touchInputView);
 
         GoogleApiClient.Builder builder = new GoogleApiClient.Builder(this);
         builder.addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks()
@@ -122,16 +128,40 @@ public class MainActivity extends WearableActivity
         }
     }
 
-    @Override
-    public void onTouchEvent(WatchWriteInputView.TouchEvent te)
+    WatchWriteInputView.OnTouchListener wwTouchListener =
+            new WatchWriteInputView.OnTouchListener()
     {
-        PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/touchevent");
-        putDataMapReq.getDataMap().putString(getResources().getString(R.string.wear_touch_key),
-                te.name());
-        putDataMapReq.setUrgent();
+        @Override
+        public void onTouch(MotionEvent motionEvent)
+        {
+            PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/touchpos");
+            putDataMapReq.getDataMap().putFloat(getResources().getString(R.string.wear_xpos_key),
+                    motionEvent.getX() / m_charTouchLayout.getWidth());
+            putDataMapReq.getDataMap().putFloat(getResources().getString(R.string.wear_ypos_key),
+                    motionEvent.getY() / m_charTouchLayout.getHeight());
+            putDataMapReq.getDataMap().putInt(getResources().getString(R.string.wear_action_key),
+                    motionEvent.getAction());
 
-        PutDataRequest dataReq = putDataMapReq.asPutDataRequest();
-        PendingResult<DataApi.DataItemResult> pendingResult =
-                Wearable.DataApi.putDataItem(m_googleApiClient, dataReq);
-    }
+            PutDataRequest dataReq = putDataMapReq.asPutDataRequest();
+            PendingResult<DataApi.DataItemResult> pendingResult =
+                    Wearable.DataApi.putDataItem(m_googleApiClient, dataReq);
+        }
+    };
+
+    WatchWriteInputView.OnTouchEventListener wwTouchEventListener =
+            new WatchWriteInputView.OnTouchEventListener()
+    {
+        @Override
+        public void onTouchEvent(WatchWriteInputView.TouchEvent te)
+        {
+            PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/touchevent");
+            putDataMapReq.getDataMap().putString(getResources().getString(R.string.wear_touch_key),
+                    te.name());
+            putDataMapReq.setUrgent();
+
+            PutDataRequest dataReq = putDataMapReq.asPutDataRequest();
+            PendingResult<DataApi.DataItemResult> pendingResult =
+                    Wearable.DataApi.putDataItem(m_googleApiClient, dataReq);
+        }
+    };
 }

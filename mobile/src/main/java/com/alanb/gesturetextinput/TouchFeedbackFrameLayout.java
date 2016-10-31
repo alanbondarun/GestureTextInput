@@ -42,4 +42,9 @@ public class TouchFeedbackFrameLayout extends FrameLayout
         m_feedback_view.setCursorPos(motionEvent);
         return true;
     }
+
+    public void setCursor(float x, float y, int action)
+    {
+        m_feedback_view.setCursorPos(x, y, action);
+    }
 }

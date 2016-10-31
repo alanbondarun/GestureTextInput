@@ -18,6 +18,10 @@ public class WatchWriteInputView extends View
     private TouchEvent prev_e = TouchEvent.AREA_OTHER;
     private boolean multi_occurred = false;
 
+    public interface OnTouchListener
+    {
+        public void onTouch(MotionEvent motionEvent);
+    }
     public interface OnTouchEventListener
     {
         public void onTouchEvent(TouchEvent te);
@@ -27,6 +31,7 @@ public class WatchWriteInputView extends View
     {
         private Context context = null;
         private OnTouchEventListener listener = null;
+        private WatchWriteInputView.OnTouchListener t_listener = null;
         private Drawable background = null;
 
         public Builder(Context context)
@@ -37,6 +42,11 @@ public class WatchWriteInputView extends View
         public void setOnTouchEventListener(OnTouchEventListener l)
         {
             this.listener = l;
+        }
+
+        public void setOnTouchListener(WatchWriteInputView.OnTouchListener l)
+        {
+            this.t_listener = l;
         }
 
         public void setBackground(int id)
@@ -144,6 +154,10 @@ public class WatchWriteInputView extends View
         }
         prev_e = cur_e;
 
+        if (this.m_prefs.t_listener != null)
+        {
+            this.m_prefs.t_listener.onTouch(motionEvent);
+        }
         return true;
     }
 }
