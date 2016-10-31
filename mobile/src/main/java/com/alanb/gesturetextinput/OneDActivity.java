@@ -29,7 +29,9 @@ public class OneDActivity extends AppCompatActivity {
     private final String TAG = this.getClass().getName();
     private LinearLayout m_touchAreaAll;
     private ArrayList<TextView> m_viewTexts;
-    private KeyNode m_rootNode, m_curNode;
+    private KeyNode m_rootNode;
+    // DO NOT modify this directly; use updateCurNode() instead
+    private KeyNode m_curNode;
     private ArrayList<TouchEvent> m_touchArray;
     private TextView m_inputText;
     private final boolean upperTouchFeedback = true;
@@ -59,7 +61,6 @@ public class OneDActivity extends AppCompatActivity {
         setContentView(R.layout.activity_1d_input);
 
         m_rootNode = KeyNode.generateKeyTree(this, R.raw.key_value_oned);
-        m_curNode = m_rootNode;
         m_touchArray = new ArrayList<>();
 
         m_inputText = (TextView) findViewById(R.id.o_input_text);
@@ -70,6 +71,8 @@ public class OneDActivity extends AppCompatActivity {
         m_viewTexts.add((TextView) findViewById(R.id.o_char_indi_2));
         m_viewTexts.add((TextView) findViewById(R.id.o_char_indi_3));
         m_viewTexts.add((TextView) findViewById(R.id.o_char_indi_4));
+
+        updateCurNode(m_rootNode);
 
         for (int ci=0; ci<4; ci++)
         {
@@ -138,16 +141,16 @@ public class OneDActivity extends AppCompatActivity {
         }
     }
 
-    public void updateShowText()
+    public void updateCurNode(KeyNode node)
     {
-        if (m_curNode.isLeaf())
+        if (node.isLeaf())
         {
-            KeyNode np = m_curNode.getParent();
+            KeyNode np = node.getParent();
             if (np != null)
             {
                 for (int ci=0; ci < np.getNextNodeNum(); ci++)
                 {
-                    if (np.getNextNode(ci) == m_curNode)
+                    if (np.getNextNode(ci) == node)
                     {
                         m_viewTexts.get(ci).setBackgroundColor(ContextCompat.getColor(
                                 getApplicationContext(), R.color.colorTouchBackground));
@@ -162,12 +165,13 @@ public class OneDActivity extends AppCompatActivity {
         else
         {
             // update only for non-leaf node
-            for (int ci=0; ci<min(m_curNode.getNextNodeNum(), 4); ci++)
+            for (int ci=0; ci<min(node.getNextNodeNum(), 4); ci++)
             {
-                m_viewTexts.get(ci).setText(m_curNode.getNextNode(ci).getShowStr());
+                m_viewTexts.get(ci).setText(node.getNextNode(ci).getShowStr());
                 m_viewTexts.get(ci).setBackgroundColor(Color.TRANSPARENT);
             }
         }
+        m_curNode = node;
     }
 
     public void processTouch(TouchEvent te)
@@ -188,8 +192,7 @@ public class OneDActivity extends AppCompatActivity {
                     m_inputText.setText(m_inputText.getText() + String.valueOf(m_curNode.getCharVal()));
                 }
             }
-            m_curNode = m_rootNode;
-            updateShowText();
+            updateCurNode(m_rootNode);
             m_touchArray.clear();
         }
         else if (te.val == TouchEvent.DROP)
@@ -198,8 +201,7 @@ public class OneDActivity extends AppCompatActivity {
         }
         else if (te.val == TouchEvent.MULTITOUCH)
         {
-            m_curNode = m_rootNode;
-            updateShowText();
+            updateCurNode(m_rootNode);
             m_touchArray.clear();
             m_touchArray.add(te);
         }
@@ -236,14 +238,12 @@ public class OneDActivity extends AppCompatActivity {
 
             if (next_node != null)
             {
-                m_curNode = next_node;
-                updateShowText();
+                updateCurNode(next_node);
                 m_touchArray.add(te);
             }
             else if (sibling_node != null)
             {
-                m_curNode = sibling_node;
-                updateShowText();
+                updateCurNode(sibling_node);
                 m_touchArray.add(te);
             }
             else

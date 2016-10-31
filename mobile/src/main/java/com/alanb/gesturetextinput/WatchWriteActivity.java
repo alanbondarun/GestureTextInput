@@ -26,7 +26,9 @@ public class WatchWriteActivity extends AppCompatActivity {
 
     private LinearLayout m_touchInputView;
     private ArrayList<TouchEvent> m_gestureTouchAreas;
-    private KeyNode m_rootNode, m_curNode;
+    private KeyNode m_rootNode;
+    // DO NOT modify this directly; use updateCurNode() instead
+    private KeyNode m_curNode;
     private TextView m_inputText;
     private ArrayList<TextView> m_viewTexts;
     private final boolean upperTouchFeedback = true;
@@ -121,7 +123,6 @@ public class WatchWriteActivity extends AppCompatActivity {
         setContentView(R.layout.activity_watch_write);
 
         m_rootNode = KeyNode.generateKeyTree(this, R.raw.key_value_watch);
-        m_curNode = m_rootNode;
 
         m_gestureTouchAreas = new ArrayList<>();
 
@@ -134,7 +135,8 @@ public class WatchWriteActivity extends AppCompatActivity {
         m_viewTexts.add((TextView) findViewById(R.id.w_char_indi_2));
         m_viewTexts.add((TextView) findViewById(R.id.w_char_indi_3));
         m_viewTexts.add((TextView) findViewById(R.id.w_char_indi_4));
-        updateShowText(m_rootNode);
+
+        updateCurNode(m_rootNode);
 
         TouchFeedbackFrameLayout feedbackFrameLayout = (TouchFeedbackFrameLayout)
                 findViewById(R.id.w_touch_frame);
@@ -167,8 +169,7 @@ public class WatchWriteActivity extends AppCompatActivity {
 
             // initialization for next touch(or gesture) input
             m_gestureTouchAreas.clear();
-            m_curNode = m_rootNode;
-            updateShowText(m_curNode);
+            updateCurNode(m_rootNode);
         }
         else if (te == TouchEvent.DROP)
         {
@@ -176,8 +177,7 @@ public class WatchWriteActivity extends AppCompatActivity {
         }
         else if (te == TouchEvent.MULTITOUCH)
         {
-            m_curNode = m_rootNode;
-            updateShowText(m_curNode);
+            updateCurNode(m_rootNode);
             m_gestureTouchAreas.clear();
             m_gestureTouchAreas.add(te);
         }
@@ -214,14 +214,12 @@ public class WatchWriteActivity extends AppCompatActivity {
                 }
                 if (next_node != null)
                 {
-                    m_curNode = next_node;
-                    updateShowText(next_node);
+                    updateCurNode(next_node);
                     m_gestureTouchAreas.add(te);
                 }
                 else if (sibling_node != null)
                 {
-                    m_curNode = sibling_node;
-                    updateShowText(sibling_node);
+                    updateCurNode(sibling_node);
                     if (m_gestureTouchAreas.size() >= 1)
                         m_gestureTouchAreas.remove(m_gestureTouchAreas.size()-1);
                     m_gestureTouchAreas.add(te);
@@ -235,15 +233,16 @@ public class WatchWriteActivity extends AppCompatActivity {
         }
     }
 
-    private void updateShowText(KeyNode node)
+    private void updateCurNode(KeyNode node)
     {
-        if (m_curNode.isLeaf())
-        {            KeyNode np = m_curNode.getParent();
+        if (node.isLeaf())
+        {
+            KeyNode np = node.getParent();
             if (np != null)
             {
                 for (int ci=0; ci < np.getNextNodeNum(); ci++)
                 {
-                    if (np.getNextNode(ci) == m_curNode)
+                    if (np.getNextNode(ci) == node)
                     {
                         m_viewTexts.get(ci).setBackgroundColor(ContextCompat.getColor(
                                 getApplicationContext(), R.color.colorTouchBackground));
@@ -263,5 +262,6 @@ public class WatchWriteActivity extends AppCompatActivity {
                 m_viewTexts.get(ci).setBackgroundColor(Color.TRANSPARENT);
             }
         }
+        this.m_curNode = node;
     }
 }
