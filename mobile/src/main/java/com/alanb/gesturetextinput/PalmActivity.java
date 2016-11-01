@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import static java.lang.Math.atan2;
 import static java.lang.Math.max;
 
 public class PalmActivity extends AppCompatActivity
@@ -41,10 +42,10 @@ public class PalmActivity extends AppCompatActivity
 
             {100, 500, 500, 100, 100, 100},
             {100, 500, 500, 100},
-            {100, 500, 500, 100, 100, 900},
+            {100, 500, 500, 100, 900, 100},
 
             {900, 500, 500, 500, 500, 100},
-            {900, 500, 500, 500, 100, 100},
+            {900, 500, 500, 500, 900, 100},
             {900, 500, 500, 500},
             {900, 100, 500, 100, 500, 500},
             {900, 100, 500, 100, 900, 500},
@@ -76,6 +77,17 @@ public class PalmActivity extends AppCompatActivity
             "Z", "X", "C",
             "V", "B", "N",
             "M", ".", "del"
+    };
+    private final double ANGLE_THRESH = 22.5 * Math.PI / 180.0;
+    private final double[] gesture_angles = {
+            Math.atan2(1, -2), Math.atan2(1, -1), Math.atan2(1, 0),
+            Math.atan2(1, -1), Math.atan2(1, 0), Math.atan2(1, 1),
+            Math.atan2(1, 0), Math.atan2(1, 1), Math.atan2(1, 2),
+            Math.atan2(1, -1), Math.atan2(1, 0), Math.atan2(0, -1), Math.atan2(-1, -1), Math.atan2(-1, 0),
+            Math.atan2(1, 0), Math.atan2(1, 1), Math.atan2(0, 1), Math.atan2(-1, 0), Math.atan2(-1, 1),
+            Math.atan2(-1, -2), Math.atan2(-1, -1), Math.atan2(-1, 0),
+            Math.atan2(-1, -1), Math.atan2(-1, 0), Math.atan2(-1, 1),
+            Math.atan2(-1, 0), Math.atan2(-1, 1), Math.atan2(-1, 2),
     };
 
     private final float GESTURE_SPEED = 1.6f;
@@ -133,14 +145,38 @@ public class PalmActivity extends AppCompatActivity
                 Log.d(TAG, ci + "th: " + pred_list.get(ci).name + ", score: " +
                         pred_list.get(ci).score);
             }
-            if (pred_list.get(0).name.equals("del"))
+
+            int ccand = 0;
+            for (; ccand < pred_list.size(); ccand++)
+            {
+                // prune out the gesture prediction based on direction from start pos to finish pos
+                double dx = points.get(points.size()-1).x - points.get(0).x;
+                double dy = points.get(0).y - points.get(points.size()-1).y;
+
+                int cidx = 0;
+                while (cidx < gesture_labels.length && gesture_labels[cidx] != pred_list.get(ccand).name)
+                {
+                    cidx++;
+                }
+                double target_angle = gesture_angles[cidx];
+                if (Math.abs(target_angle - atan2(dy, dx)) < ANGLE_THRESH)
+                {
+                    // correct gesture detected
+                    break;
+                }
+            }
+            if (ccand >= pred_list.size())
+            {
+                Log.d(TAG, "gesture prediction failed");
+            }
+            else if (pred_list.get(ccand).name.equals("del"))
             {
                 CharSequence cs = m_inputText.getText();
                 m_inputText.setText(cs.subSequence(0, max(0, cs.length() - 1)));
             }
             else
             {
-                m_inputText.setText(m_inputText.getText() + pred_list.get(0).name);
+                m_inputText.setText(m_inputText.getText() + pred_list.get(ccand).name);
             }
         }
         else
