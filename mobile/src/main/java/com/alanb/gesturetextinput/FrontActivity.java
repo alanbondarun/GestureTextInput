@@ -15,7 +15,8 @@ public class FrontActivity extends AppCompatActivity
     {
         PalmSwipe, WatchWrite, OneDInput
     }
-    private String[] m_menu_str = {"PalmSwipe", "4-Key Watchwrite", "1D Input"};
+    private String[] m_menu_str = {"PalmSwipe", "4-Key Watchwrite", "1D Input",
+            "WatchWrite with Smartwatch"};
     private ListView m_inputListView;
     private ArrayAdapter<String> m_adapter;
 
@@ -43,6 +44,9 @@ public class FrontActivity extends AppCompatActivity
                         break;
                     case 2:
                         intent = new Intent(getApplicationContext(), OneDActivity.class);
+                        break;
+                    case 3:
+                        intent = new Intent(getApplicationContext(), WatchCooperatingActivity.class);
                         break;
                 }
                 if (intent != null)

@@ -1,23 +1,38 @@
 package com.alanb.gesturetextinput;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.wearable.activity.WearableActivity;
 import android.support.wearable.view.BoxInsetLayout;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.alanb.gesturecommon.WatchWriteInputView;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.wearable.DataApi;
+import com.google.android.gms.wearable.PutDataMapRequest;
+import com.google.android.gms.wearable.PutDataRequest;
+import com.google.android.gms.wearable.Wearable;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class MainActivity extends WearableActivity {
-
-    private static final SimpleDateFormat AMBIENT_DATE_FORMAT =
-            new SimpleDateFormat("HH:mm", Locale.US);
-
+public class MainActivity extends WearableActivity
+{
+    private final String TAG = this.getClass().getName();
     private BoxInsetLayout mContainerView;
-    private TextView mTextView;
-    private TextView mClockView;
+    private GoogleApiClient m_googleApiClient = null;
+    private LinearLayout m_charTouchLayout;
+
+    private float m_touchX;
+    private float m_touchY;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,9 +40,60 @@ public class MainActivity extends WearableActivity {
         setContentView(R.layout.activity_main);
         setAmbientEnabled();
 
-        mContainerView = (BoxInsetLayout) findViewById(R.id.container);
-        mTextView = (TextView) findViewById(R.id.text);
-        mClockView = (TextView) findViewById(R.id.clock);
+        WatchWriteInputView.Builder wwbuilder = new WatchWriteInputView.Builder(this);
+        wwbuilder.setOnTouchEventListener(wwTouchEventListener);
+        wwbuilder.setOnTouchListener(wwTouchListener);
+        wwbuilder.setBackground(R.drawable.w_touch_back);
+        WatchWriteInputView touchInputView = wwbuilder.build();
+
+        m_charTouchLayout = (LinearLayout)(findViewById(R.id.w_char_touch));
+        m_charTouchLayout.addView(touchInputView);
+
+        GoogleApiClient.Builder builder = new GoogleApiClient.Builder(this);
+        builder.addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks()
+        {
+            @Override
+            public void onConnected(@Nullable Bundle bundle)
+            {
+                Log.d(TAG, "connected");
+            }
+
+            @Override
+            public void onConnectionSuspended(int i)
+            {
+                Log.d(TAG, "connection suspended");
+            }
+        });
+        builder.addOnConnectionFailedListener(new GoogleApiClient.OnConnectionFailedListener()
+        {
+            @Override
+            public void onConnectionFailed(@NonNull ConnectionResult connectionResult)
+            {
+                Log.d(TAG, "connection failed");
+            }
+        });
+        builder.addApi(Wearable.API);
+        m_googleApiClient = builder.build();
+    }
+
+    @Override
+    protected void onStart()
+    {
+        super.onStart();
+        if (m_googleApiClient != null)
+        {
+            m_googleApiClient.connect();
+        }
+    }
+
+    @Override
+    protected void onStop()
+    {
+        if (m_googleApiClient != null)
+        {
+            m_googleApiClient.disconnect();
+        }
+        super.onStop();
     }
 
     @Override
@@ -51,14 +117,51 @@ public class MainActivity extends WearableActivity {
     private void updateDisplay() {
         if (isAmbient()) {
             mContainerView.setBackgroundColor(getResources().getColor(android.R.color.black));
-            mTextView.setTextColor(getResources().getColor(android.R.color.white));
-            mClockView.setVisibility(View.VISIBLE);
+//            mTextView.setTextColor(getResources().getColor(android.R.color.white));
+//            mClockView.setVisibility(View.VISIBLE);
 
-            mClockView.setText(AMBIENT_DATE_FORMAT.format(new Date()));
+//           mClockView.setText(AMBIENT_DATE_FORMAT.format(new Date()));
         } else {
             mContainerView.setBackground(null);
-            mTextView.setTextColor(getResources().getColor(android.R.color.black));
-            mClockView.setVisibility(View.GONE);
+//            mTextView.setTextColor(getResources().getColor(android.R.color.black));
+//            mClockView.setVisibility(View.GONE);
         }
     }
+
+    WatchWriteInputView.OnTouchListener wwTouchListener =
+            new WatchWriteInputView.OnTouchListener()
+    {
+        @Override
+        public void onTouch(MotionEvent motionEvent)
+        {
+            PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/touchpos");
+            putDataMapReq.getDataMap().putFloat(getResources().getString(R.string.wear_xpos_key),
+                    motionEvent.getX() / m_charTouchLayout.getWidth());
+            putDataMapReq.getDataMap().putFloat(getResources().getString(R.string.wear_ypos_key),
+                    motionEvent.getY() / m_charTouchLayout.getHeight());
+            putDataMapReq.getDataMap().putInt(getResources().getString(R.string.wear_action_key),
+                    motionEvent.getAction());
+
+            PutDataRequest dataReq = putDataMapReq.asPutDataRequest();
+            PendingResult<DataApi.DataItemResult> pendingResult =
+                    Wearable.DataApi.putDataItem(m_googleApiClient, dataReq);
+        }
+    };
+
+    WatchWriteInputView.OnTouchEventListener wwTouchEventListener =
+            new WatchWriteInputView.OnTouchEventListener()
+    {
+        @Override
+        public void onTouchEvent(WatchWriteInputView.TouchEvent te)
+        {
+            PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/touchevent");
+            putDataMapReq.getDataMap().putString(getResources().getString(R.string.wear_touch_key),
+                    te.name());
+            putDataMapReq.setUrgent();
+
+            PutDataRequest dataReq = putDataMapReq.asPutDataRequest();
+            PendingResult<DataApi.DataItemResult> pendingResult =
+                    Wearable.DataApi.putDataItem(m_googleApiClient, dataReq);
+        }
+    };
 }

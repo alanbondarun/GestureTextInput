@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Common</string>
+    <string name="wear_touch_key">WearTouchKey</string>
+    <string name="wear_xpos_key">XPos</string>
+    <string name="wear_ypos_key">YPos</string>
+    <string name="wear_action_key">ACTION</string>
+</resources>

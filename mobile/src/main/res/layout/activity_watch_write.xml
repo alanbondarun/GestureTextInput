@@ -122,8 +122,7 @@
             android:layout_gravity="center_horizontal"
             android:orientation="vertical"
             android:layout_width="24mm"
-            android:layout_height="24mm"
-            android:background="@drawable/w_touch_back">
+            android:layout_height="24mm">
         </LinearLayout>
     </com.alanb.gesturetextinput.TouchFeedbackFrameLayout>
 </LinearLayout>
