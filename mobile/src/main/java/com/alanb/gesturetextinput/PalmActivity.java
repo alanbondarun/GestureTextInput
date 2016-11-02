@@ -159,7 +159,9 @@ public class PalmActivity extends AppCompatActivity
                     cidx++;
                 }
                 double target_angle = gesture_angles[cidx];
-                if (Math.abs(target_angle - atan2(dy, dx)) < ANGLE_THRESH)
+                double dangle = atan2(dy, dx);
+                double angle_diff = Math.abs(target_angle - dangle);
+                if (Math.abs(angle_diff - 2 * Math.PI * Math.round(angle_diff / (2*Math.PI))) < ANGLE_THRESH)
                 {
                     // correct gesture detected
                     break;
