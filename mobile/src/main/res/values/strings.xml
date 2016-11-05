@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">GestureTextInput</string>
+    <string name="watch_layout">WatchWrite Layout</string>
+    <string-array name="watch_layout_kind">
+        <item>2 Area, Alphabetical</item>
+        <item>3 Area, Alphabetical</item>
+        <item>3 Area, Optimized</item>
+    </string-array>
+    <string name="prefkey_layout">Layout</string>
 </resources>

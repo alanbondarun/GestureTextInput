@@ -11,12 +11,8 @@ import android.widget.ListView;
 
 public class FrontActivity extends AppCompatActivity
 {
-    public enum MenuItem
-    {
-        PalmSwipe, WatchWrite, OneDInput
-    }
     private String[] m_menu_str = {"PalmSwipe", "4-Key Watchwrite", "1D Input",
-            "WatchWrite with Smartwatch"};
+            "WatchWrite with Smartwatch", "Settings"};
     private ListView m_inputListView;
     private ArrayAdapter<String> m_adapter;
 
@@ -47,6 +43,9 @@ public class FrontActivity extends AppCompatActivity
                         break;
                     case 3:
                         intent = new Intent(getApplicationContext(), WatchCooperatingActivity.class);
+                        break;
+                    case 4:
+                        intent = new Intent(getApplicationContext(), SettingActivity.class);
                         break;
                 }
                 if (intent != null)

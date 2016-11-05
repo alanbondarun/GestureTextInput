@@ -24,6 +24,7 @@
         </activity>
         <activity android:name=".PalmActivity"></activity>
         <activity android:name=".WatchCooperatingActivity"></activity>
+        <activity android:name=".SettingActivity"></activity>
     </application>
 
 </manifest>
