@@ -1,11 +1,13 @@
 package com.alanb.gesturetextinput;
 
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -40,6 +42,7 @@ public class SettingActivity extends AppCompatActivity
         m_inputListView.setAdapter(m_adapter);
         m_inputListView.setOnItemClickListener(this);
 
+        m_adapter.addItem(m_menu_str.get(0), "");
         updateSettingList();
     }
 
@@ -53,11 +56,12 @@ public class SettingActivity extends AppCompatActivity
             cur_layout_idx = getResources().getInteger(R.integer.pref_layout_default);
             SharedPreferences.Editor editor = prefs.edit();
             editor.putInt(getString(R.string.prefkey_layout), cur_layout_idx);
-            editor.commit();
+            editor.apply();
         }
         String cur_layout_str = m_watchlayout_str.get(cur_layout_idx);
 
-        m_adapter.addItem(m_menu_str.get(0), cur_layout_str);
+        ((SettingItem)(m_adapter.getItem(0))).setValue(cur_layout_str);
+        m_adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -68,26 +72,21 @@ public class SettingActivity extends AppCompatActivity
             case 0:
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle(getString(R.string.watch_layout));
-                builder.setItems(R.array.watch_layout_kind, new DialogInterface.OnClickListener()
+                builder.setItems(R.array.watch_layout_kind,
+                        new DialogInterface.OnClickListener()
                 {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i)
                     {
-                        switch (i)
-                        {
-                        case 0:
-                            // TODO
-                            break;
-                        case 1:
-                            // TODO
-                            break;
-                        case 2:
-                            // TODO
-                            break;
-                        }
+                        SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+                        SharedPreferences.Editor editor = prefs.edit();
+                        editor.putInt(getString(R.string.prefkey_layout), i);
+                        editor.apply();
+                        updateSettingList();
                     }
                 });
-                builder.create();
+                AlertDialog dialog = builder.create();
+                dialog.show();
                 break;
         }
     }
