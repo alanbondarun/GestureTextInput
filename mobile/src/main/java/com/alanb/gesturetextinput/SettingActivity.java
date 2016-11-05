@@ -48,7 +48,7 @@ public class SettingActivity extends AppCompatActivity
 
     public void updateSettingList()
     {
-        SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+        SharedPreferences prefs = getSharedPreferences(getString(R.string.app_pref_key), MODE_PRIVATE);
         int cur_layout_idx = prefs.getInt(getString(R.string.prefkey_layout),
                 getResources().getInteger(R.integer.pref_layout_default));
         if (cur_layout_idx < 0 || cur_layout_idx >= m_watchlayout_str.size())
@@ -78,7 +78,9 @@ public class SettingActivity extends AppCompatActivity
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i)
                     {
-                        SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+                        SharedPreferences prefs = getSharedPreferences(
+                                getString(R.string.app_pref_key),
+                                MODE_PRIVATE);
                         SharedPreferences.Editor editor = prefs.edit();
                         editor.putInt(getString(R.string.prefkey_layout), i);
                         editor.apply();
