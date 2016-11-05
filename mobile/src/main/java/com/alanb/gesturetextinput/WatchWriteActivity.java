@@ -1,5 +1,6 @@
 package com.alanb.gesturetextinput;
 
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -31,7 +32,21 @@ public class WatchWriteActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_watch_write);
 
-        m_rootNode = KeyNode.generateKeyTree(this, R.raw.key_value_watch);
+        SharedPreferences prefs = getSharedPreferences(getString(R.string.app_pref_key), MODE_PRIVATE);
+        int pref_layout = prefs.getInt(getString(R.string.prefkey_layout),
+                getResources().getInteger(R.integer.pref_layout_default));
+        switch (pref_layout)
+        {
+            case 0:
+                m_rootNode = KeyNode.generateKeyTree(this, R.raw.key_value_watch_2area);
+                break;
+            case 1:
+                m_rootNode = KeyNode.generateKeyTree(this, R.raw.key_value_watch_3area);
+                break;
+            case 2:
+                m_rootNode = KeyNode.generateKeyTree(this, R.raw.key_value_watch_3area_opt);
+                break;
+        }
 
         m_gestureTouchAreas = new ArrayList<>();
 
@@ -177,7 +192,15 @@ public class WatchWriteActivity extends AppCompatActivity {
         {
             for (int ci = 0; ci < 4; ci++)
             {
-                m_viewTexts.get(ci).setText(node.getNextNode(ci).getShowStr());
+                String raw_str = node.getNextNode(ci).getShowStr();
+                StringBuilder builder = new StringBuilder();
+                for (int cj = 0; cj < raw_str.length(); cj += 3)
+                {
+                    if (cj > 0)
+                        builder.append("\n");
+                    builder.append(raw_str.substring(cj, Math.min(cj+3, raw_str.length())));
+                }
+                m_viewTexts.get(ci).setText(builder.toString());
                 m_viewTexts.get(ci).setBackgroundColor(Color.TRANSPARENT);
             }
         }

@@ -103,7 +103,7 @@ public class WatchCooperatingActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_watch_coop);
 
-        m_rootNode = KeyNode.generateKeyTree(this, R.raw.key_value_watch);
+        m_rootNode = KeyNode.generateKeyTree(this, R.raw.key_value_watch_2area);
 
         m_gestureTouchAreas = new ArrayList<>();
 

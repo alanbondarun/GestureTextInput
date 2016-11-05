@@ -54,7 +54,7 @@
                             android:id="@+id/w_char_indi_1"
                             android:layout_centerVertical="true"
                             android:layout_centerHorizontal="true"
-                            android:textSize="24sp" />
+                            android:textSize="16sp" />
                     </RelativeLayout>
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -68,7 +68,7 @@
                             android:id="@+id/w_char_indi_2"
                             android:layout_centerVertical="true"
                             android:layout_centerHorizontal="true"
-                            android:textSize="24sp" />
+                            android:textSize="16sp" />
                     </RelativeLayout>
                 </LinearLayout>
                 <LinearLayout
@@ -88,7 +88,7 @@
                             android:id="@+id/w_char_indi_3"
                             android:layout_centerVertical="true"
                             android:layout_centerHorizontal="true"
-                            android:textSize="24sp" />
+                            android:textSize="16sp" />
                     </RelativeLayout>
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -102,7 +102,7 @@
                             android:id="@+id/w_char_indi_4"
                             android:layout_centerVertical="true"
                             android:layout_centerHorizontal="true"
-                            android:textSize="24sp" />
+                            android:textSize="16sp" />
                     </RelativeLayout>
                 </LinearLayout>
             </LinearLayout>
