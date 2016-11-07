@@ -35,8 +35,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:id="@+id/p_char_view_1_1"
-                        android:background="@color/colorTouchBackground"
+                        android:id="@+id/p_char_view_LU_L"
                         android:text="Q"
                         android:gravity="center"
                         android:textSize="@dimen/palm_charview" />
@@ -44,8 +43,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:id="@+id/p_char_view_1_2"
-                        android:background="@color/colorTouchBackground"
+                        android:id="@+id/p_char_view_LU_N"
                         android:text="W"
                         android:gravity="center"
                         android:textSize="@dimen/palm_charview" />
@@ -53,8 +51,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:id="@+id/p_char_view_1_3"
-                        android:background="@color/colorTouchBackground"
+                        android:id="@+id/p_char_view_LU_R"
                         android:text="E"
                         android:gravity="center"
                         android:textSize="@dimen/palm_charview" />
@@ -62,7 +59,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:id="@+id/p_char_view_4_1"
+                        android:id="@+id/p_char_view_U_L"
                         android:text="R"
                         android:gravity="center"
                         android:textSize="@dimen/palm_charview" />
@@ -70,7 +67,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:id="@+id/p_char_view_4_2"
+                        android:id="@+id/p_char_view_U_N"
                         android:text="T"
                         android:gravity="center"
                         android:textSize="@dimen/palm_charview" />
@@ -78,7 +75,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:id="@+id/p_char_view_4_3"
+                        android:id="@+id/p_char_view_U_R"
                         android:text="Y"
                         android:gravity="center"
                         android:textSize="@dimen/palm_charview" />
@@ -86,8 +83,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:id="@+id/p_char_view_7_1"
-                        android:background="@color/colorTouchBackground"
+                        android:id="@+id/p_char_view_RU_L"
                         android:text="U"
                         android:gravity="center"
                         android:textSize="@dimen/palm_charview" />
@@ -95,8 +91,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:id="@+id/p_char_view_7_2"
-                        android:background="@color/colorTouchBackground"
+                        android:id="@+id/p_char_view_RU_N"
                         android:text="I"
                         android:gravity="center"
                         android:textSize="@dimen/palm_charview" />
@@ -104,8 +99,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:id="@+id/p_char_view_7_3"
-                        android:background="@color/colorTouchBackground"
+                        android:id="@+id/p_char_view_RU_R"
                         android:text="O"
                         android:gravity="center"
                         android:textSize="@dimen/palm_charview" />
@@ -119,6 +113,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
+                        android:id="@+id/p_char_view_L_LU"
                         android:text="A"
                         android:gravity="center"
                         android:textSize="@dimen/palm_charview" />
@@ -126,6 +121,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
+                        android:id="@+id/p_char_view_L_U"
                         android:text="S"
                         android:gravity="center"
                         android:textSize="@dimen/palm_charview" />
@@ -133,6 +129,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
+                        android:id="@+id/p_char_view_L_RU"
                         android:text=""
                         android:gravity="center"
                         android:textSize="@dimen/palm_charview" />
@@ -141,20 +138,22 @@
                         android:layout_height="match_parent"
                         android:layout_weight="3"
                         android:text=""
-                        android:background="@color/colorTouchBackground"
                         android:gravity="center"
-                        android:textSize="@dimen/palm_charview" />
+                        android:textSize="@dimen/palm_charview"
+                        android:id="@+id/p_char_view_N_U"/>
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:text=""
                         android:gravity="center"
-                        android:textSize="@dimen/palm_charview" />
+                        android:textSize="@dimen/palm_charview"
+                        android:id="@+id/p_char_view_R_LU"/>
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
+                        android:id="@+id/p_char_view_R_U"
                         android:text="H"
                         android:gravity="center"
                         android:textSize="@dimen/palm_charview" />
@@ -162,6 +161,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
+                        android:id="@+id/p_char_view_R_RU"
                         android:text="J"
                         android:gravity="center"
                         android:textSize="@dimen/palm_charview" />
@@ -175,6 +175,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
+                        android:id="@+id/p_char_view_L_N"
                         android:text="D"
                         android:gravity="center"
                         android:textSize="@dimen/palm_charview" />
@@ -184,29 +185,32 @@
                         android:layout_weight="2"
                         android:text=""
                         android:gravity="center"
-                        android:textSize="@dimen/palm_charview" />
+                        android:textSize="@dimen/palm_charview"
+                        android:id="@+id/p_char_view_L_R"/>
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="3"
                         android:text=""
-                        android:background="@color/colorTouchBackground"
                         android:gravity="center"
-                        android:textSize="@dimen/palm_charview" />
+                        android:textSize="@dimen/palm_charview"
+                        android:id="@+id/p_char_view_N_N"/>
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="2"
                         android:text=""
                         android:gravity="center"
-                        android:textSize="@dimen/palm_charview" />
+                        android:textSize="@dimen/palm_charview"
+                        android:id="@+id/p_char_view_R_L"/>
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:text="K"
                         android:gravity="center"
-                        android:textSize="@dimen/palm_charview" />
+                        android:textSize="@dimen/palm_charview"
+                        android:id="@+id/p_char_view_R_N"/>
                 </TableRow>
 
                 <TableRow
@@ -219,50 +223,56 @@
                         android:layout_weight="1"
                         android:text="F"
                         android:gravity="center"
-                        android:textSize="@dimen/palm_charview" />
+                        android:textSize="@dimen/palm_charview"
+                        android:id="@+id/p_char_view_L_LD"/>
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:text="G"
                         android:gravity="center"
-                        android:textSize="@dimen/palm_charview" />
+                        android:textSize="@dimen/palm_charview"
+                        android:id="@+id/p_char_view_L_D"/>
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:text=""
                         android:gravity="center"
-                        android:textSize="@dimen/palm_charview" />
+                        android:textSize="@dimen/palm_charview"
+                        android:id="@+id/p_char_view_L_RD"/>
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="3"
                         android:text=""
-                        android:background="@color/colorTouchBackground"
                         android:gravity="center"
-                        android:textSize="@dimen/palm_charview" />
+                        android:textSize="@dimen/palm_charview"
+                        android:id="@+id/p_char_view_N_D"/>
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:text=""
                         android:gravity="center"
-                        android:textSize="@dimen/palm_charview" />
+                        android:textSize="@dimen/palm_charview"
+                        android:id="@+id/p_char_view_R_LD"/>
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:text="L"
                         android:gravity="center"
-                        android:textSize="@dimen/palm_charview" />
+                        android:textSize="@dimen/palm_charview"
+                        android:id="@+id/p_char_view_R_D"/>
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:text="P"
                         android:gravity="center"
-                        android:textSize="@dimen/palm_charview" />
+                        android:textSize="@dimen/palm_charview"
+                        android:id="@+id/p_char_view_R_RD"/>
                 </TableRow>
 
                 <TableRow
@@ -273,8 +283,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:id="@+id/p_char_view_3_1"
-                        android:background="@color/colorTouchBackground"
+                        android:id="@+id/p_char_view_LD_L"
                         android:text="Z"
                         android:gravity="center"
                         android:textSize="@dimen/palm_charview" />
@@ -282,8 +291,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:id="@+id/p_char_view_3_2"
-                        android:background="@color/colorTouchBackground"
+                        android:id="@+id/p_char_view_LD_N"
                         android:text="X"
                         android:gravity="center"
                         android:textSize="@dimen/palm_charview" />
@@ -291,8 +299,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:id="@+id/p_char_view_3_3"
-                        android:background="@color/colorTouchBackground"
+                        android:id="@+id/p_char_view_LD_R"
                         android:text="C"
                         android:gravity="center"
                         android:textSize="@dimen/palm_charview" />
@@ -300,7 +307,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:id="@+id/p_char_view_6_1"
+                        android:id="@+id/p_char_view_D_L"
                         android:text="V"
                         android:gravity="center"
                         android:textSize="@dimen/palm_charview" />
@@ -308,7 +315,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:id="@+id/p_char_view_6_2"
+                        android:id="@+id/p_char_view_D_N"
                         android:text="B"
                         android:gravity="center"
                         android:textSize="@dimen/palm_charview" />
@@ -316,7 +323,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:id="@+id/p_char_view_6_3"
+                        android:id="@+id/p_char_view_D_R"
                         android:text="N"
                         android:gravity="center"
                         android:textSize="@dimen/palm_charview" />
@@ -324,8 +331,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:id="@+id/p_char_view_9_1"
-                        android:background="@color/colorTouchBackground"
+                        android:id="@+id/p_char_view_RD_L"
                         android:text="M"
                         android:gravity="center"
                         android:textSize="@dimen/palm_charview" />
@@ -333,8 +339,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:id="@+id/p_char_view_9_2"
-                        android:background="@color/colorTouchBackground"
+                        android:id="@+id/p_char_view_RD_N"
                         android:text="."
                         android:gravity="center"
                         android:textSize="@dimen/palm_charview" />
@@ -342,8 +347,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:id="@+id/p_char_view_9_3"
-                        android:background="@color/colorTouchBackground"
+                        android:id="@+id/p_char_view_RD_R"
                         android:text="del"
                         android:gravity="center"
                         android:textSize="@dimen/palm_charview" />

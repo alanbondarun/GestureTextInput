@@ -1,5 +1,6 @@
 package com.alanb.gesturetextinput;
 
+import android.content.Context;
 import android.gesture.Gesture;
 import android.gesture.GestureLibraries;
 import android.gesture.GestureLibrary;
@@ -8,14 +9,20 @@ import android.gesture.GesturePoint;
 import android.gesture.GestureStore;
 import android.gesture.GestureStroke;
 import android.gesture.Prediction;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Layout;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import static java.lang.Math.atan2;
@@ -23,6 +30,13 @@ import static java.lang.Math.max;
 
 public class PalmActivity extends AppCompatActivity
 {
+    private enum LayoutDir
+    {
+        N, LU, L, LD, U, D, RU, R, RD
+    }
+    private static final int LayoutDirNum = LayoutDir.values().length;
+    final LayoutDir[] layoutDirs = LayoutDir.values();
+
     private final String TAG = this.getClass().getName();
     private GestureOverlayView m_gestureView;
     private GestureLibrary m_gestureLib;
@@ -30,6 +44,10 @@ public class PalmActivity extends AppCompatActivity
     private TextView m_inputText;
     private boolean useTouchFeedback = false;
     private boolean upperTouchFeedback = true;
+    private ArrayList< ArrayList<TextView> > m_charViewGroups;
+
+    private final int nonSelectedColor = Color.TRANSPARENT;
+    private int selectedColor;
 
     private final float[][] gesture_vertices = {
             {900, 500, 500, 100, 100, 100},
@@ -154,7 +172,7 @@ public class PalmActivity extends AppCompatActivity
                 double dy = points.get(0).y - points.get(points.size()-1).y;
 
                 int cidx = 0;
-                while (cidx < gesture_labels.length && gesture_labels[cidx] != pred_list.get(ccand).name)
+                while (cidx < gesture_labels.length && !gesture_labels[cidx].equals(pred_list.get(ccand).name))
                 {
                     cidx++;
                 }
@@ -208,11 +226,83 @@ public class PalmActivity extends AppCompatActivity
         }
     };
 
+    private LayoutDir intToLayoutDir(int i)
+    {
+        if (i < 0 || i >= LayoutDirNum)
+            return LayoutDir.N;
+        return layoutDirs[i];
+    }
+
+    private void highlightBasic()
+    {
+        final LayoutDir[] basic_dirs = { LayoutDir.LU, LayoutDir.LD, LayoutDir.RU, LayoutDir.RD, LayoutDir.N };
+        for (LayoutDir dir1: layoutDirs)
+        {
+            boolean in_basic_dir = false;
+            for (LayoutDir bdir: basic_dirs)
+            {
+                if (bdir.equals(dir1))
+                {
+                    in_basic_dir = true;
+                    break;
+                }
+            }
+            for (TextView tv: m_charViewGroups.get(dir1.ordinal()))
+            {
+                if (tv != null)
+                {
+                    if (in_basic_dir)
+                        tv.setBackgroundColor(selectedColor);
+                    else
+                        tv.setBackgroundColor(nonSelectedColor);
+                }
+            }
+        }
+    }
+
+    private void highlightGroup(LayoutDir dir)
+    {
+        for (LayoutDir dir1: layoutDirs)
+        {
+            for (TextView tv: m_charViewGroups.get(dir1.ordinal()))
+            {
+                if (tv != null)
+                {
+                    if (dir1 == dir)
+                        tv.setBackgroundColor(selectedColor);
+                    else
+                        tv.setBackgroundColor(nonSelectedColor);
+                }
+            }
+        }
+    }
+
+    private void highlightCharacter(LayoutDir dir1, LayoutDir dir2)
+    {
+        for (LayoutDir cd1: layoutDirs)
+        {
+            for (LayoutDir cd2: layoutDirs)
+            {
+                TextView tv = m_charViewGroups.get(cd1.ordinal()).get(cd2.ordinal());
+                if (cd1 == dir1 && cd2 == dir2)
+                {
+                    tv.setBackgroundColor(selectedColor);
+                }
+                else
+                {
+                    tv.setBackgroundColor(nonSelectedColor);
+                }
+            }
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_palm);
+
+        selectedColor = getColorVersion(this, R.color.colorTouchBackground);
 
         m_gestureLib = GestureLibraries.fromRawResource(this, R.raw.palm_gestures);
         m_gestureLib.load();
@@ -238,5 +328,48 @@ public class PalmActivity extends AppCompatActivity
                 feedbackFrameLayout.attachFeedbackTo(feedbackFrameLayout);
             }
         }
+
+        m_charViewGroups = setCharViewGroups();
+        highlightBasic();
+    }
+
+    private int getColorVersion(Context context, int id)
+    {
+        final int version = Build.VERSION.SDK_INT;
+        if (version >= Build.VERSION_CODES.M)
+        {
+            return context.getColor(id);
+        }
+        else
+        {
+            return context.getResources().getColor(id);
+        }
+    }
+
+    private ArrayList< ArrayList<TextView> > setCharViewGroups()
+    {
+        String package_name = this.getPackageName();
+        ArrayList< ArrayList<TextView> > views = new ArrayList<>();
+        for (int ci=0; ci < LayoutDirNum; ci++)
+        {
+            ArrayList<TextView> tv = new ArrayList<>();
+            String ci_layout_str = intToLayoutDir(ci).toString();
+            for (int cj=0; cj < LayoutDirNum; cj++)
+            {
+                String cj_layout_str = intToLayoutDir(cj).toString();
+                String layout_id_str = "p_char_view_" + ci_layout_str + "_" + cj_layout_str;
+                int layout_id = getResources().getIdentifier(layout_id_str, "id", package_name);
+                if (layout_id != 0)
+                {
+                    tv.add((TextView) findViewById(layout_id));
+                }
+                else
+                {
+                    tv.add(null);
+                }
+            }
+            views.add(tv);
+        }
+        return views;
     }
 }
