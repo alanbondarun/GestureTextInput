@@ -8,16 +8,16 @@
           "show_str": "A"
         },
         {
-          "show_str": "BCD",
-          "input_char": "d",
+          "show_str": "BCH",
+          "input_char": "h",
           "keys": [
             {
               "show_str": "B",
               "input_char": "b"
             },
             {
-              "show_str": "D",
-              "input_char": "d"
+              "show_str": "H",
+              "input_char": "h"
             },
             {
               "show_str": ""
@@ -29,8 +29,8 @@
           ]
         },
         {
-          "show_str": "FGH",
-          "input_char": "h",
+          "show_str": "FGI",
+          "input_char": "i",
           "keys": [
             {
               "show_str": "F",
@@ -40,8 +40,8 @@
               "show_str": ""
             },
             {
-              "show_str": "H",
-              "input_char": "h"
+              "show_str": "I",
+              "input_char": "i"
             },
             {
               "show_str": "G",
@@ -50,8 +50,8 @@
           ]
         },
         {
-          "show_str": "IJ",
-          "input_char": "i",
+          "show_str": "DJ",
+          "input_char": "d",
           "keys": [
             {
               "show_str": ""
@@ -64,8 +64,8 @@
               "input_char": "j"
             },
             {
-              "show_str": "I",
-              "input_char": "i"
+              "show_str": "D",
+              "input_char": "d"
             }
           ]
         }
@@ -76,12 +76,12 @@
       "input_char": "e",
       "keys": [
         {
-          "show_str": "KLM",
-          "input_char": "l",
+          "show_str": "KMN",
+          "input_char": "n",
           "keys": [
             {
-              "show_str": "L",
-              "input_char": "l"
+              "show_str": "N",
+              "input_char": "n"
             },
             {
               "show_str": "K",
@@ -100,8 +100,8 @@
           "show_str": "E"
         },
         {
-          "show_str": "NP",
-          "input_char": "n",
+          "show_str": "L",
+          "input_char": "l",
           "keys": [
             {
               "show_str": ""
@@ -110,24 +110,24 @@
               "show_str": ""
             },
             {
-              "show_str": "N",
-              "input_char": "n"
+              "show_str": "L",
+              "input_char": "l"
             },
             {
-              "show_str": "P",
-              "input_char": "p"
+              "show_str": ""
             }
           ]
         },
         {
-          "show_str": "OQ",
+          "show_str": "OPQ",
           "input_char": "o",
           "keys": [
             {
               "show_str": ""
             },
             {
-              "show_str": ""
+              "show_str": "P",
+              "input_char": "p"
             },
             {
               "show_str": "Q",
@@ -167,16 +167,15 @@
           ]
         },
         {
-          "show_str": "SX",
-          "input_char": "s",
+          "show_str": "U",
+          "input_char": "u",
           "keys": [
             {
-              "show_str": "X",
-              "input_char": "x"
+              "show_str": ""
             },
             {
-              "show_str": "S",
-              "input_char": "s"
+              "show_str": "U",
+              "input_char": "u"
             },
             {
               "show_str": ""
@@ -190,23 +189,24 @@
           "show_str": "T"
         },
         {
-          "show_str": "UYZ",
-          "input_char": "u",
+          "show_str": "SXYZ",
+          "input_char": "s",
           "keys": [
             {
-              "show_str": ""
+              "show_str": "Z",
+              "input_char": "z"
+            },
+            {
+              "show_str": "X",
+              "input_char": "x"
             },
             {
               "show_str": "Y",
               "input_char": "y"
             },
             {
-              "show_str": "Z",
-              "input_char": "z"
-            },
-            {
-              "show_str": "U",
-              "input_char": "u"
+              "show_str": "S",
+              "input_char": "s"
             }
           ]
         }

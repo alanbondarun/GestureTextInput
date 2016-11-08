@@ -46,6 +46,9 @@ public class WatchWriteActivity extends AppCompatActivity {
             case 2:
                 m_rootNode = KeyNode.generateKeyTree(this, R.raw.key_value_watch_3area_opt);
                 break;
+            case 3:
+                m_rootNode = KeyNode.generateKeyTree(this, R.raw.key_value_watch_3area_opt_2);
+                break;
         }
 
         m_gestureTouchAreas = new ArrayList<>();

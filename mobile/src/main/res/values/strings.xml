@@ -6,6 +6,7 @@
         <item>2 Area, Alphabetical</item>
         <item>3 Area, Alphabetical</item>
         <item>3 Area, Optimized</item>
+        <item>3 Area, Optimized V2</item>
     </string-array>
     <string name="prefkey_layout">Layout</string>
 </resources>
