@@ -37,6 +37,11 @@ public class PalmActivity extends AppCompatActivity
     private static final int LayoutDirNum = LayoutDir.values().length;
     final LayoutDir[] layoutDirs = LayoutDir.values();
 
+    private final double FIRST_SAMPLE_DIST_THRESH = 50.0;
+    private final int FIRST_DIR_SAMPLE = 7;
+    private ArrayList<Double> m_point_angles;
+    private boolean m_group_selected = false;
+
     private final String TAG = this.getClass().getName();
     private GestureOverlayView m_gestureView;
     private GestureLibrary m_gestureLib;
@@ -112,6 +117,12 @@ public class PalmActivity extends AppCompatActivity
     private final float SAMPLE_PER_SEC = 120f;
     private GestureStore m_gestureStore;
 
+    private double angle_diff(double a, double b)
+    {
+        double diff = Math.abs(b - a);
+        return Math.abs(diff - 2 * Math.PI * Math.round(diff / (2*Math.PI)));
+    }
+
     private GestureStore createGestureLibFromSource()
     {
         GestureStore store = new GestureStore();
@@ -178,8 +189,7 @@ public class PalmActivity extends AppCompatActivity
                 }
                 double target_angle = gesture_angles[cidx];
                 double dangle = atan2(dy, dx);
-                double angle_diff = Math.abs(target_angle - dangle);
-                if (Math.abs(angle_diff - 2 * Math.PI * Math.round(angle_diff / (2*Math.PI))) < ANGLE_THRESH)
+                if (angle_diff(target_angle, dangle) < ANGLE_THRESH)
                 {
                     // correct gesture detected
                     break;
@@ -203,6 +213,11 @@ public class PalmActivity extends AppCompatActivity
         {
             Log.d(TAG, "gesture prediction failed");
         }
+
+        // initialization for next gesture input
+        m_point_angles.clear();
+        m_group_selected = false;
+        this.highlightBasic();
     }
 
     private View.OnTouchListener m_gestureViewTouchListener =
@@ -216,6 +231,40 @@ public class PalmActivity extends AppCompatActivity
             {
                 m_curGPoints.add(new GesturePoint(motionEvent.getX(), motionEvent.getY(),
                         System.currentTimeMillis()));
+                if (m_curGPoints.size() >= 2)
+                {
+                    double dx = motionEvent.getX() - m_curGPoints.get(0).x;
+                    double dy = m_curGPoints.get(0).y - motionEvent.getY();
+                    if (Math.hypot(dx, dy) >= FIRST_SAMPLE_DIST_THRESH)
+                    {
+                        m_point_angles.add(atan2(dy, dx));
+                    }
+                    if (m_point_angles.size() >= FIRST_DIR_SAMPLE && !m_group_selected)
+                    {
+                        // ASSUMPTION: angles do not change radically during the gesture...
+                        double angle_sum = 0;
+                        for (double a: m_point_angles)
+                        {
+                            if (a <= -Math.PI + ANGLE_THRESH)
+                            {
+                                angle_sum += (2 * Math.PI) + a;
+                            }
+                            else
+                            {
+                                angle_sum += a;
+                            }
+                        }
+                        angle_sum /= m_point_angles.size();
+                        angle_sum -= Math.floor(angle_sum / (2.0 * Math.PI)) * (2.0 * Math.PI);
+                        // now angle_sum in range [0, 2*PI]
+                        int angle_idx = ((int) Math.round(angle_sum * 8 / (2.0 * Math.PI))) % 8;
+
+                        final LayoutDir[] dirs_cw = { LayoutDir.R, LayoutDir.RU, LayoutDir.U,
+                                LayoutDir.LU, LayoutDir.L, LayoutDir.LD, LayoutDir.D, LayoutDir.RD};
+                        highlightGroup(dirs_cw[angle_idx]);
+                        m_group_selected = true;
+                    }
+                }
             }
             else
             {
@@ -284,13 +333,16 @@ public class PalmActivity extends AppCompatActivity
             for (LayoutDir cd2: layoutDirs)
             {
                 TextView tv = m_charViewGroups.get(cd1.ordinal()).get(cd2.ordinal());
-                if (cd1 == dir1 && cd2 == dir2)
+                if (tv != null)
                 {
-                    tv.setBackgroundColor(selectedColor);
-                }
-                else
-                {
-                    tv.setBackgroundColor(nonSelectedColor);
+                    if (cd1 == dir1 && cd2 == dir2)
+                    {
+                        tv.setBackgroundColor(selectedColor);
+                    }
+                    else
+                    {
+                        tv.setBackgroundColor(nonSelectedColor);
+                    }
                 }
             }
         }
@@ -310,6 +362,8 @@ public class PalmActivity extends AppCompatActivity
         m_gestureStore = createGestureLibFromSource();
 
         m_curGPoints = new ArrayList<>();
+        m_point_angles = new ArrayList<>();
+
         m_gestureView = (GestureOverlayView) findViewById(R.id.p_gesture_view);
         m_gestureView.setOnTouchListener(m_gestureViewTouchListener);
         m_inputText = (TextView) findViewById(R.id.p_input_text);
