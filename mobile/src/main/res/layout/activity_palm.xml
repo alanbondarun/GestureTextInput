@@ -114,7 +114,6 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:id="@+id/p_char_view_L_LU"
-                        android:text="A"
                         android:gravity="center"
                         android:textSize="@dimen/palm_charview" />
                     <TextView
@@ -122,7 +121,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:id="@+id/p_char_view_L_U"
-                        android:text="S"
+                        android:text="A"
                         android:gravity="center"
                         android:textSize="@dimen/palm_charview" />
                     <TextView
@@ -130,7 +129,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:id="@+id/p_char_view_L_RU"
-                        android:text=""
+                        android:text="S"
                         android:gravity="center"
                         android:textSize="@dimen/palm_charview" />
                     <TextView
@@ -145,7 +144,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:text=""
+                        android:text="H"
                         android:gravity="center"
                         android:textSize="@dimen/palm_charview"
                         android:id="@+id/p_char_view_R_LU"/>
@@ -154,7 +153,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:id="@+id/p_char_view_R_U"
-                        android:text="H"
+                        android:text="J"
                         android:gravity="center"
                         android:textSize="@dimen/palm_charview" />
                     <TextView
@@ -162,7 +161,6 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:id="@+id/p_char_view_R_RU"
-                        android:text="J"
                         android:gravity="center"
                         android:textSize="@dimen/palm_charview" />
                 </TableRow>
@@ -175,6 +173,14 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
+                        android:text=""
+                        android:gravity="center"
+                        android:textSize="@dimen/palm_charview"
+                        android:id="@+id/p_char_view_L_L"/>
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
                         android:id="@+id/p_char_view_L_N"
                         android:text="D"
                         android:gravity="center"
@@ -182,7 +188,7 @@
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="2"
+                        android:layout_weight="1"
                         android:text=""
                         android:gravity="center"
                         android:textSize="@dimen/palm_charview"
@@ -198,7 +204,7 @@
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_weight="2"
+                        android:layout_weight="1"
                         android:text=""
                         android:gravity="center"
                         android:textSize="@dimen/palm_charview"
@@ -211,6 +217,14 @@
                         android:gravity="center"
                         android:textSize="@dimen/palm_charview"
                         android:id="@+id/p_char_view_R_N"/>
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text=""
+                        android:gravity="center"
+                        android:textSize="@dimen/palm_charview"
+                        android:id="@+id/p_char_view_R_R"/>
                 </TableRow>
 
                 <TableRow
@@ -221,7 +235,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:text="F"
+                        android:text=""
                         android:gravity="center"
                         android:textSize="@dimen/palm_charview"
                         android:id="@+id/p_char_view_L_LD"/>
@@ -229,7 +243,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:text="G"
+                        android:text="F"
                         android:gravity="center"
                         android:textSize="@dimen/palm_charview"
                         android:id="@+id/p_char_view_L_D"/>
@@ -237,7 +251,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:text=""
+                        android:text="G"
                         android:gravity="center"
                         android:textSize="@dimen/palm_charview"
                         android:id="@+id/p_char_view_L_RD"/>
@@ -253,7 +267,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:text=""
+                        android:text="L"
                         android:gravity="center"
                         android:textSize="@dimen/palm_charview"
                         android:id="@+id/p_char_view_R_LD"/>
@@ -261,7 +275,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:text="L"
+                        android:text="P"
                         android:gravity="center"
                         android:textSize="@dimen/palm_charview"
                         android:id="@+id/p_char_view_R_D"/>
@@ -269,7 +283,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:text="P"
+                        android:text=""
                         android:gravity="center"
                         android:textSize="@dimen/palm_charview"
                         android:id="@+id/p_char_view_R_RD"/>
