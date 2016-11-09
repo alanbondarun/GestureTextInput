@@ -1,5 +1,6 @@
 package com.alanb.gesturetextinput;
 
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
@@ -35,6 +36,7 @@ public class OneDActivity extends AppCompatActivity {
     private ArrayList<TouchEvent> m_touchArray;
     private TextView m_inputText;
     private final boolean upperTouchFeedback = true;
+    private final int MAX_CHAR_PER_LINE = 5;
 
     public class TouchEvent
     {
@@ -60,7 +62,19 @@ public class OneDActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_1d_input);
 
-        m_rootNode = KeyNode.generateKeyTree(this, R.raw.key_value_oned);
+        SharedPreferences prefs = getSharedPreferences(getString(R.string.app_pref_key), MODE_PRIVATE);
+        int pref_layout = prefs.getInt(getString(R.string.prefkey_oned_layout),
+                getResources().getInteger(R.integer.pref_oned_layout_default));
+        switch (pref_layout)
+        {
+            case 0:
+                m_rootNode = KeyNode.generateKeyTree(this, R.raw.key_value_oned);
+                break;
+            case 1:
+                m_rootNode = KeyNode.generateKeyTree(this, R.raw.key_value_oned_opt);
+                break;
+        }
+
         m_touchArray = new ArrayList<>();
 
         m_inputText = (TextView) findViewById(R.id.o_input_text);
@@ -73,11 +87,6 @@ public class OneDActivity extends AppCompatActivity {
         m_viewTexts.add((TextView) findViewById(R.id.o_char_indi_4));
 
         updateCurNode(m_rootNode);
-
-        for (int ci=0; ci<4; ci++)
-        {
-            m_viewTexts.get(ci).setText(m_rootNode.getNextNode(ci).getShowStr());
-        }
 
         m_touchAreaAll.setOnTouchListener(new View.OnTouchListener() {
             private TouchEvent prev_e = new TouchEvent(TouchEvent.DROP);
@@ -167,7 +176,17 @@ public class OneDActivity extends AppCompatActivity {
             // update only for non-leaf node
             for (int ci=0; ci<min(node.getNextNodeNum(), 4); ci++)
             {
-                m_viewTexts.get(ci).setText(node.getNextNode(ci).getShowStr());
+                String raw_str = node.getNextNode(ci).getShowStr();
+                StringBuilder builder = new StringBuilder();
+                for (int cj = 0; cj < raw_str.length(); cj += MAX_CHAR_PER_LINE)
+                {
+                    if (cj > 0)
+                        builder.append("\n");
+                    builder.append(raw_str.substring(cj,
+                            Math.min(cj + MAX_CHAR_PER_LINE, raw_str.length())));
+                }
+                Log.d(TAG, builder.toString());
+                m_viewTexts.get(ci).setText(builder.toString());
                 m_viewTexts.get(ci).setBackgroundColor(Color.TRANSPARENT);
             }
         }

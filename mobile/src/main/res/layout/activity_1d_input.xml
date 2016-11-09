@@ -42,7 +42,7 @@
                     android:layout_weight="0.25"
                     android:gravity="center"
                     android:id="@+id/o_char_indi_1"
-                    android:textSize="24sp" />
+                    android:textSize="20sp" />
                 <TextView
                     android:text=""
                     android:layout_width="match_parent"
@@ -50,7 +50,7 @@
                     android:layout_weight="0.25"
                     android:gravity="center"
                     android:id="@+id/o_char_indi_2"
-                    android:textSize="24sp" />
+                    android:textSize="20sp" />
                 <TextView
                     android:text=""
                     android:layout_width="match_parent"
@@ -58,7 +58,7 @@
                     android:layout_weight="0.25"
                     android:gravity="center"
                     android:id="@+id/o_char_indi_3"
-                    android:textSize="24sp" />
+                    android:textSize="20sp" />
                 <TextView
                     android:text=""
                     android:layout_width="match_parent"
@@ -66,7 +66,7 @@
                     android:layout_weight="0.25"
                     android:gravity="center"
                     android:id="@+id/o_char_indi_4"
-                    android:textSize="24sp" />
+                    android:textSize="20sp" />
             </LinearLayout>
         </RelativeLayout>
     </FrameLayout>

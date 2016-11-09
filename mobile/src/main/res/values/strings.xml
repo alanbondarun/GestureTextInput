@@ -8,5 +8,11 @@
         <item>3 Area, Optimized</item>
         <item>3 Area, Optimized V2</item>
     </string-array>
-    <string name="prefkey_layout">Layout</string>
+    <string name="oned_layout">1D Input Layout</string>
+    <string-array name="oned_layout_kind">
+        <item>Alphabetical</item>
+        <item>Optimized</item>
+    </string-array>
+    <string name="prefkey_watch_layout">Layout</string>
+    <string name="prefkey_oned_layout">OneD Layout</string>
 </resources>

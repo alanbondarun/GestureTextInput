@@ -33,8 +33,8 @@ public class WatchWriteActivity extends AppCompatActivity {
         setContentView(R.layout.activity_watch_write);
 
         SharedPreferences prefs = getSharedPreferences(getString(R.string.app_pref_key), MODE_PRIVATE);
-        int pref_layout = prefs.getInt(getString(R.string.prefkey_layout),
-                getResources().getInteger(R.integer.pref_layout_default));
+        int pref_layout = prefs.getInt(getString(R.string.prefkey_watch_layout),
+                getResources().getInteger(R.integer.pref_watch_layout_default));
         switch (pref_layout)
         {
             case 0:

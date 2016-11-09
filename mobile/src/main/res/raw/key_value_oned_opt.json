@@ -1,0 +1,220 @@
+{
+  "keys": [
+    {
+      "show_str": "ABCDGJIZ",
+      "input_char": "a",
+      "keys": [
+        {
+          "show_str": "A"
+        },
+        {
+          "show_str": "CI",
+          "input_char": "i",
+          "keys": [
+            {
+              "show_str": "C",
+              "input_char": "c"
+            },
+            {
+              "show_str": "I",
+              "input_char": "i"
+            },
+            {
+              "show_str": ""
+            },
+            {
+              "show_str": ""
+            }
+          ]
+        },
+        {
+          "show_str": "BDJ",
+          "input_char": "d",
+          "keys": [
+            {
+              "show_str": "J",
+              "input_char": "j"
+            },
+            {
+              "show_str": "B",
+              "input_char": "b"
+            },
+            {
+              "show_str": "D",
+              "input_char": "d"
+            },
+            {
+              "show_str": ""
+            }
+          ]
+        },
+        {
+          "show_str": "GZ",
+          "input_char": "g",
+          "keys": [
+            {
+              "show_str": ""
+            },
+            {
+              "show_str": ""
+            },
+            {
+              "show_str": "Z",
+              "input_char": "z"
+            },
+            {
+              "show_str": "G",
+              "input_char": "g"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "show_str": "EFHKLNOPQ",
+      "input_char": "e",
+      "keys": [
+        {
+          "show_str": "FKN",
+          "input_char": "n",
+          "keys": [
+            {
+              "show_str": "N",
+              "input_char": "n"
+            },
+            {
+              "show_str": "F",
+              "input_char": "f"
+            },
+            {
+              "show_str": "K",
+              "input_char": "k"
+            },
+            {
+              "show_str": ""
+            }
+          ]
+        },
+        {
+          "show_str": "E"
+        },
+        {
+          "show_str": "HPO",
+          "input_char": "o",
+          "keys": [
+            {
+              "show_str": "P",
+              "input_char": "p"
+            },
+            {
+              "show_str": "H",
+              "input_char": "h"
+            },
+            {
+              "show_str": "O",
+              "input_char": "o"
+            },
+            {
+              "show_str": ""
+            }
+          ]
+        },
+        {
+          "show_str": "LQ",
+          "input_char": "l",
+          "keys": [
+            {
+              "show_str": ""
+            },
+            {
+              "show_str": ""
+            },
+            {
+              "show_str": "Q",
+              "input_char": "q"
+            },
+            {
+              "show_str": "L",
+              "input_char": "l"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "show_str": "MRSTUVWXY",
+      "input_char": "t",
+      "keys": [
+        {
+          "show_str": "MV",
+          "input_char": "m",
+          "keys": [
+            {
+              "show_str": "M",
+              "input_char": "m"
+            },
+            {
+              "show_str": "V",
+              "input_char": "v"
+            },
+            {
+              "show_str": ""
+            },
+            {
+              "show_str": ""
+            }
+          ]
+        },
+        {
+          "show_str": "RUW",
+          "input_char": "r",
+          "keys": [
+            {
+              "show_str": ""
+            },
+            {
+              "show_str": "R",
+              "input_char": "r"
+            },
+            {
+              "show_str": "U",
+              "input_char": "u"
+            },
+            {
+              "show_str": "W",
+              "input_char": "w"
+            }
+          ]
+        },
+        {
+          "show_str": "T"
+        },
+        {
+          "show_str": "SXY",
+          "input_char": "s",
+          "keys": [
+            {
+              "show_str": ""
+            },
+            {
+              "show_str": "X",
+              "input_char": "x"
+            },
+            {
+              "show_str": "Y",
+              "input_char": "y"
+            },
+            {
+              "show_str": "S",
+              "input_char": "s"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "show_str": "Del",
+      "act": "delete"
+    }
+  ]
+}
