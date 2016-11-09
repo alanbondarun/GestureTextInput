@@ -3,4 +3,6 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="palm_charview">16sp</dimen>
+    <dimen name="watch_charview">16sp</dimen>
+    <dimen name="watch_coop_charview">16sp</dimen>
 </resources>
