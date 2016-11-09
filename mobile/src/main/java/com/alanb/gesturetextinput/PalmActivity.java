@@ -32,20 +32,23 @@ public class PalmActivity extends AppCompatActivity
 {
     private enum LayoutDir
     {
-        N, LU, L, LD, U, D, RU, R, RD
+        LU, U, RU, L, R, LD, D, RD, N
     }
     private static final int LayoutDirNum = LayoutDir.values().length;
     final LayoutDir[] layoutDirs = LayoutDir.values();
 
+    private final boolean DEBUG_MODE = false;
     private final double FIRST_SAMPLE_DIST_THRESH = 50.0;
     private final int FIRST_DIR_SAMPLE = 7;
+    private final int SECOND_DIR_SAMPLE = 25;
+    private final int SECOND_DIR_PERIOD = 3;
     private ArrayList<Double> m_point_angles;
     private boolean m_group_selected = false;
+    private final double ANGLE_THRESH = 22.5 * Math.PI / 180.0;
 
     private final String TAG = this.getClass().getName();
     private GestureOverlayView m_gestureView;
     private GestureLibrary m_gestureLib;
-    private ArrayList<GesturePoint> m_curGPoints;
     private TextView m_inputText;
     private boolean useTouchFeedback = false;
     private boolean upperTouchFeedback = true;
@@ -101,7 +104,6 @@ public class PalmActivity extends AppCompatActivity
             "V", "B", "N",
             "M", ".", "del"
     };
-    private final double ANGLE_THRESH = 22.5 * Math.PI / 180.0;
     private final double[] gesture_angles = {
             Math.atan2(1, -2), Math.atan2(1, -1), Math.atan2(1, 0),
             Math.atan2(1, -1), Math.atan2(1, 0), Math.atan2(1, 1),
@@ -111,6 +113,16 @@ public class PalmActivity extends AppCompatActivity
             Math.atan2(-1, -2), Math.atan2(-1, -1), Math.atan2(-1, 0),
             Math.atan2(-1, -1), Math.atan2(-1, 0), Math.atan2(-1, 1),
             Math.atan2(-1, 0), Math.atan2(-1, 1), Math.atan2(-1, 2),
+    };
+    private final LayoutDir[][] gesture_layout_dir = {
+            {LayoutDir.LU, LayoutDir.L}, {LayoutDir.LU, LayoutDir.N}, {LayoutDir.LU, LayoutDir.R},
+            {LayoutDir.U, LayoutDir.L}, {LayoutDir.U, LayoutDir.N}, {LayoutDir.U, LayoutDir.R},
+            {LayoutDir.RU, LayoutDir.L}, {LayoutDir.RU, LayoutDir.N}, {LayoutDir.RU, LayoutDir.R},
+            {LayoutDir.L, LayoutDir.U}, {LayoutDir.L, LayoutDir.RU}, {LayoutDir.L, LayoutDir.N}, {LayoutDir.L, LayoutDir.D}, {LayoutDir.L, LayoutDir.RD},
+            {LayoutDir.R, LayoutDir.LU}, {LayoutDir.R, LayoutDir.U}, {LayoutDir.R, LayoutDir.N}, {LayoutDir.R, LayoutDir.LD}, {LayoutDir.R, LayoutDir.D},
+            {LayoutDir.LD, LayoutDir.L}, {LayoutDir.LD, LayoutDir.N}, {LayoutDir.LD, LayoutDir.R},
+            {LayoutDir.D, LayoutDir.L}, {LayoutDir.D, LayoutDir.N}, {LayoutDir.D, LayoutDir.R},
+            {LayoutDir.RD, LayoutDir.L}, {LayoutDir.RD, LayoutDir.N}, {LayoutDir.RD, LayoutDir.R},
     };
 
     private final float GESTURE_SPEED = 1.6f;
@@ -153,7 +165,6 @@ public class PalmActivity extends AppCompatActivity
                 tt += (dist/GESTURE_SPEED);
             }
 
-            Log.d(TAG, "points = " + points);
             Gesture gesture = new Gesture();
             gesture.addStroke(new GestureStroke(points));
             store.addGesture(gesture_labels[ci], gesture);
@@ -161,18 +172,21 @@ public class PalmActivity extends AppCompatActivity
         return store;
     }
 
-    private void predictGesture(ArrayList<GesturePoint> points, GestureStore store)
+    private String predictGesture(ArrayList<GesturePoint> points, GestureStore store)
     {
         Gesture gesture = new Gesture();
         gesture.addStroke(new GestureStroke(points));
         ArrayList<Prediction> pred_list = store.recognize(gesture);
         if (pred_list.size() > 0)
         {
-            Log.d(TAG, "gesture predicted, stroke=" + gesture.getStrokesCount());
-            for (int ci=0; ci<java.lang.Math.min(5, pred_list.size()); ci++)
+            if (DEBUG_MODE)
             {
-                Log.d(TAG, ci + "th: " + pred_list.get(ci).name + ", score: " +
-                        pred_list.get(ci).score);
+                Log.d(TAG, "gesture predicted, stroke=" + gesture.getStrokesCount());
+                for (int ci = 0; ci < java.lang.Math.min(5, pred_list.size()); ci++)
+                {
+                    Log.d(TAG, ci + "th: " + pred_list.get(ci).name + ", score: " +
+                            pred_list.get(ci).score);
+                }
             }
 
             int ccand = 0;
@@ -195,34 +209,43 @@ public class PalmActivity extends AppCompatActivity
                     break;
                 }
             }
-            if (ccand >= pred_list.size())
+            if (ccand >= pred_list.size() && DEBUG_MODE)
             {
                 Log.d(TAG, "gesture prediction failed");
+                return null;
             }
-            else if (pred_list.get(ccand).name.equals("del"))
+            else
+            {
+                return pred_list.get(ccand).name;
+            }
+        }
+
+        if (DEBUG_MODE)
+            Log.d(TAG, "gesture prediction failed");
+        return null;
+    }
+
+    private void processInput(ArrayList<GesturePoint> points)
+    {
+        String input_str = predictGesture(points, m_gestureStore);
+        if (input_str != null)
+        {
+            if (input_str.equals("del"))
             {
                 CharSequence cs = m_inputText.getText();
                 m_inputText.setText(cs.subSequence(0, max(0, cs.length() - 1)));
             }
             else
             {
-                m_inputText.setText(m_inputText.getText() + pred_list.get(ccand).name);
+                m_inputText.setText(m_inputText.getText() + input_str);
             }
         }
-        else
-        {
-            Log.d(TAG, "gesture prediction failed");
-        }
-
-        // initialization for next gesture input
-        m_point_angles.clear();
-        m_group_selected = false;
-        this.highlightBasic();
     }
 
     private View.OnTouchListener m_gestureViewTouchListener =
             new View.OnTouchListener()
     {
+        private ArrayList<GesturePoint> m_curGPoints = new ArrayList<>();
         @Override
         public boolean onTouch(View view, MotionEvent motionEvent)
         {
@@ -264,12 +287,32 @@ public class PalmActivity extends AppCompatActivity
                         highlightGroup(dirs_cw[angle_idx]);
                         m_group_selected = true;
                     }
+                    if (m_curGPoints.size() >= SECOND_DIR_SAMPLE &&
+                            (m_curGPoints.size() - SECOND_DIR_SAMPLE) % SECOND_DIR_PERIOD == 0)
+                    {
+                        String input_str = predictGesture(m_curGPoints, m_gestureStore);
+                        if (input_str != null)
+                        {
+                            for (int ci=0; ci<gesture_labels.length; ci++)
+                            {
+                                if (gesture_labels[ci].equals(input_str))
+                                {
+                                    highlightCharacter(gesture_layout_dir[ci][0], gesture_layout_dir[ci][1]);
+                                }
+                            }
+                        }
+                    }
                 }
             }
             else
             {
-                predictGesture(m_curGPoints, m_gestureStore);
+                processInput(m_curGPoints);
                 m_curGPoints.clear();
+
+                // initialization for next gesture input
+                m_point_angles.clear();
+                m_group_selected = false;
+                highlightBasic();
             }
             return false;
         }
@@ -361,7 +404,6 @@ public class PalmActivity extends AppCompatActivity
 
         m_gestureStore = createGestureLibFromSource();
 
-        m_curGPoints = new ArrayList<>();
         m_point_angles = new ArrayList<>();
 
         m_gestureView = (GestureOverlayView) findViewById(R.id.p_gesture_view);
