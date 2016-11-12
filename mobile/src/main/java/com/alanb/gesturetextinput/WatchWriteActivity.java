@@ -36,6 +36,9 @@ public class WatchWriteActivity extends AppCompatActivity {
     private TextView m_taskTextView;
     private String m_taskStr = null;
 
+    private int m_inc_fixed_num = 0;
+    private int m_fix_num = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -118,6 +121,8 @@ public class WatchWriteActivity extends AppCompatActivity {
             return;
         m_taskStr = m_taskLoader.next();
         m_taskTextView.setText(m_taskStr);
+        m_inc_fixed_num = 0;
+        m_fix_num = 0;
     }
 
     public WatchWriteInputView.OnTouchEventListener m_wwTouchListener =
@@ -132,6 +137,8 @@ public class WatchWriteActivity extends AppCompatActivity {
                 {
                     Log.d(TAG, "Delete one character");
                     m_inputStr = m_inputStr.substring(0, max(0, m_inputStr.length()-1));
+                    m_inc_fixed_num++;
+                    m_fix_num++;
                 }
                 else if (m_curNode.getAct() == KeyNode.Act.DONE)
                 {
@@ -215,6 +222,16 @@ public class WatchWriteActivity extends AppCompatActivity {
     {
         if (!m_taskMode)
             return;
+
+        EditDistCalculator.EditInfo info = EditDistCalculator.calc(m_taskStr, m_inputStr);
+        int inc_correct = info.num_correct;
+        int inc_not_fixed = info.num_delete + info.num_insert+ info.num_modify;
+
+        Log.d(TAG, "Task done");
+        Log.d(TAG, "C = " + inc_correct + ", IF = " + m_inc_fixed_num + ", F = " +
+                m_fix_num + ", INF = " + inc_not_fixed);
+        Log.d(TAG, "correct=" + info.num_correct + ", insert=" + info.num_insert +
+                ", delete=" + info.num_delete + ", modify=" + info.num_modify);
 
         m_inputStr = "";
         prepareTask();
