@@ -30,7 +30,7 @@ import static java.lang.Math.max;
 
 public class PalmActivity extends AppCompatActivity
 {
-    private enum LayoutDir
+    public enum LayoutDir
     {
         LU, U, RU, L, R, LD, D, RD, N
     }
@@ -48,7 +48,6 @@ public class PalmActivity extends AppCompatActivity
 
     private final String TAG = this.getClass().getName();
     private GestureOverlayView m_gestureView;
-    private GestureLibrary m_gestureLib;
     private String m_inputStr = "";
     private TextView m_inputTextView;
     private boolean useTouchFeedback = false;
@@ -58,119 +57,10 @@ public class PalmActivity extends AppCompatActivity
     private final int nonSelectedColor = Color.TRANSPARENT;
     private int selectedColor;
 
-    private final float[][] gesture_vertices = {
-            {900, 500, 500, 100, 100, 100},
-            {900, 500, 500, 100},
-            {900, 500, 500, 100, 900, 100},
-
-            {900, 500, 900, 100, 500, 100},
-            {500, 500, 500, 100},
-            {500, 500, 500, 100, 900, 100},
-
-            {100, 500, 500, 100, 100, 100},
-            {100, 500, 500, 100},
-            {100, 500, 500, 100, 900, 100},
-
-            {900, 500, 500, 500, 500, 100},
-            {900, 500, 500, 500, 900, 100},
-            {900, 500, 500, 500},
-            {900, 100, 500, 100, 500, 500},
-            {900, 100, 500, 100, 900, 500},
-
-            {500, 500, 900, 500, 500, 100},
-            {500, 500, 900, 500, 900, 100},
-            {500, 500, 900, 500},
-            {500, 100, 900, 100, 500, 500},
-            {500, 100, 900, 100, 900, 500},
-
-            {900, 100, 500, 500, 100, 500},
-            {900, 100, 500, 500},
-            {900, 100, 500, 500, 900, 500},
-
-            {900, 100, 900, 500, 500, 500},
-            {900, 100, 900, 500},
-            {500, 100, 500, 500, 900, 500},
-
-            {100, 100, 500, 500, 100, 500},
-            {100, 100, 500, 500},
-            {100, 100, 500, 500, 900, 500}
-    };
-    private final String[] gesture_labels = {
-            "Q", "W", "E",
-            "R", "T", "Y",
-            "U", "I", "O",
-            "A", "S", "D", "F", "G",
-            "H", "J", "K", "L", "P",
-            "Z", "X", "C",
-            "V", "B", "N",
-            "M", "spc", "del"
-    };
-    private final double[] gesture_angles = {
-            Math.atan2(1, -2), Math.atan2(1, -1), Math.atan2(1, 0),
-            Math.atan2(1, -1), Math.atan2(1, 0), Math.atan2(1, 1),
-            Math.atan2(1, 0), Math.atan2(1, 1), Math.atan2(1, 2),
-            Math.atan2(1, -1), Math.atan2(1, 0), Math.atan2(0, -1), Math.atan2(-1, -1), Math.atan2(-1, 0),
-            Math.atan2(1, 0), Math.atan2(1, 1), Math.atan2(0, 1), Math.atan2(-1, 0), Math.atan2(-1, 1),
-            Math.atan2(-1, -2), Math.atan2(-1, -1), Math.atan2(-1, 0),
-            Math.atan2(-1, -1), Math.atan2(-1, 0), Math.atan2(-1, 1),
-            Math.atan2(-1, 0), Math.atan2(-1, 1), Math.atan2(-1, 2),
-    };
-    private final LayoutDir[][] gesture_layout_dir = {
-            {LayoutDir.LU, LayoutDir.L}, {LayoutDir.LU, LayoutDir.N}, {LayoutDir.LU, LayoutDir.R},
-            {LayoutDir.U, LayoutDir.L}, {LayoutDir.U, LayoutDir.N}, {LayoutDir.U, LayoutDir.R},
-            {LayoutDir.RU, LayoutDir.L}, {LayoutDir.RU, LayoutDir.N}, {LayoutDir.RU, LayoutDir.R},
-            {LayoutDir.L, LayoutDir.U}, {LayoutDir.L, LayoutDir.RU}, {LayoutDir.L, LayoutDir.N}, {LayoutDir.L, LayoutDir.D}, {LayoutDir.L, LayoutDir.RD},
-            {LayoutDir.R, LayoutDir.LU}, {LayoutDir.R, LayoutDir.U}, {LayoutDir.R, LayoutDir.N}, {LayoutDir.R, LayoutDir.LD}, {LayoutDir.R, LayoutDir.D},
-            {LayoutDir.LD, LayoutDir.L}, {LayoutDir.LD, LayoutDir.N}, {LayoutDir.LD, LayoutDir.R},
-            {LayoutDir.D, LayoutDir.L}, {LayoutDir.D, LayoutDir.N}, {LayoutDir.D, LayoutDir.R},
-            {LayoutDir.RD, LayoutDir.L}, {LayoutDir.RD, LayoutDir.N}, {LayoutDir.RD, LayoutDir.R},
-    };
-
-    private final float GESTURE_SPEED = 1.6f;
-    private final float SAMPLE_PER_SEC = 120f;
-    private GestureStore m_gestureStore;
-
     private double angle_diff(double a, double b)
     {
         double diff = Math.abs(b - a);
         return Math.abs(diff - 2 * Math.PI * Math.round(diff / (2*Math.PI)));
-    }
-
-    private GestureStore createGestureLibFromSource()
-    {
-        GestureStore store = new GestureStore();
-        for (int ci=0; ci<gesture_labels.length; ci++)
-        {
-            ArrayList<GesturePoint> points = new ArrayList<>();
-            long tt = 0;
-            for (int cj=0; cj<(gesture_vertices[ci].length / 2) - 1; cj++)
-            {
-                long tadd = 0;
-                double tx = gesture_vertices[ci][cj*2];
-                double ty = gesture_vertices[ci][cj*2 + 1];
-                double dx = gesture_vertices[ci][cj*2 + 2] - tx;
-                double dy = gesture_vertices[ci][cj*2 + 3] - ty;
-                double dist = Math.sqrt(dx*dx + dy*dy);
-                double udx = dx / dist;
-                double udy = dy / dist;
-                double tdd = 0;
-                while (tdd/dist < 1)
-                {
-                    points.add(new GesturePoint((float)(tx), (float)(ty),
-                            tt + (long)(tadd*(1000f/SAMPLE_PER_SEC))));
-                    tadd++;
-                    tx += (udx * GESTURE_SPEED * 1000f / SAMPLE_PER_SEC);
-                    ty += (udy * GESTURE_SPEED * 1000f / SAMPLE_PER_SEC);
-                    tdd += (GESTURE_SPEED * 1000f / SAMPLE_PER_SEC);
-                }
-                tt += (dist/GESTURE_SPEED);
-            }
-
-            Gesture gesture = new Gesture();
-            gesture.addStroke(new GestureStroke(points));
-            store.addGesture(gesture_labels[ci], gesture);
-        }
-        return store;
     }
 
     private String predictGesture(ArrayList<GesturePoint> points, GestureStore store)
@@ -198,11 +88,12 @@ public class PalmActivity extends AppCompatActivity
                 double dy = points.get(0).y - points.get(points.size()-1).y;
 
                 int cidx = 0;
-                while (cidx < gesture_labels.length && !gesture_labels[cidx].equals(pred_list.get(ccand).name))
+                while (cidx < PalmGestureGenerator.gesture_labels.length &&
+                        !PalmGestureGenerator.gesture_labels[cidx].equals(pred_list.get(ccand).name))
                 {
                     cidx++;
                 }
-                double target_angle = gesture_angles[cidx];
+                double target_angle = PalmGestureGenerator.gesture_angles[cidx];
                 double dangle = atan2(dy, dx);
                 if (angle_diff(target_angle, dangle) < ANGLE_THRESH)
                 {
@@ -228,7 +119,7 @@ public class PalmActivity extends AppCompatActivity
 
     private void processInput(ArrayList<GesturePoint> points)
     {
-        String input_str = predictGesture(points, m_gestureStore);
+        String input_str = predictGesture(points, PalmGestureGenerator.get());
         if (input_str != null)
         {
             if (input_str.equals("del"))
@@ -295,14 +186,15 @@ public class PalmActivity extends AppCompatActivity
                     if (m_curGPoints.size() >= SECOND_DIR_SAMPLE &&
                             (m_curGPoints.size() - SECOND_DIR_SAMPLE) % SECOND_DIR_PERIOD == 0)
                     {
-                        String input_str = predictGesture(m_curGPoints, m_gestureStore);
+                        String input_str = predictGesture(m_curGPoints, PalmGestureGenerator.get());
                         if (input_str != null)
                         {
-                            for (int ci=0; ci<gesture_labels.length; ci++)
+                            for (int ci=0; ci<PalmGestureGenerator.gesture_labels.length; ci++)
                             {
-                                if (gesture_labels[ci].equals(input_str))
+                                if (PalmGestureGenerator.gesture_labels[ci].equals(input_str))
                                 {
-                                    highlightCharacter(gesture_layout_dir[ci][0], gesture_layout_dir[ci][1]);
+                                    highlightCharacter(PalmGestureGenerator.gesture_layout_dir[ci][0],
+                                            PalmGestureGenerator.gesture_layout_dir[ci][1]);
                                 }
                             }
                         }
@@ -403,11 +295,6 @@ public class PalmActivity extends AppCompatActivity
         setContentView(R.layout.activity_palm);
 
         selectedColor = getColorVersion(this, R.color.colorTouchBackground);
-
-        m_gestureLib = GestureLibraries.fromRawResource(this, R.raw.palm_gestures);
-        m_gestureLib.load();
-
-        m_gestureStore = createGestureLibFromSource();
 
         m_point_angles = new ArrayList<>();
 
