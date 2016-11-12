@@ -136,6 +136,10 @@ public class PalmActivity extends AppCompatActivity
             {
                 m_inputStr += " ";
             }
+            else if (input_str.equals("done"))
+            {
+                doneTask();
+            }
             else
             {
                 m_inputStr += input_str.toLowerCase();
@@ -351,8 +355,19 @@ public class PalmActivity extends AppCompatActivity
 
     private void prepareTask()
     {
+        if (!m_taskMode)
+            return;
         m_taskStr = m_taskLoader.next();
         m_taskTextView.setText(m_taskStr);
+    }
+
+    private void doneTask()
+    {
+        if (!m_taskMode)
+            return;
+
+        m_inputStr = "";
+        prepareTask();
     }
 
     private int getColorVersion(Context context, int id)

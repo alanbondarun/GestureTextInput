@@ -151,12 +151,28 @@
       ]
     },
     {
-      "show_str": "DEL",
-      "act": "delete"
-    },
-    {
       "show_str": "SPC",
       "input_char": " "
+    },
+    {
+      "show_str": "Fun",
+      "act": "done",
+      "keys": [
+        {
+          "show_str": ""
+        },
+        {
+          "show_str": ""
+        },
+        {
+          "show_str": "DEL",
+          "act": "delete"
+        },
+        {
+          "show_str": "DONE",
+          "act": "done"
+        }
+      ]
     }
   ]
 }

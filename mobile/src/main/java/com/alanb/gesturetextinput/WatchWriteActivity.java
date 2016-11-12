@@ -114,6 +114,8 @@ public class WatchWriteActivity extends AppCompatActivity {
 
     private void prepareTask()
     {
+        if (!m_taskMode)
+            return;
         m_taskStr = m_taskLoader.next();
         m_taskTextView.setText(m_taskStr);
     }
@@ -130,6 +132,11 @@ public class WatchWriteActivity extends AppCompatActivity {
                 {
                     Log.d(TAG, "Delete one character");
                     m_inputStr = m_inputStr.substring(0, max(0, m_inputStr.length()-1));
+                }
+                else if (m_curNode.getAct() == KeyNode.Act.DONE)
+                {
+                    Log.d(TAG, "Input Done");
+                    doneTask();
                 }
                 else if (m_curNode.getCharVal() != null)
                 {
@@ -204,6 +211,15 @@ public class WatchWriteActivity extends AppCompatActivity {
         }
     };
 
+    private void doneTask()
+    {
+        if (!m_taskMode)
+            return;
+
+        m_inputStr = "";
+        prepareTask();
+    }
+
     private void updateViews(KeyNode node)
     {
         m_inputTextView.setText(m_inputStr + getString(R.string.end_of_input));
@@ -232,11 +248,15 @@ public class WatchWriteActivity extends AppCompatActivity {
             {
                 String raw_str = node.getNextNode(ci).getShowStr();
                 StringBuilder builder = new StringBuilder();
-                for (int cj = 0; cj < raw_str.length(); cj += 3)
+
+                int line_chars = 3;
+                if (node.getNextNode(ci).getCharVal() == null)
+                    line_chars = 5;
+                for (int cj = 0; cj < raw_str.length(); cj += line_chars)
                 {
                     if (cj > 0)
                         builder.append("\n");
-                    builder.append(raw_str.substring(cj, Math.min(cj+3, raw_str.length())));
+                    builder.append(raw_str.substring(cj, Math.min(cj+line_chars, raw_str.length())));
                 }
                 m_viewTexts.get(ci).setText(builder.toString());
                 m_viewTexts.get(ci).setBackgroundColor(Color.TRANSPARENT);

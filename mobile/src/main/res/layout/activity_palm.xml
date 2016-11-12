@@ -123,6 +123,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:id="@+id/p_char_view_L_LU"
+                        android:text="@string/done_input"
                         android:gravity="center"
                         android:textSize="@dimen/palm_charview" />
                     <TextView

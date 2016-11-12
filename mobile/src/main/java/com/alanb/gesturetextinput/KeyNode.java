@@ -13,7 +13,7 @@ public class KeyNode
 {
     public enum Act
     {
-        OTHER, DELETE
+        OTHER, DELETE, DONE
     }
     private String showStr;
     private KeyNode[] nextNode;
@@ -121,6 +121,10 @@ public class KeyNode
                 if (jobj.getString("act").equals("delete"))
                 {
                     act = Act.DELETE;
+                }
+                else if (jobj.getString("act").equals("done"))
+                {
+                    act = Act.DONE;
                 }
             }
 

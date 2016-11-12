@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">GestureTextInput</string>
     <string name="end_of_input">&#x21b5;</string>
+    <string name="done_input">&#x2713;</string>
 </resources>

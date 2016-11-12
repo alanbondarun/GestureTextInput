@@ -217,12 +217,11 @@
       "input_char": " ",
       "keys": [
         {
-          "show_str": "DEL",
-          "act": "delete"
+          "show_str": ""
         },
         {
-          "show_str": "DEL",
-          "act": "delete"
+          "show_str": "DONE",
+          "act": "done"
         },
         {
           "show_str": "DEL",

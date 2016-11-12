@@ -220,7 +220,8 @@
           "show_str": ""
         },
         {
-          "show_str": ""
+          "show_str": "DONE",
+          "act": "done"
         },
         {
           "show_str": "DEL",

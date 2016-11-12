@@ -179,6 +179,8 @@ public class OneDActivity extends AppCompatActivity {
 
     private void prepareTask()
     {
+        if (!m_taskMode)
+            return;
         m_taskStr = m_taskLoader.next();
         m_taskTextView.setText(m_taskStr);
     }
@@ -227,6 +229,15 @@ public class OneDActivity extends AppCompatActivity {
         m_curNode = node;
     }
 
+    private void doneTask()
+    {
+        if (!m_taskMode)
+            return;
+
+        m_inputStr = "";
+        prepareTask();
+    }
+
     public void processTouch(TouchEvent te)
     {
         if (te.val == TouchEvent.END)
@@ -237,6 +248,11 @@ public class OneDActivity extends AppCompatActivity {
                 {
                     Log.d(TAG, "Delete one character");
                     m_inputStr = m_inputStr.substring(0, max(0, m_inputStr.length()-1));
+                }
+                else if (m_curNode.getAct() == KeyNode.Act.DONE)
+                {
+                    Log.d(TAG, "Input Done");
+                    doneTask();
                 }
                 else if (m_curNode.getCharVal() != null)
                 {
