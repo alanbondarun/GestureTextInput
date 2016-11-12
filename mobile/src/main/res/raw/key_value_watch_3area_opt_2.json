@@ -213,8 +213,24 @@
       ]
     },
     {
-      "show_str": "Del",
-      "act": "delete"
+      "show_str": "Fun",
+      "input_char": " ",
+      "keys": [
+        {
+          "show_str": ""
+        },
+        {
+          "show_str": ""
+        },
+        {
+          "show_str": "DEL",
+          "act": "delete"
+        },
+        {
+          "show_str": "SPC",
+          "input_char": " "
+        }
+      ]
     }
   ]
 }

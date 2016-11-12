@@ -169,8 +169,26 @@
       ]
     },
     {
-      "show_str": "Del",
-      "act": "delete"
+      "show_str": "Func",
+      "input_char": " ",
+      "keys": [
+        {
+          "show_str": "DEL",
+          "act": "delete"
+        },
+        {
+          "show_str": "DEL",
+          "act": "delete"
+        },
+        {
+          "show_str": "DEL",
+          "act": "delete"
+        },
+        {
+          "show_str": "SPC",
+          "input_char": " "
+        }
+      ]
     }
   ]
 }

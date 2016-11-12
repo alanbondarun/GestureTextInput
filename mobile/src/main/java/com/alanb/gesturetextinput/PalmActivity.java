@@ -102,7 +102,7 @@ public class PalmActivity extends AppCompatActivity
             "H", "J", "K", "L", "P",
             "Z", "X", "C",
             "V", "B", "N",
-            "M", ".", "del"
+            "M", "spc", "del"
     };
     private final double[] gesture_angles = {
             Math.atan2(1, -2), Math.atan2(1, -1), Math.atan2(1, 0),
@@ -235,9 +235,13 @@ public class PalmActivity extends AppCompatActivity
                 CharSequence cs = m_inputText.getText();
                 m_inputText.setText(cs.subSequence(0, max(0, cs.length() - 1)));
             }
+            else if (input_str.equals("spc"))
+            {
+                m_inputText.setText(String.format("%s ", m_inputText.getText()));
+            }
             else
             {
-                m_inputText.setText(m_inputText.getText() + input_str);
+                m_inputText.setText(String.format("%s%s", m_inputText.getText(), input_str));
             }
         }
     }

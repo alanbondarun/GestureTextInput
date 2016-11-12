@@ -354,7 +354,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:id="@+id/p_char_view_RD_N"
-                        android:text="."
+                        android:text="SPC"
                         android:gravity="center"
                         android:textSize="@dimen/palm_charview" />
                     <TextView
@@ -362,7 +362,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:id="@+id/p_char_view_RD_R"
-                        android:text="del"
+                        android:text="DEL"
                         android:gravity="center"
                         android:textSize="@dimen/palm_charview" />
                 </TableRow>

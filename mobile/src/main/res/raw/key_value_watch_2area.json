@@ -151,11 +151,12 @@
       ]
     },
     {
-      "show_str": "Del",
+      "show_str": "DEL",
       "act": "delete"
     },
     {
-      "show_str": ""
+      "show_str": "SPC",
+      "input_char": " "
     }
   ]
 }
