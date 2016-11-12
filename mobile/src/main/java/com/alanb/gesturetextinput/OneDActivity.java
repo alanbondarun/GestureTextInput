@@ -34,7 +34,9 @@ public class OneDActivity extends AppCompatActivity {
     // DO NOT modify this directly; use updateCurNode() instead
     private KeyNode m_curNode;
     private ArrayList<TouchEvent> m_touchArray;
-    private TextView m_inputText;
+
+    private String m_inputStr = "";
+    private TextView m_inputTextView;
     private final boolean upperTouchFeedback = true;
     private final int MAX_CHAR_PER_LINE = 5;
 
@@ -77,7 +79,7 @@ public class OneDActivity extends AppCompatActivity {
 
         m_touchArray = new ArrayList<>();
 
-        m_inputText = (TextView) findViewById(R.id.o_input_text);
+        m_inputTextView = (TextView) findViewById(R.id.o_input_text);
         m_touchAreaAll = (LinearLayout) findViewById(R.id.o_char_touch);
 
         m_viewTexts = new ArrayList<>();
@@ -86,7 +88,7 @@ public class OneDActivity extends AppCompatActivity {
         m_viewTexts.add((TextView) findViewById(R.id.o_char_indi_3));
         m_viewTexts.add((TextView) findViewById(R.id.o_char_indi_4));
 
-        updateCurNode(m_rootNode);
+        updateViews(m_rootNode);
 
         m_touchAreaAll.setOnTouchListener(new View.OnTouchListener() {
             private TouchEvent prev_e = new TouchEvent(TouchEvent.DROP);
@@ -150,8 +152,9 @@ public class OneDActivity extends AppCompatActivity {
         }
     }
 
-    public void updateCurNode(KeyNode node)
+    public void updateViews(KeyNode node)
     {
+        m_inputTextView.setText(m_inputStr + getString(R.string.end_of_input));
         if (node.isLeaf())
         {
             KeyNode np = node.getParent();
@@ -202,16 +205,15 @@ public class OneDActivity extends AppCompatActivity {
                 if (m_curNode.getAct() == KeyNode.Act.DELETE)
                 {
                     Log.d(TAG, "Delete one character");
-                    CharSequence cs = m_inputText.getText();
-                    m_inputText.setText(cs.subSequence(0, max(0, cs.length() - 1)));
+                    m_inputStr = m_inputStr.substring(0, max(0, m_inputStr.length()-1));
                 }
                 else if (m_curNode.getCharVal() != null)
                 {
                     Log.d(TAG, "input char = " + m_curNode.getCharVal());
-                    m_inputText.setText(m_inputText.getText() + String.valueOf(m_curNode.getCharVal()));
+                    m_inputStr += String.valueOf(m_curNode.getCharVal());
                 }
             }
-            updateCurNode(m_rootNode);
+            updateViews(m_rootNode);
             m_touchArray.clear();
         }
         else if (te.val == TouchEvent.DROP)
@@ -220,7 +222,7 @@ public class OneDActivity extends AppCompatActivity {
         }
         else if (te.val == TouchEvent.MULTITOUCH)
         {
-            updateCurNode(m_rootNode);
+            updateViews(m_rootNode);
             m_touchArray.clear();
             m_touchArray.add(te);
         }
@@ -257,12 +259,12 @@ public class OneDActivity extends AppCompatActivity {
 
             if (next_node != null)
             {
-                updateCurNode(next_node);
+                updateViews(next_node);
                 m_touchArray.add(te);
             }
             else if (sibling_node != null)
             {
-                updateCurNode(sibling_node);
+                updateViews(sibling_node);
                 m_touchArray.add(te);
             }
             else

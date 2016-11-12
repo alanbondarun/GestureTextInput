@@ -15,4 +15,5 @@
     </string-array>
     <string name="prefkey_watch_layout">Layout</string>
     <string name="prefkey_oned_layout">OneD Layout</string>
+    <string name="end_of_input">&#x21b5;</string>
 </resources>

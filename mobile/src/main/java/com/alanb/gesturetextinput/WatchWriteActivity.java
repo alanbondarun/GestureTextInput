@@ -23,7 +23,9 @@ public class WatchWriteActivity extends AppCompatActivity {
     private KeyNode m_rootNode;
     // DO NOT modify this directly; use updateCurNode() instead
     private KeyNode m_curNode;
-    private TextView m_inputText;
+
+    private String m_inputStr = "";
+    private TextView m_inputTextView;
     private ArrayList<TextView> m_viewTexts;
     private final boolean upperTouchFeedback = true;
 
@@ -53,7 +55,7 @@ public class WatchWriteActivity extends AppCompatActivity {
 
         m_gestureTouchAreas = new ArrayList<>();
 
-        m_inputText = (TextView) findViewById(R.id.w_input_text);
+        m_inputTextView = (TextView) findViewById(R.id.w_input_text);
 
         m_viewTexts = new ArrayList<>();
         m_viewTexts.add((TextView) findViewById(R.id.w_char_indi_1));
@@ -61,7 +63,7 @@ public class WatchWriteActivity extends AppCompatActivity {
         m_viewTexts.add((TextView) findViewById(R.id.w_char_indi_3));
         m_viewTexts.add((TextView) findViewById(R.id.w_char_indi_4));
 
-        updateCurNode(m_rootNode);
+        updateViews(m_rootNode);
 
         WatchWriteInputView.Builder builder = new WatchWriteInputView.Builder(this);
         builder.setOnTouchEventListener(m_wwTouchListener);
@@ -94,18 +96,17 @@ public class WatchWriteActivity extends AppCompatActivity {
                 if (m_curNode.getAct() == KeyNode.Act.DELETE)
                 {
                     Log.d(TAG, "Delete one character");
-                    CharSequence cs = m_inputText.getText();
-                    m_inputText.setText(cs.subSequence(0, max(0, cs.length() - 1)));
+                    m_inputStr = m_inputStr.substring(0, max(0, m_inputStr.length()-1));
                 }
                 else if (m_curNode.getCharVal() != null)
                 {
                     Log.d(TAG, "Input Result: " + m_curNode.getCharVal());
-                    m_inputText.setText(m_inputText.getText() + String.valueOf(m_curNode.getCharVal()));
+                    m_inputStr += String.valueOf(m_curNode.getCharVal());
                 }
 
                 // initialization for next touch(or gesture) input
                 m_gestureTouchAreas.clear();
-                updateCurNode(m_rootNode);
+                updateViews(m_rootNode);
             }
             else if (te == WatchWriteInputView.TouchEvent.DROP)
             {
@@ -113,7 +114,7 @@ public class WatchWriteActivity extends AppCompatActivity {
             }
             else if (te == WatchWriteInputView.TouchEvent.MULTITOUCH)
             {
-                updateCurNode(m_rootNode);
+                updateViews(m_rootNode);
                 m_gestureTouchAreas.clear();
                 m_gestureTouchAreas.add(te);
             }
@@ -150,12 +151,12 @@ public class WatchWriteActivity extends AppCompatActivity {
                     }
                     if (next_node != null)
                     {
-                        updateCurNode(next_node);
+                        updateViews(next_node);
                         m_gestureTouchAreas.add(te);
                     }
                     else if (sibling_node != null)
                     {
-                        updateCurNode(sibling_node);
+                        updateViews(sibling_node);
                         if (m_gestureTouchAreas.size() >= 1)
                             m_gestureTouchAreas.remove(m_gestureTouchAreas.size()-1);
                         m_gestureTouchAreas.add(te);
@@ -170,8 +171,9 @@ public class WatchWriteActivity extends AppCompatActivity {
         }
     };
 
-    private void updateCurNode(KeyNode node)
+    private void updateViews(KeyNode node)
     {
+        m_inputTextView.setText(m_inputStr + getString(R.string.end_of_input));
         if (node.isLeaf())
         {
             KeyNode np = node.getParent();

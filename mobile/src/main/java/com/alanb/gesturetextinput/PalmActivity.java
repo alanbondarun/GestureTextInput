@@ -49,7 +49,8 @@ public class PalmActivity extends AppCompatActivity
     private final String TAG = this.getClass().getName();
     private GestureOverlayView m_gestureView;
     private GestureLibrary m_gestureLib;
-    private TextView m_inputText;
+    private String m_inputStr = "";
+    private TextView m_inputTextView;
     private boolean useTouchFeedback = false;
     private boolean upperTouchFeedback = true;
     private ArrayList< ArrayList<TextView> > m_charViewGroups;
@@ -232,17 +233,17 @@ public class PalmActivity extends AppCompatActivity
         {
             if (input_str.equals("del"))
             {
-                CharSequence cs = m_inputText.getText();
-                m_inputText.setText(cs.subSequence(0, max(0, cs.length() - 1)));
+                m_inputStr = m_inputStr.substring(0, max(0, m_inputStr.length()-1));
             }
             else if (input_str.equals("spc"))
             {
-                m_inputText.setText(String.format("%s ", m_inputText.getText()));
+                m_inputStr += " ";
             }
             else
             {
-                m_inputText.setText(String.format("%s%s", m_inputText.getText(), input_str));
+                m_inputStr += input_str.toLowerCase();
             }
+            m_inputTextView.setText(m_inputStr + getString(R.string.end_of_input));
         }
     }
 
@@ -412,7 +413,9 @@ public class PalmActivity extends AppCompatActivity
 
         m_gestureView = (GestureOverlayView) findViewById(R.id.p_gesture_view);
         m_gestureView.setOnTouchListener(m_gestureViewTouchListener);
-        m_inputText = (TextView) findViewById(R.id.p_input_text);
+
+        m_inputTextView = (TextView) findViewById(R.id.p_input_text);
+        m_inputTextView.setText(m_inputStr + getString(R.string.end_of_input));
 
         if (useTouchFeedback)
         {
