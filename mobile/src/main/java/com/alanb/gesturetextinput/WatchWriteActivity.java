@@ -2,10 +2,12 @@ package com.alanb.gesturetextinput;
 
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -28,6 +30,11 @@ public class WatchWriteActivity extends AppCompatActivity {
     private TextView m_inputTextView;
     private ArrayList<TextView> m_viewTexts;
     private final boolean upperTouchFeedback = true;
+
+    private boolean m_taskMode;
+    private TaskPhraseLoader m_taskLoader;
+    private TextView m_taskTextView;
+    private String m_taskStr = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +90,32 @@ public class WatchWriteActivity extends AppCompatActivity {
         {
             feedbackFrameLayout.attachFeedbackTo(feedbackFrameLayout);
         }
+
+        initTask();
+    }
+
+    private void initTask()
+    {
+        SharedPreferences prefs = getSharedPreferences(getString(R.string.app_pref_key), MODE_PRIVATE);
+        m_taskMode = prefs.getInt(getString(R.string.prefkey_task_mode),
+                getResources().getInteger(R.integer.pref_task_mode_default)) == 0;
+
+        m_taskTextView = (TextView) findViewById(R.id.w_task_text);
+        if (m_taskMode)
+        {
+            m_taskLoader = new TaskPhraseLoader(this);
+            prepareTask();
+        }
+        else
+        {
+            m_taskTextView.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    private void prepareTask()
+    {
+        m_taskStr = m_taskLoader.next();
+        m_taskTextView.setText(m_taskStr);
     }
 
     public WatchWriteInputView.OnTouchEventListener m_wwTouchListener =

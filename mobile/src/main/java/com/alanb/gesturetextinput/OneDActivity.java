@@ -40,6 +40,11 @@ public class OneDActivity extends AppCompatActivity {
     private final boolean upperTouchFeedback = true;
     private final int MAX_CHAR_PER_LINE = 5;
 
+    private boolean m_taskMode;
+    private TaskPhraseLoader m_taskLoader;
+    private TextView m_taskTextView;
+    private String m_taskStr = null;
+
     public class TouchEvent
     {
         final static int DROP = -1;
@@ -150,6 +155,32 @@ public class OneDActivity extends AppCompatActivity {
         {
             feedbackFrameLayout.attachFeedbackTo(feedbackFrameLayout);
         }
+
+        initTask();
+    }
+
+    private void initTask()
+    {
+        SharedPreferences prefs = getSharedPreferences(getString(R.string.app_pref_key), MODE_PRIVATE);
+        m_taskMode = prefs.getInt(getString(R.string.prefkey_task_mode),
+                getResources().getInteger(R.integer.pref_task_mode_default)) == 0;
+
+        m_taskTextView = (TextView) findViewById(R.id.o_task_text);
+        if (m_taskMode)
+        {
+            m_taskLoader = new TaskPhraseLoader(this);
+            prepareTask();
+        }
+        else
+        {
+            m_taskTextView.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    private void prepareTask()
+    {
+        m_taskStr = m_taskLoader.next();
+        m_taskTextView.setText(m_taskStr);
     }
 
     public void updateViews(KeyNode node)

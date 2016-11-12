@@ -1,6 +1,7 @@
 package com.alanb.gesturetextinput;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.gesture.Gesture;
 import android.gesture.GestureLibraries;
 import android.gesture.GestureLibrary;
@@ -56,6 +57,11 @@ public class PalmActivity extends AppCompatActivity
 
     private final int nonSelectedColor = Color.TRANSPARENT;
     private int selectedColor;
+
+    private boolean m_taskMode;
+    private TaskPhraseLoader m_taskLoader;
+    private TextView m_taskTextView;
+    private String m_taskStr = null;
 
     private double angle_diff(double a, double b)
     {
@@ -321,6 +327,32 @@ public class PalmActivity extends AppCompatActivity
 
         m_charViewGroups = setCharViewGroups();
         highlightBasic();
+
+        initTask();
+    }
+
+    private void initTask()
+    {
+        SharedPreferences prefs = getSharedPreferences(getString(R.string.app_pref_key), MODE_PRIVATE);
+        m_taskMode = prefs.getInt(getString(R.string.prefkey_task_mode),
+                getResources().getInteger(R.integer.pref_task_mode_default)) == 0;
+
+        m_taskTextView = (TextView) findViewById(R.id.p_task_text);
+        if (m_taskMode)
+        {
+            m_taskLoader = new TaskPhraseLoader(this);
+            prepareTask();
+        }
+        else
+        {
+            m_taskTextView.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    private void prepareTask()
+    {
+        m_taskStr = m_taskLoader.next();
+        m_taskTextView.setText(m_taskStr);
     }
 
     private int getColorVersion(Context context, int id)

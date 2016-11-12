@@ -1,19 +1,4 @@
 <resources>
     <string name="app_name">GestureTextInput</string>
-    <string name="app_pref_key">GestureTextSettings</string>
-    <string name="watch_layout">WatchWrite Layout</string>
-    <string-array name="watch_layout_kind">
-        <item>2 Area, Alphabetical</item>
-        <item>3 Area, Alphabetical</item>
-        <item>3 Area, Optimized</item>
-        <item>3 Area, Optimized V2</item>
-    </string-array>
-    <string name="oned_layout">1D Input Layout</string>
-    <string-array name="oned_layout_kind">
-        <item>Alphabetical</item>
-        <item>Optimized</item>
-    </string-array>
-    <string name="prefkey_watch_layout">Layout</string>
-    <string name="prefkey_oned_layout">OneD Layout</string>
     <string name="end_of_input">&#x21b5;</string>
 </resources>

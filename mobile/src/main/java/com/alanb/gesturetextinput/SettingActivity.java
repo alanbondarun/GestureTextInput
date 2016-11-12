@@ -68,6 +68,11 @@ public class SettingActivity extends AppCompatActivity
                 .setPrefKey(getString(R.string.prefkey_oned_layout))
                 .setDefaultItem(getResources().getInteger(R.integer.pref_oned_layout_default))
                 .build(this));
+        m_items.add(new ItemInfo.Builder().setLabel(getResources().getString(R.string.pref_task_mode))
+                .setMenuLabelId(R.array.pref_task_mode_item)
+                .setPrefKey(getString(R.string.prefkey_task_mode))
+                .setDefaultItem(getResources().getInteger(R.integer.pref_task_mode_default))
+                .build(this));
     }
 
     @Override
