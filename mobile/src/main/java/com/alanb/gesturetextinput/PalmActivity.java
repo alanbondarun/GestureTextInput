@@ -66,6 +66,9 @@ public class PalmActivity extends AppCompatActivity
     private int m_inc_fixed_num = 0;
     private int m_fix_num = 0;
 
+    private NanoTimer m_phraseTimer;
+    private NanoTimer m_predictTimer;
+
     private double angle_diff(double a, double b)
     {
         double diff = Math.abs(b - a);
@@ -128,25 +131,37 @@ public class PalmActivity extends AppCompatActivity
 
     private void processInput(ArrayList<GesturePoint> points)
     {
+        m_predictTimer.begin();
         String input_str = predictGesture(points, PalmGestureGenerator.get());
+        m_predictTimer.check();
+        m_predictTimer.end();
+        Log.d(TAG, "predict time: " + m_predictTimer.getDiffInSeconds());
+
+        if (!m_phraseTimer.running())
+            m_phraseTimer.begin();
+
         if (input_str != null)
         {
             if (input_str.equals("del"))
             {
+                m_phraseTimer.check();
                 m_inputStr = m_inputStr.substring(0, max(0, m_inputStr.length()-1));
                 m_inc_fixed_num++;
                 m_fix_num++;
             }
             else if (input_str.equals("spc"))
             {
+                m_phraseTimer.check();
                 m_inputStr += " ";
             }
             else if (input_str.equals("done"))
             {
+                m_phraseTimer.end();
                 doneTask();
             }
             else
             {
+                m_phraseTimer.check();
                 m_inputStr += input_str.toLowerCase();
             }
             m_inputTextView.setText(m_inputStr + getString(R.string.end_of_input));
@@ -337,6 +352,8 @@ public class PalmActivity extends AppCompatActivity
         m_charViewGroups = setCharViewGroups();
         highlightBasic();
 
+        m_phraseTimer = new NanoTimer();
+        m_predictTimer = new NanoTimer();
         initTask();
     }
 
@@ -382,6 +399,11 @@ public class PalmActivity extends AppCompatActivity
                 m_fix_num + ", INF = " + inc_not_fixed);
         Log.d(TAG, "correct=" + info.num_correct + ", insert=" + info.num_insert +
                 ", delete=" + info.num_delete + ", modify=" + info.num_modify);
+
+        double wpm = 0.0;
+        if (!MathUtils.fequal(m_phraseTimer.getDiffInSeconds(), 0))
+            wpm = 12.0 * (m_inputStr.length() - 1) / m_phraseTimer.getDiffInSeconds();
+        Log.d(TAG, "WPM = " + String.format("%.6f", wpm));
 
         m_inputStr = "";
         prepareTask();

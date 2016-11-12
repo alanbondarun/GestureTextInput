@@ -39,6 +39,8 @@ public class WatchWriteActivity extends AppCompatActivity {
     private int m_inc_fixed_num = 0;
     private int m_fix_num = 0;
 
+    private NanoTimer m_phraseTimer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,6 +96,7 @@ public class WatchWriteActivity extends AppCompatActivity {
             feedbackFrameLayout.attachFeedbackTo(feedbackFrameLayout);
         }
 
+        m_phraseTimer = new NanoTimer();
         initTask();
     }
 
@@ -133,8 +136,11 @@ public class WatchWriteActivity extends AppCompatActivity {
         {
             if (te == WatchWriteInputView.TouchEvent.END)
             {
+                if (!m_phraseTimer.running())
+                    m_phraseTimer.begin();
                 if (m_curNode.getAct() == KeyNode.Act.DELETE)
                 {
+                    m_phraseTimer.check();
                     Log.d(TAG, "Delete one character");
                     m_inputStr = m_inputStr.substring(0, max(0, m_inputStr.length()-1));
                     m_inc_fixed_num++;
@@ -142,11 +148,13 @@ public class WatchWriteActivity extends AppCompatActivity {
                 }
                 else if (m_curNode.getAct() == KeyNode.Act.DONE)
                 {
+                    m_phraseTimer.end();
                     Log.d(TAG, "Input Done");
                     doneTask();
                 }
                 else if (m_curNode.getCharVal() != null)
                 {
+                    m_phraseTimer.check();
                     Log.d(TAG, "Input Result: " + m_curNode.getCharVal());
                     m_inputStr += String.valueOf(m_curNode.getCharVal());
                 }
@@ -232,6 +240,11 @@ public class WatchWriteActivity extends AppCompatActivity {
                 m_fix_num + ", INF = " + inc_not_fixed);
         Log.d(TAG, "correct=" + info.num_correct + ", insert=" + info.num_insert +
                 ", delete=" + info.num_delete + ", modify=" + info.num_modify);
+
+        double wpm = 0.0;
+        if (!MathUtils.fequal(m_phraseTimer.getDiffInSeconds(), 0))
+            wpm = 12.0 * (m_inputStr.length() - 1) / m_phraseTimer.getDiffInSeconds();
+        Log.d(TAG, "WPM = " + String.format("%.6f", wpm));
 
         m_inputStr = "";
         prepareTask();

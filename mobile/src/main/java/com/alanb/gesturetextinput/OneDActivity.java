@@ -48,6 +48,8 @@ public class OneDActivity extends AppCompatActivity {
     private int m_inc_fixed_num = 0;
     private int m_fix_num = 0;
 
+    private NanoTimer m_phraseTimer;
+
     public class TouchEvent
     {
         final static int DROP = -1;
@@ -159,6 +161,7 @@ public class OneDActivity extends AppCompatActivity {
             feedbackFrameLayout.attachFeedbackTo(feedbackFrameLayout);
         }
 
+        m_phraseTimer = new NanoTimer();
         initTask();
     }
 
@@ -226,7 +229,6 @@ public class OneDActivity extends AppCompatActivity {
                     builder.append(raw_str.substring(cj,
                             Math.min(cj + MAX_CHAR_PER_LINE, raw_str.length())));
                 }
-                Log.d(TAG, builder.toString());
                 m_viewTexts.get(ci).setText(builder.toString());
                 m_viewTexts.get(ci).setBackgroundColor(Color.TRANSPARENT);
             }
@@ -249,6 +251,11 @@ public class OneDActivity extends AppCompatActivity {
         Log.d(TAG, "correct=" + info.num_correct + ", insert=" + info.num_insert +
                 ", delete=" + info.num_delete + ", modify=" + info.num_modify);
 
+        double wpm = 0.0;
+        if (!MathUtils.fequal(m_phraseTimer.getDiffInSeconds(), 0))
+            wpm = 12.0 * (m_inputStr.length() - 1) / m_phraseTimer.getDiffInSeconds();
+        Log.d(TAG, "WPM = " + String.format("%.6f", wpm));
+
         m_inputStr = "";
         prepareTask();
     }
@@ -257,10 +264,13 @@ public class OneDActivity extends AppCompatActivity {
     {
         if (te.val == TouchEvent.END)
         {
+            if (!m_phraseTimer.running())
+                m_phraseTimer.begin();
             if (m_curNode != m_rootNode && m_curNode != null)
             {
                 if (m_curNode.getAct() == KeyNode.Act.DELETE)
                 {
+                    m_phraseTimer.check();
                     Log.d(TAG, "Delete one character");
                     m_inputStr = m_inputStr.substring(0, max(0, m_inputStr.length()-1));
                     m_inc_fixed_num++;
@@ -268,11 +278,13 @@ public class OneDActivity extends AppCompatActivity {
                 }
                 else if (m_curNode.getAct() == KeyNode.Act.DONE)
                 {
+                    m_phraseTimer.end();
                     Log.d(TAG, "Input Done");
                     doneTask();
                 }
                 else if (m_curNode.getCharVal() != null)
                 {
+                    m_phraseTimer.check();
                     Log.d(TAG, "input char = " + m_curNode.getCharVal());
                     m_inputStr += String.valueOf(m_curNode.getCharVal());
                 }
