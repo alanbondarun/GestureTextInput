@@ -11,6 +11,19 @@
     android:orientation="vertical"
     tools:context="com.alanb.gesturetextinput.OneDActivity">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/input_text_size_1line_margin"
+        android:layout_alignParentTop="true"
+        android:id="@+id/o_task_text"
+        android:textSize="@dimen/input_text_size" />
+    <TextView
+        android:layout_below="@+id/o_task_text"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/input_text_size_1line_margin"
+        android:id="@+id/o_input_text"
+        android:textSize="@dimen/input_text_size" />
+
     <FrameLayout
         android:id="@+id/o_upper_frame"
         android:layout_width="match_parent"
@@ -20,24 +33,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:id="@+id/o_task_text"
-                android:textSize="16sp" />
-            <TextView
-                android:layout_below="@+id/o_task_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/o_input_text"
-                android:textSize="16sp" />
-
             <LinearLayout
                 android:id="@+id/o_char_view"
-                android:layout_below="@+id/o_input_text"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="8dip"
+                android:layout_centerVertical="true"
                 android:orientation="horizontal"
                 android:layout_width="440dip"
                 android:layout_height="60dip">
@@ -89,6 +88,7 @@
             <LinearLayout
                 android:id="@+id/o_char_touch"
                 android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
                 android:layout_marginTop="36dip"
                 android:orientation="horizontal"
                 android:layout_width="440dip"

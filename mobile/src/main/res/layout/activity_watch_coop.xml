@@ -5,22 +5,22 @@
 
     <TextView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/input_text_size_margin"
         android:id="@+id/c_task_text"
-        android:textSize="16sp" />
+        android:textSize="@dimen/input_text_size" />
     <TextView
         android:layout_below="@+id/c_task_text"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/input_text_size_margin"
         android:id="@+id/c_input_text"
-        android:textSize="16sp" />
+        android:textSize="@dimen/input_text_size" />
 
     <com.alanb.gesturetextinput.TouchFeedbackFrameLayout
         android:id="@+id/c_touch_frame"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:layout_width="24mm"
-        android:layout_height="24mm">
+        android:layout_width="240dip"
+        android:layout_height="240dip">
         <LinearLayout
             android:id="@+id/c_char_view"
             android:orientation="vertical"

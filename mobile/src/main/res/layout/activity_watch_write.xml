@@ -11,6 +11,18 @@
     android:orientation="vertical"
     tools:context="com.alanb.gesturetextinput.WatchWriteActivity">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/input_text_size_margin"
+        android:id="@+id/w_task_text"
+        android:textSize="@dimen/input_text_size" />
+    <TextView
+        android:layout_below="@+id/w_task_text"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/input_text_size_margin"
+        android:id="@+id/w_input_text"
+        android:textSize="@dimen/input_text_size" />
+
     <FrameLayout
         android:id="@+id/w_upper_frame"
         android:layout_width="match_parent"
@@ -20,26 +32,13 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/w_task_text"
-                android:textSize="16sp" />
-            <TextView
-                android:layout_below="@+id/w_task_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/w_input_text"
-                android:textSize="16sp" />
-
             <LinearLayout
                 android:id="@+id/w_char_view"
-                android:layout_below="@+id/w_input_text"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="16dip"
+                android:layout_centerVertical="true"
                 android:orientation="vertical"
-                android:layout_width="24mm"
-                android:layout_height="24mm">
+                android:layout_width="@dimen/watchwrite_input_size"
+                android:layout_height="@dimen/watchwrite_input_size">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -120,13 +119,12 @@
         android:layout_weight="1">
         <LinearLayout
             android:id="@+id/w_char_touch"
-            android:layout_below="@+id/w_char_view"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="48dip"
-            android:layout_gravity="center_horizontal"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center"
             android:orientation="vertical"
-            android:layout_width="24mm"
-            android:layout_height="24mm">
+            android:layout_width="@dimen/watchwrite_input_size"
+            android:layout_height="@dimen/watchwrite_input_size">
         </LinearLayout>
     </com.alanb.gesturetextinput.TouchFeedbackFrameLayout>
 </LinearLayout>

@@ -4,6 +4,20 @@
     android:orientation="vertical"
     android:weightSum="2">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/input_text_size_margin"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:id="@+id/p_task_text"
+        android:textSize="@dimen/input_text_size" />
+    <TextView
+        android:layout_below="@id/p_task_text"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/input_text_size_margin"
+        android:id="@+id/p_input_text"
+        android:textSize="@dimen/input_text_size" />
+
     <FrameLayout
         android:id="@+id/p_upper_frame"
         android:layout_width="match_parent"
@@ -13,26 +27,12 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentStart="true"
-                android:id="@+id/p_task_text"
-                android:textSize="16sp" />
-            <TextView
-                android:layout_below="@id/p_task_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/p_input_text"
-                android:textSize="16sp" />
-
             <TableLayout
-                android:layout_below="@id/p_input_text"
                 android:layout_width="match_parent"
-                android:layout_height="180dip"
+                android:layout_height="160dip"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="12dip"
+                android:layout_centerVertical="true"
+                android:layout_marginTop="4dip"
                 android:layout_marginLeft="40dip"
                 android:layout_marginRight="40dip"
                 android:orientation="horizontal">

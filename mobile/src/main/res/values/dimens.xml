@@ -4,5 +4,9 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="palm_charview">16sp</dimen>
     <dimen name="watch_charview">16sp</dimen>
-    <dimen name="watch_coop_charview">16sp</dimen>
+    <dimen name="watch_coop_charview">24sp</dimen>
+    <dimen name="input_text_size">24sp</dimen>
+    <dimen name="input_text_size_1line_margin">32dip</dimen>
+    <dimen name="input_text_size_margin">60dip</dimen>
+    <dimen name="watchwrite_input_size">144dip</dimen>
 </resources>
