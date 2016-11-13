@@ -69,6 +69,8 @@ public class PalmActivity extends AppCompatActivity
     private NanoTimer m_phraseTimer;
     private NanoTimer m_predictTimer;
 
+    private TaskRecordWriter m_taskRecordWriter = null;
+
     private double angle_diff(double a, double b)
     {
         double diff = Math.abs(b - a);
@@ -366,6 +368,14 @@ public class PalmActivity extends AppCompatActivity
         m_taskTextView = (TextView) findViewById(R.id.p_task_text);
         if (m_taskMode)
         {
+            try
+            {
+                m_taskRecordWriter = new TaskRecordWriter(this, this.getClass());
+            }
+            catch (java.io.IOException e)
+            {
+                e.printStackTrace();
+            }
             m_taskLoader = new TaskPhraseLoader(this);
             prepareTask();
         }
@@ -394,16 +404,18 @@ public class PalmActivity extends AppCompatActivity
         int inc_correct = info.num_correct;
         int inc_not_fixed = info.num_delete + info.num_insert+ info.num_modify;
 
-        Log.d(TAG, "Task done");
-        Log.d(TAG, "C = " + inc_correct + ", IF = " + m_inc_fixed_num + ", F = " +
-                m_fix_num + ", INF = " + inc_not_fixed);
-        Log.d(TAG, "correct=" + info.num_correct + ", insert=" + info.num_insert +
-                ", delete=" + info.num_delete + ", modify=" + info.num_modify);
-
-        double wpm = 0.0;
-        if (!MathUtils.fequal(m_phraseTimer.getDiffInSeconds(), 0))
-            wpm = 12.0 * (m_inputStr.length() - 1) / m_phraseTimer.getDiffInSeconds();
-        Log.d(TAG, "WPM = " + String.format("%.6f", wpm));
+        if (m_taskRecordWriter != null)
+        {
+            m_taskRecordWriter.write(m_taskRecordWriter.new InfoBuilder()
+                    .setInputTime(m_phraseTimer.getDiffInSeconds())
+                    .setInputStr(m_inputStr)
+                    .setPresentedStr(m_taskStr)
+                    .setLayoutNum(0)
+                    .setNumC(info.num_correct)
+                    .setNumIf(m_inc_fixed_num)
+                    .setNumF(m_fix_num)
+                    .setNumInf(info.num_delete + info.num_insert+ info.num_modify));
+        }
 
         m_inputStr = "";
         prepareTask();
@@ -447,5 +459,15 @@ public class PalmActivity extends AppCompatActivity
             views.add(tv);
         }
         return views;
+    }
+
+    @Override
+    public void onDestroy()
+    {
+        super.onDestroy();
+        if (m_taskRecordWriter != null)
+        {
+            m_taskRecordWriter.close();
+        }
     }
 }

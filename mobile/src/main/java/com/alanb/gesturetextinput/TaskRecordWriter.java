@@ -35,7 +35,7 @@ public class TaskRecordWriter
 
     public TaskRecordWriter(Context context, Class<?> classname) throws java.io.IOException
     {
-        String fname = context.getString(R.string.task_record_prefix) + this.getClass().getSimpleName() +
+        String fname = context.getString(R.string.task_record_prefix) + classname.getSimpleName() +
                     context.getString(R.string.task_record_ext);
         File recordFile = new File(context.getExternalFilesDir(null), fname);
         if (recordFile.exists())
