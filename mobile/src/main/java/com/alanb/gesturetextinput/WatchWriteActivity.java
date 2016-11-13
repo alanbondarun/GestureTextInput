@@ -14,6 +14,10 @@ import android.widget.TextView;
 
 import com.alanb.gesturecommon.WatchWriteInputView;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import static java.lang.Math.max;
 
@@ -30,6 +34,7 @@ public class WatchWriteActivity extends AppCompatActivity {
     private TextView m_inputTextView;
     private ArrayList<TextView> m_viewTexts;
     private final boolean upperTouchFeedback = true;
+    private int m_pref_layout;
 
     private boolean m_taskMode;
     private TaskPhraseLoader m_taskLoader;
@@ -40,6 +45,7 @@ public class WatchWriteActivity extends AppCompatActivity {
     private int m_fix_num = 0;
 
     private NanoTimer m_phraseTimer;
+    private TaskRecordWriter m_taskRecordWriter = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,9 +53,9 @@ public class WatchWriteActivity extends AppCompatActivity {
         setContentView(R.layout.activity_watch_write);
 
         SharedPreferences prefs = getSharedPreferences(getString(R.string.app_pref_key), MODE_PRIVATE);
-        int pref_layout = prefs.getInt(getString(R.string.prefkey_watch_layout),
+        m_pref_layout = prefs.getInt(getString(R.string.prefkey_watch_layout),
                 getResources().getInteger(R.integer.pref_watch_layout_default));
-        switch (pref_layout)
+        switch (m_pref_layout)
         {
             case 0:
                 m_rootNode = KeyNode.generateKeyTree(this, R.raw.key_value_watch_2area);
@@ -110,6 +116,14 @@ public class WatchWriteActivity extends AppCompatActivity {
         if (m_taskMode)
         {
             m_taskLoader = new TaskPhraseLoader(this);
+            try
+            {
+                m_taskRecordWriter = new TaskRecordWriter(this, this.getClass());
+            }
+            catch (java.io.IOException e)
+            {
+                e.printStackTrace();
+            }
             prepareTask();
         }
         else
@@ -232,19 +246,19 @@ public class WatchWriteActivity extends AppCompatActivity {
             return;
 
         EditDistCalculator.EditInfo info = EditDistCalculator.calc(m_taskStr, m_inputStr);
-        int inc_correct = info.num_correct;
-        int inc_not_fixed = info.num_delete + info.num_insert+ info.num_modify;
 
-        Log.d(TAG, "Task done");
-        Log.d(TAG, "C = " + inc_correct + ", IF = " + m_inc_fixed_num + ", F = " +
-                m_fix_num + ", INF = " + inc_not_fixed);
-        Log.d(TAG, "correct=" + info.num_correct + ", insert=" + info.num_insert +
-                ", delete=" + info.num_delete + ", modify=" + info.num_modify);
-
-        double wpm = 0.0;
-        if (!MathUtils.fequal(m_phraseTimer.getDiffInSeconds(), 0))
-            wpm = 12.0 * (m_inputStr.length() - 1) / m_phraseTimer.getDiffInSeconds();
-        Log.d(TAG, "WPM = " + String.format("%.6f", wpm));
+        if (m_taskRecordWriter != null)
+        {
+            m_taskRecordWriter.write(m_taskRecordWriter.new InfoBuilder()
+                    .setInputTime(m_phraseTimer.getDiffInSeconds())
+                    .setInputStr(m_inputStr)
+                    .setPresentedStr(m_taskStr)
+                    .setLayoutNum(m_pref_layout)
+                    .setNumC(info.num_correct)
+                    .setNumIf(m_inc_fixed_num)
+                    .setNumF(m_fix_num)
+                    .setNumInf(info.num_delete + info.num_insert+ info.num_modify));
+        }
 
         m_inputStr = "";
         prepareTask();
@@ -293,5 +307,15 @@ public class WatchWriteActivity extends AppCompatActivity {
             }
         }
         this.m_curNode = node;
+    }
+
+    @Override
+    public void onDestroy()
+    {
+        super.onDestroy();
+        if (m_taskRecordWriter != null)
+        {
+            m_taskRecordWriter.close();
+        }
     }
 }
