@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 
 import com.alanb.gesturecommon.WatchWriteInputView;
@@ -35,10 +36,23 @@ public class WatchCooperatingActivity extends AppCompatActivity
     // DO NOT modify this directly; use updateCurNode() instead
     private KeyNode m_curNode;
 
+    private int m_pref_layout;
+
     private String m_inputStr = "";
     private TextView m_inputTextView;
     private ArrayList<TextView> m_viewTexts;
     private TouchFeedbackFrameLayout m_feedbackFrameLayout;
+
+    private boolean m_taskMode;
+    private TaskPhraseLoader m_taskLoader;
+    private TextView m_taskTextView;
+    private String m_taskStr = null;
+
+    private int m_inc_fixed_num = 0;
+    private int m_fix_num = 0;
+
+    private NanoTimer m_phraseTimer;
+    private TaskRecordWriter m_taskRecordWriter = null;
 
     private GoogleApiClient.ConnectionCallbacks connectionCallbacks =
             new GoogleApiClient.ConnectionCallbacks()
@@ -107,9 +121,9 @@ public class WatchCooperatingActivity extends AppCompatActivity
         setContentView(R.layout.activity_watch_coop);
 
         SharedPreferences prefs = getSharedPreferences(getString(R.string.app_pref_key), MODE_PRIVATE);
-        int pref_layout = prefs.getInt(getString(R.string.prefkey_watch_layout),
+        m_pref_layout = prefs.getInt(getString(R.string.prefkey_watch_layout),
                 getResources().getInteger(R.integer.pref_watch_layout_default));
-        switch (pref_layout)
+        switch (m_pref_layout)
         {
             case 0:
                 m_rootNode = KeyNode.generateKeyTree(this, R.raw.key_value_watch_2area);
@@ -145,6 +159,45 @@ public class WatchCooperatingActivity extends AppCompatActivity
         g_builder.addConnectionCallbacks(connectionCallbacks);
         g_builder.addOnConnectionFailedListener(failedListener);
         mGoogleApiClient = g_builder.build();
+
+        m_phraseTimer = new NanoTimer();
+        initTask();
+    }
+
+    private void initTask()
+    {
+        SharedPreferences prefs = getSharedPreferences(getString(R.string.app_pref_key), MODE_PRIVATE);
+        m_taskMode = prefs.getInt(getString(R.string.prefkey_task_mode),
+                getResources().getInteger(R.integer.pref_task_mode_default)) == 0;
+
+        m_taskTextView = (TextView) findViewById(R.id.c_task_text);
+        if (m_taskMode)
+        {
+            m_taskLoader = new TaskPhraseLoader(this);
+            try
+            {
+                m_taskRecordWriter = new TaskRecordWriter(this, this.getClass());
+            }
+            catch (java.io.IOException e)
+            {
+                e.printStackTrace();
+            }
+            prepareTask();
+        }
+        else
+        {
+            m_taskTextView.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    private void prepareTask()
+    {
+        if (!m_taskMode)
+            return;
+        m_taskStr = m_taskLoader.next();
+        m_taskTextView.setText(m_taskStr);
+        m_inc_fixed_num = 0;
+        m_fix_num = 0;
     }
 
     @Override
@@ -162,17 +215,39 @@ public class WatchCooperatingActivity extends AppCompatActivity
         super.onPause();
     }
 
+    @Override
+    protected void onDestroy()
+    {
+        super.onDestroy();
+        if (m_taskRecordWriter != null)
+        {
+            m_taskRecordWriter.close();
+        }
+    }
+
     private void processTouchEvent(WatchWriteInputView.TouchEvent te)
     {
         if (te == WatchWriteInputView.TouchEvent.END)
         {
+            if (!m_phraseTimer.running())
+                m_phraseTimer.begin();
             if (m_curNode.getAct() == KeyNode.Act.DELETE)
             {
+                m_phraseTimer.check();
                 Log.d(TAG, "Delete one character");
                 m_inputStr = m_inputStr.substring(0, max(0, m_inputStr.length()-1));
+                m_inc_fixed_num++;
+                m_fix_num++;
+            }
+            else if (m_curNode.getAct() == KeyNode.Act.DONE)
+            {
+                m_phraseTimer.end();
+                Log.d(TAG, "Input Done");
+                doneTask();
             }
             else if (m_curNode.getCharVal() != null)
             {
+                m_phraseTimer.check();
                 Log.d(TAG, "Input Result: " + m_curNode.getCharVal());
                 m_inputStr += String.valueOf(m_curNode.getCharVal());
             }
@@ -243,6 +318,30 @@ public class WatchCooperatingActivity extends AppCompatActivity
         }
     }
 
+    private void doneTask()
+    {
+        if (!m_taskMode)
+            return;
+
+        EditDistCalculator.EditInfo info = EditDistCalculator.calc(m_taskStr, m_inputStr);
+
+        if (m_taskRecordWriter != null)
+        {
+            m_taskRecordWriter.write(m_taskRecordWriter.new InfoBuilder()
+                    .setInputTime(m_phraseTimer.getDiffInSeconds())
+                    .setInputStr(m_inputStr)
+                    .setPresentedStr(m_taskStr)
+                    .setLayoutNum(m_pref_layout)
+                    .setNumC(info.num_correct)
+                    .setNumIf(m_inc_fixed_num)
+                    .setNumF(m_fix_num)
+                    .setNumInf(info.num_delete + info.num_insert+ info.num_modify));
+        }
+
+        m_inputStr = "";
+        prepareTask();
+    }
+
     private void updateViews(KeyNode node)
     {
         m_inputTextView.setText(m_inputStr + getString(R.string.end_of_input));
@@ -271,11 +370,15 @@ public class WatchCooperatingActivity extends AppCompatActivity
             {
                 String raw_str = node.getNextNode(ci).getShowStr();
                 StringBuilder builder = new StringBuilder();
-                for (int cj = 0; cj < raw_str.length(); cj += 3)
+
+                int line_chars = 3;
+                if (node.getNextNode(ci).getCharVal() == null)
+                    line_chars = 5;
+                for (int cj = 0; cj < raw_str.length(); cj += line_chars)
                 {
                     if (cj > 0)
                         builder.append("\n");
-                    builder.append(raw_str.substring(cj, Math.min(cj+3, raw_str.length())));
+                    builder.append(raw_str.substring(cj, Math.min(cj+line_chars, raw_str.length())));
                 }
                 m_viewTexts.get(ci).setText(builder.toString());
                 m_viewTexts.get(ci).setBackgroundColor(Color.TRANSPARENT);

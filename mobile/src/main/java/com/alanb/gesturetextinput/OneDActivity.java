@@ -362,7 +362,7 @@ public class OneDActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onDestroy()
+    protected void onDestroy()
     {
         super.onDestroy();
         if (m_taskRecordWriter != null)

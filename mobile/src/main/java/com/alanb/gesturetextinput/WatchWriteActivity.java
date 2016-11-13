@@ -310,7 +310,7 @@ public class WatchWriteActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onDestroy()
+    protected void onDestroy()
     {
         super.onDestroy();
         if (m_taskRecordWriter != null)
