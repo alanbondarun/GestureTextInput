@@ -7,6 +7,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,9 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.alanb.gesturecommon.WatchWriteInputView;
+import com.alanb.gesturetextinput.OneDInputView.TouchEvent;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -28,7 +32,6 @@ import static java.lang.Math.min;
 
 public class OneDActivity extends AppCompatActivity {
     private final String TAG = this.getClass().getName();
-    private LinearLayout m_touchAreaAll;
     private ArrayList<TextView> m_viewTexts;
     private KeyNode m_rootNode;
     // DO NOT modify this directly; use updateCurNode() instead
@@ -52,25 +55,6 @@ public class OneDActivity extends AppCompatActivity {
     private int m_pref_layout;
     private TaskRecordWriter m_taskRecordWriter = null;
 
-    public class TouchEvent
-    {
-        final static int DROP = -1;
-        final static int END = -2;
-        final static int MULTITOUCH = -3;
-        public final int val;
-        public TouchEvent(int v)
-        {
-            if (-3 <= v && v < 4)
-            {
-                this.val = v;
-            }
-            else
-            {
-                this.val = -1;
-            }
-        }
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,7 +76,6 @@ public class OneDActivity extends AppCompatActivity {
         m_touchArray = new ArrayList<>();
 
         m_inputTextView = (TextView) findViewById(R.id.o_input_text);
-        m_touchAreaAll = (LinearLayout) findViewById(R.id.o_char_touch);
 
         m_viewTexts = new ArrayList<>();
         m_viewTexts.add((TextView) findViewById(R.id.o_char_indi_1));
@@ -101,55 +84,6 @@ public class OneDActivity extends AppCompatActivity {
         m_viewTexts.add((TextView) findViewById(R.id.o_char_indi_4));
 
         updateViews(m_rootNode);
-
-        m_touchAreaAll.setOnTouchListener(new View.OnTouchListener() {
-            private TouchEvent prev_e = new TouchEvent(TouchEvent.DROP);
-            private boolean multi_occurred = false;
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                TouchEvent cur_e;
-                if (multi_occurred && (motionEvent.getAction() == MotionEvent.ACTION_DOWN
-                        || motionEvent.getAction() == MotionEvent.ACTION_MOVE))
-                {
-                    cur_e = new TouchEvent(TouchEvent.MULTITOUCH);
-                }
-                else
-                {
-                    multi_occurred = false;
-                    if (motionEvent.getPointerCount() >= 2)
-                    {
-                        // multi-touch detected, cancel the input
-                        multi_occurred = true;
-                        cur_e = new TouchEvent(TouchEvent.MULTITOUCH);
-                    }
-                    else if (motionEvent.getAction() == MotionEvent.ACTION_DOWN
-                            || motionEvent.getAction() == MotionEvent.ACTION_MOVE)
-                    {
-                        double xrel = motionEvent.getX() / view.getWidth();
-                        double yrel = motionEvent.getY() / view.getHeight();
-                        if (0 <= xrel && xrel <= 1 && 0 <= yrel && yrel <= 1)
-                        {
-                            cur_e = new TouchEvent((int) (xrel * 4.0));
-                        }
-                        else
-                        {
-                            cur_e = new TouchEvent(TouchEvent.DROP);
-                        }
-                    }
-                    else
-                    {
-                        cur_e = new TouchEvent(TouchEvent.END);
-                    }
-                }
-                if (cur_e.val != prev_e.val)
-                {
-                    OneDActivity.this.processTouch(cur_e);
-                    prev_e = cur_e;
-                }
-
-                return true;
-            }
-        });
 
         TouchFeedbackFrameLayout feedbackFrameLayout = (TouchFeedbackFrameLayout)
                 findViewById(R.id.o_touch_point_area);
@@ -162,6 +96,11 @@ public class OneDActivity extends AppCompatActivity {
         {
             feedbackFrameLayout.attachFeedbackTo(feedbackFrameLayout);
         }
+
+        LayoutInflater inflater = LayoutInflater.from(this);
+        OneDInputView inputView = (OneDInputView) inflater.inflate(R.layout.oned_touch_area, feedbackFrameLayout, false);
+        inputView.setOnTouchEventListener(m_onedTouchEventListener);
+        feedbackFrameLayout.addView(inputView);
 
         m_phraseTimer = new NanoTimer();
         initTask();
@@ -270,95 +209,114 @@ public class OneDActivity extends AppCompatActivity {
         prepareTask();
     }
 
-    public void processTouch(TouchEvent te)
+    public OneDInputView.OnTouchEventListener m_onedTouchEventListener =
+            new OneDInputView.OnTouchEventListener()
     {
-        if (te.val == TouchEvent.END)
+        @Override
+        public void onTouchEvent(TouchEvent te)
         {
-            if (!m_phraseTimer.running())
-                m_phraseTimer.begin();
-            if (m_curNode != m_rootNode && m_curNode != null)
+            if (te.val == TouchEvent.END)
             {
-                if (m_curNode.getAct() == KeyNode.Act.DELETE)
+                if (!m_phraseTimer.running())
+                    m_phraseTimer.begin();
+                if (m_curNode != m_rootNode && m_curNode != null)
                 {
-                    m_phraseTimer.check();
-                    Log.d(TAG, "Delete one character");
-                    m_inputStr = m_inputStr.substring(0, max(0, m_inputStr.length()-1));
-                    m_inc_fixed_num++;
-                    m_fix_num++;
-                }
-                else if (m_curNode.getAct() == KeyNode.Act.DONE)
-                {
-                    m_phraseTimer.end();
-                    Log.d(TAG, "Input Done");
-                    doneTask();
-                }
-                else if (m_curNode.getCharVal() != null)
-                {
-                    m_phraseTimer.check();
-                    Log.d(TAG, "input char = " + m_curNode.getCharVal());
-                    m_inputStr += String.valueOf(m_curNode.getCharVal());
-                }
-            }
-            updateViews(m_rootNode);
-            m_touchArray.clear();
-        }
-        else if (te.val == TouchEvent.DROP)
-        {
-            m_touchArray.add(te);
-        }
-        else if (te.val == TouchEvent.MULTITOUCH)
-        {
-            updateViews(m_rootNode);
-            m_touchArray.clear();
-            m_touchArray.add(te);
-        }
-        else
-        {
-            KeyNode next_node = null;
-            if (m_touchArray.size() <= 0 || m_touchArray.get(m_touchArray.size()-1).val >= 0)
-            {
-                Log.d(TAG, "Touch = " + te.val);
-                if (m_touchArray.size() >= 2)
-                {
-                    int dx1 = te.val - m_touchArray.get(m_touchArray.size()-1).val;
-                    int dx2 = m_touchArray.get(m_touchArray.size()-1).val - m_touchArray.get(m_touchArray.size()-2).val;
-                    if (dx1/abs(dx1) == dx2/abs(dx2))
+                    if (m_curNode.getAct() == KeyNode.Act.DELETE)
                     {
-                        next_node = m_curNode.getParent().getNextNode(te.val);
+                        m_phraseTimer.check();
+                        Log.d(TAG, "Delete one character");
+                        m_inputStr = m_inputStr.substring(0, max(0, m_inputStr.length()-1));
+                        m_inc_fixed_num++;
+                        m_fix_num++;
+                    }
+                    else if (m_curNode.getAct() == KeyNode.Act.DONE)
+                    {
+                        m_phraseTimer.end();
+                        Log.d(TAG, "Input Done");
+                        doneTask();
+                    }
+                    else if (m_curNode.getCharVal() != null)
+                    {
+                        m_phraseTimer.check();
+                        Log.d(TAG, "input char = " + m_curNode.getCharVal());
+                        m_inputStr += String.valueOf(m_curNode.getCharVal());
+                    }
+                }
+                updateViews(m_rootNode);
+                m_touchArray.clear();
+            }
+            else if (te.val == TouchEvent.DROP)
+            {
+                m_touchArray.add(te);
+            }
+            else if (te.val == TouchEvent.MULTITOUCH)
+            {
+                updateViews(m_rootNode);
+                m_touchArray.clear();
+                m_touchArray.add(te);
+            }
+            else
+            {
+                KeyNode next_node = null;
+                if (isValidTouchSequence(m_touchArray))
+                {
+                    Log.d(TAG, "Touch = " + te.val);
+                    if (m_touchArray.size() >= 2)
+                    {
+                        int dx1 = te.val - m_touchArray.get(m_touchArray.size()-1).val;
+                        int dx2 = m_touchArray.get(m_touchArray.size()-1).val - m_touchArray.get(m_touchArray.size()-2).val;
+                        if (dx1/abs(dx1) == dx2/abs(dx2))
+                        {
+                            next_node = m_curNode.getParent().getNextNode(te.val);
+                        }
+                        else
+                        {
+                            next_node = m_curNode.getNextNode(te.val);
+                        }
                     }
                     else
                     {
                         next_node = m_curNode.getNextNode(te.val);
                     }
-                }
-                else
-                {
-                    next_node = m_curNode.getNextNode(te.val);
-                }
-            }
 
-            KeyNode sibling_node = m_curNode.getParent();
-            if (sibling_node != null)
-            {
-                sibling_node = sibling_node.getNextNode(te.val);
-            }
+                    KeyNode sibling_node = m_curNode.getParent();
+                    if (sibling_node != null)
+                    {
+                        sibling_node = sibling_node.getNextNode(te.val);
+                    }
 
-            if (next_node != null)
-            {
-                updateViews(next_node);
-                m_touchArray.add(te);
-            }
-            else if (sibling_node != null)
-            {
-                updateViews(sibling_node);
-                m_touchArray.add(te);
-            }
-            else
-            {
-                m_touchArray.add(new TouchEvent(TouchEvent.DROP));
-                Log.d(TAG, "Touch drop: end reached");
+                    if (next_node != null)
+                    {
+                        updateViews(next_node);
+                        m_touchArray.add(te);
+                    }
+                    else if (sibling_node != null)
+                    {
+                        updateViews(sibling_node);
+                        m_touchArray.add(te);
+                    }
+                    else
+                    {
+                        m_touchArray.add(new TouchEvent(TouchEvent.DROP));
+                        Log.d(TAG, "Touch drop: end reached");
+                    }
+                }
             }
         }
+    };
+
+    private boolean isValidTouchSequence(ArrayList<TouchEvent> events)
+    {
+        if (events.size() <= 0 ||
+                (events.get(events.size()-1).val != TouchEvent.DROP &&
+                        events.get(events.size()-1).val != TouchEvent.MULTITOUCH))
+            return true;
+        if (events.size() == 1 && events.get(0).val == TouchEvent.DROP)
+        {
+            events.clear();
+            return true;
+        }
+        return false;
     }
 
     @Override

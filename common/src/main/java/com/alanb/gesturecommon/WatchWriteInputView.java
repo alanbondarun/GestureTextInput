@@ -2,6 +2,8 @@ package com.alanb.gesturecommon;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,69 +15,35 @@ public class WatchWriteInputView extends View
         AREA1, AREA2, AREA3, AREA4, AREA_OTHER, DROP, END, MULTITOUCH
     }
 
-    private final double TOUCH_SIZE_RATIO = 0.4;
-    private Builder m_prefs;
-    private TouchEvent prev_e = TouchEvent.AREA_OTHER;
-    private boolean multi_occurred = false;
-
     public interface OnTouchListener
     {
-        public void onTouch(MotionEvent motionEvent);
+        void onTouch(MotionEvent motionEvent);
     }
     public interface OnTouchEventListener
     {
-        public void onTouchEvent(TouchEvent te);
+        void onTouchEvent(TouchEvent te);
     }
 
-    public static class Builder
+    private final double TOUCH_SIZE_RATIO = 0.4;
+    private TouchEvent prev_e = TouchEvent.AREA_OTHER;
+    private boolean multi_occurred = false;
+
+    private OnTouchListener m_onTouchListener;
+    private OnTouchEventListener m_onTouchEventlistener;
+
+    public WatchWriteInputView(Context context, AttributeSet set)
     {
-        private Context context = null;
-        private OnTouchEventListener listener = null;
-        private WatchWriteInputView.OnTouchListener t_listener = null;
-        private Drawable background = null;
-
-        public Builder(Context context)
-        {
-            this.context = context;
-        }
-
-        public void setOnTouchEventListener(OnTouchEventListener l)
-        {
-            this.listener = l;
-        }
-
-        public void setOnTouchListener(WatchWriteInputView.OnTouchListener l)
-        {
-            this.t_listener = l;
-        }
-
-        public void setBackground(int id)
-        {
-            background = context.getResources().getDrawable(id, context.getTheme());
-        }
-
-        public WatchWriteInputView build()
-        {
-            if (listener == null)
-                return null;
-            if (background == null)
-                return null;
-            return new WatchWriteInputView(this);
-        }
+        super(context, set);
     }
 
-    public WatchWriteInputView(Context context)
+    public void setOnTouchEventListener(OnTouchEventListener l)
     {
-        super(context);
+        this.m_onTouchEventlistener = l;
     }
 
-    public WatchWriteInputView(Builder builder)
+    public void setOnTouchListener(WatchWriteInputView.OnTouchListener l)
     {
-        super(builder.context);
-        this.m_prefs = builder;
-        this.setBackground(m_prefs.background);
-        this.setLayoutParams(new ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        this.m_onTouchListener = l;
     }
 
     @Override
@@ -148,15 +116,15 @@ public class WatchWriteInputView extends View
                 cur_e = TouchEvent.END;
             }
         }
-        if (cur_e != prev_e)
+        if (cur_e != prev_e && this.m_onTouchEventlistener != null)
         {
-            this.m_prefs.listener.onTouchEvent(cur_e);
+            this.m_onTouchEventlistener.onTouchEvent(cur_e);
+            prev_e = cur_e;
         }
-        prev_e = cur_e;
 
-        if (this.m_prefs.t_listener != null)
+        if (this.m_onTouchListener != null)
         {
-            this.m_prefs.t_listener.onTouch(motionEvent);
+            this.m_onTouchListener.onTouch(motionEvent);
         }
         return true;
     }

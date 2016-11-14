@@ -117,14 +117,5 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1">
-        <LinearLayout
-            android:id="@+id/w_char_touch"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:layout_gravity="center"
-            android:orientation="vertical"
-            android:layout_width="@dimen/watchwrite_input_size"
-            android:layout_height="@dimen/watchwrite_input_size">
-        </LinearLayout>
     </com.alanb.gesturetextinput.TouchFeedbackFrameLayout>
 </LinearLayout>

@@ -7,9 +7,11 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alanb.gesturecommon.WatchWriteInputView;
@@ -83,13 +85,6 @@ public class WatchWriteActivity extends AppCompatActivity {
 
         updateViews(m_rootNode);
 
-        WatchWriteInputView.Builder builder = new WatchWriteInputView.Builder(this);
-        builder.setOnTouchEventListener(m_wwTouchListener);
-        builder.setBackground(R.drawable.w_touch_back);
-        m_touchInputView = builder.build();
-
-        ((LinearLayout)(findViewById(R.id.w_char_touch))).addView(m_touchInputView);
-
         TouchFeedbackFrameLayout feedbackFrameLayout = (TouchFeedbackFrameLayout)
                 findViewById(R.id.w_touch_frame);
         if (upperTouchFeedback)
@@ -101,6 +96,11 @@ public class WatchWriteActivity extends AppCompatActivity {
         {
             feedbackFrameLayout.attachFeedbackTo(feedbackFrameLayout);
         }
+
+        LayoutInflater inflater = LayoutInflater.from(this);
+        m_touchInputView = (WatchWriteInputView) inflater.inflate(R.layout.watch_touch_area, feedbackFrameLayout, false);
+        m_touchInputView.setOnTouchEventListener(m_wwTouchListener);
+        feedbackFrameLayout.addView(m_touchInputView);
 
         m_phraseTimer = new NanoTimer();
         initTask();
@@ -148,6 +148,7 @@ public class WatchWriteActivity extends AppCompatActivity {
         @Override
         public void onTouchEvent(WatchWriteInputView.TouchEvent te)
         {
+            Log.d(TAG, "event = " + te.toString());
             if (te == WatchWriteInputView.TouchEvent.END)
             {
                 if (!m_phraseTimer.running())
@@ -189,9 +190,7 @@ public class WatchWriteActivity extends AppCompatActivity {
             }
             else if (te != WatchWriteInputView.TouchEvent.AREA_OTHER)
             {
-                if (m_gestureTouchAreas.size() <= 0 ||
-                        (m_gestureTouchAreas.get(m_gestureTouchAreas.size()-1) != WatchWriteInputView.TouchEvent.DROP &&
-                                m_gestureTouchAreas.get(m_gestureTouchAreas.size()-1) != WatchWriteInputView.TouchEvent.MULTITOUCH))
+                if (isValidTouchSequence(m_gestureTouchAreas))
                 {
                     KeyNode next_node = null;
                     KeyNode sibling_node = m_curNode.getParent();
@@ -239,6 +238,15 @@ public class WatchWriteActivity extends AppCompatActivity {
             }
         }
     };
+
+    private boolean isValidTouchSequence(ArrayList<WatchWriteInputView.TouchEvent> events)
+    {
+        if (events.size() <= 0 ||
+                (events.get(events.size()-1) != WatchWriteInputView.TouchEvent.DROP &&
+                        events.get(events.size()-1) != WatchWriteInputView.TouchEvent.MULTITOUCH))
+            return true;
+        return (events.size() == 1 && events.get(0) == WatchWriteInputView.TouchEvent.DROP);
+    }
 
     private void doneTask()
     {

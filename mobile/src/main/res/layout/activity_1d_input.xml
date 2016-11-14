@@ -29,51 +29,48 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1">
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
 
-            <LinearLayout
-                android:id="@+id/o_char_view"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:orientation="horizontal"
-                android:layout_width="440dip"
-                android:layout_height="60dip">
-                <TextView
-                    android:text=""
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.25"
-                    android:gravity="center"
-                    android:id="@+id/o_char_indi_1"
-                    android:textSize="20sp" />
-                <TextView
-                    android:text=""
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.25"
-                    android:gravity="center"
-                    android:id="@+id/o_char_indi_2"
-                    android:textSize="20sp" />
-                <TextView
-                    android:text=""
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.25"
-                    android:gravity="center"
-                    android:id="@+id/o_char_indi_3"
-                    android:textSize="20sp" />
-                <TextView
-                    android:text=""
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.25"
-                    android:gravity="center"
-                    android:id="@+id/o_char_indi_4"
-                    android:textSize="20sp" />
-            </LinearLayout>
-        </RelativeLayout>
+        <LinearLayout
+            android:id="@+id/o_char_view"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center"
+            android:orientation="horizontal"
+            android:layout_width="440dip"
+            android:layout_height="60dip">
+            <TextView
+                android:text=""
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="0.25"
+                android:gravity="center"
+                android:id="@+id/o_char_indi_1"
+                android:textSize="20sp" />
+            <TextView
+                android:text=""
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="0.25"
+                android:gravity="center"
+                android:id="@+id/o_char_indi_2"
+                android:textSize="20sp" />
+            <TextView
+                android:text=""
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="0.25"
+                android:gravity="center"
+                android:id="@+id/o_char_indi_3"
+                android:textSize="20sp" />
+            <TextView
+                android:text=""
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="0.25"
+                android:gravity="center"
+                android:id="@+id/o_char_indi_4"
+                android:textSize="20sp" />
+        </LinearLayout>
     </FrameLayout>
 
     <com.alanb.gesturetextinput.TouchFeedbackFrameLayout
@@ -81,49 +78,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <LinearLayout
-                android:id="@+id/o_char_touch"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:layout_marginTop="36dip"
-                android:orientation="horizontal"
-                android:layout_width="440dip"
-                android:layout_height="60dip">
-
-                <RelativeLayout
-                    android:id="@+id/o_touchArea1"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.25"
-                    android:background="@color/colorTouchBackground">
-                </RelativeLayout>
-                <RelativeLayout
-                    android:id="@+id/o_touchArea2"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.25"
-                    android:background="@color/colorTouchPink">
-                </RelativeLayout>
-                <RelativeLayout
-                    android:id="@+id/o_touchArea3"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.25"
-                    android:background="@color/colorTouchBackground">
-                </RelativeLayout>
-                <RelativeLayout
-                    android:id="@+id/o_touchArea4"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.25"
-                    android:background="@color/colorTouchPink">
-                </RelativeLayout>
-            </LinearLayout>
-        </RelativeLayout>
     </com.alanb.gesturetextinput.TouchFeedbackFrameLayout>
 
 </LinearLayout>

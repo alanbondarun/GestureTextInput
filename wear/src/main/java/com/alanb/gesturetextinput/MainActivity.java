@@ -40,14 +40,14 @@ public class MainActivity extends WearableActivity
         setContentView(R.layout.activity_main);
         setAmbientEnabled();
 
-        WatchWriteInputView.Builder wwbuilder = new WatchWriteInputView.Builder(this);
+        /*WatchWriteInputView.Builder wwbuilder = new WatchWriteInputView.Builder(this);
         wwbuilder.setOnTouchEventListener(wwTouchEventListener);
         wwbuilder.setOnTouchListener(wwTouchListener);
         wwbuilder.setBackground(R.drawable.w_touch_back);
         WatchWriteInputView touchInputView = wwbuilder.build();
 
         m_charTouchLayout = (LinearLayout)(findViewById(R.id.w_char_touch));
-        m_charTouchLayout.addView(touchInputView);
+        m_charTouchLayout.addView(touchInputView);*/
 
         GoogleApiClient.Builder builder = new GoogleApiClient.Builder(this);
         builder.addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks()

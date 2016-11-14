@@ -1,11 +1,15 @@
 package com.alanb.gesturetextinput;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 public class TouchFeedbackFrameLayout extends FrameLayout
 {
@@ -40,6 +44,16 @@ public class TouchFeedbackFrameLayout extends FrameLayout
     public boolean onTouchEvent(MotionEvent motionEvent)
     {
         m_feedback_view.setCursorPos(motionEvent);
+
+        for (int ci=0; ci<this.getChildCount(); ci++)
+        {
+            Rect hitRect = new Rect();
+            (this.getChildAt(ci)).getHitRect(hitRect);
+            MotionEvent child_event = MotionEvent.obtain(motionEvent);
+            child_event.setLocation(child_event.getX() - hitRect.left, child_event.getY() - hitRect.top);
+            (this.getChildAt(ci)).dispatchTouchEvent(child_event);
+        }
+
         return true;
     }
 

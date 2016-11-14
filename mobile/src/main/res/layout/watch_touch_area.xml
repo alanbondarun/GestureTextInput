@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.alanb.gesturecommon.WatchWriteInputView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_centerHorizontal="true"
+    android:layout_centerVertical="true"
+    android:layout_gravity="center"
+    android:orientation="vertical"
+    android:background="@drawable/w_touch_back"
+    android:layout_width="@dimen/watchwrite_input_size"
+    android:layout_height="@dimen/watchwrite_input_size">
+</com.alanb.gesturecommon.WatchWriteInputView>
