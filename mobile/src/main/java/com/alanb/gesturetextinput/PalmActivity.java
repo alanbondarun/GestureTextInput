@@ -45,7 +45,8 @@ public class PalmActivity extends AppCompatActivity
     private final int SECOND_DIR_PERIOD = 5;
     private ArrayList<Double> m_point_angles;
     private boolean m_group_selected = false;
-    private final double ANGLE_THRESH = 22.5 * Math.PI / 180.0;
+    private final double ANGLE_THRESH = 35.0 * Math.PI / 180.0;
+    private final double SCORE_THRESH = 1.0;
 
     private final String TAG = this.getClass().getName();
     private GestureOverlayView m_gestureView;
@@ -97,6 +98,8 @@ public class PalmActivity extends AppCompatActivity
             int ccand = 0;
             for (; ccand < pred_list.size(); ccand++)
             {
+                if (pred_list.get(ccand).score < SCORE_THRESH)
+                    continue;
                 if (pred_list.get(ccand).name.equals("done"))
                     break;
 
@@ -118,7 +121,7 @@ public class PalmActivity extends AppCompatActivity
                     break;
                 }
             }
-            if (ccand >= pred_list.size() && DEBUG_MODE)
+            if (ccand >= pred_list.size())
             {
                 Log.d(TAG, "gesture prediction failed");
                 return null;
@@ -129,8 +132,7 @@ public class PalmActivity extends AppCompatActivity
             }
         }
 
-        if (DEBUG_MODE)
-            Log.d(TAG, "gesture prediction failed");
+        Log.d(TAG, "gesture prediction failed");
         return null;
     }
 
@@ -242,12 +244,20 @@ public class PalmActivity extends AppCompatActivity
                             {
                                 for (int ci = 0; ci < PalmGestureGenerator.gesture_labels.length; ci++)
                                 {
-                                    if (PalmGestureGenerator.gesture_labels[ci].equals(input_str))
+                                    if (input_str.equals(PalmGestureGenerator.done_gesture_label))
+                                    {
+                                        highlightAll(true);
+                                    }
+                                    else if (PalmGestureGenerator.gesture_labels[ci].equals(input_str))
                                     {
                                         highlightCharacter(PalmGestureGenerator.gesture_layout_dir[ci][0],
                                                 PalmGestureGenerator.gesture_layout_dir[ci][1]);
                                     }
                                 }
+                            }
+                            else
+                            {
+                                highlightAll(false);
                             }
                         }
                     }
@@ -335,6 +345,23 @@ public class PalmActivity extends AppCompatActivity
                     {
                         tv.setBackgroundColor(nonSelectedColor);
                     }
+                }
+            }
+        }
+    }
+
+    private void highlightAll(boolean highlight)
+    {
+        for (LayoutDir dir1: layoutDirs)
+        {
+            for (TextView tv: m_charViewGroups.get(dir1.ordinal()))
+            {
+                if (tv != null)
+                {
+                    if (highlight)
+                        tv.setBackgroundColor(selectedColor);
+                    else
+                        tv.setBackgroundColor(nonSelectedColor);
                 }
             }
         }

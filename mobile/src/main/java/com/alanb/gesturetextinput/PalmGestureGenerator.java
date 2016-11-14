@@ -17,7 +17,7 @@ public class PalmGestureGenerator
     private static final float SAMPLE_PER_SEC = 120f;
     private static GestureStore m_store = null;
 
-    private static final String done_gesture_label = "done";
+    public static final String done_gesture_label = "done";
     private static final double[] done_gesture_center = { 500, 500 };
     private static final double done_geture_radius = 400;
 
@@ -87,7 +87,8 @@ public class PalmGestureGenerator
             {LayoutDir.R, LayoutDir.LU}, {LayoutDir.R, LayoutDir.U}, {LayoutDir.R, LayoutDir.N}, {LayoutDir.R, LayoutDir.LD}, {LayoutDir.R, LayoutDir.D},
             {LayoutDir.LD, LayoutDir.L}, {LayoutDir.LD, LayoutDir.N}, {LayoutDir.LD, LayoutDir.R},
             {LayoutDir.D, LayoutDir.L}, {LayoutDir.D, LayoutDir.N}, {LayoutDir.D, LayoutDir.R},
-            {LayoutDir.RD, LayoutDir.L}, {LayoutDir.RD, LayoutDir.N}, {LayoutDir.RD, LayoutDir.R}, {LayoutDir.N, LayoutDir.N}
+            {LayoutDir.RD, LayoutDir.L}, {LayoutDir.RD, LayoutDir.N}, {LayoutDir.RD, LayoutDir.R},
+            {LayoutDir.N, LayoutDir.R}, {LayoutDir.N, LayoutDir.R}, {LayoutDir.N, LayoutDir.R}, {LayoutDir.N, LayoutDir.R}
     };
 
     private static GestureStore createGestureLibFromSource()
@@ -131,21 +132,27 @@ public class PalmGestureGenerator
 
     private static void addDoneGesture(GestureStore store)
     {
-        ArrayList<GesturePoint> points = new ArrayList<>();
-        double ttime = 0;
-        double tangle = 0;
-        while (tangle < 2 * Math.PI)
+        for (int ci = 1; ci >= -1; ci -= 2)
         {
-            points.add(new GesturePoint((float)(done_gesture_center[0] + done_geture_radius * Math.cos(tangle)),
-                    (float)(done_gesture_center[0] + done_geture_radius * Math.sin(tangle)),
-                    (long)(ttime)));
-            tangle += (GESTURE_SPEED * 1000f / SAMPLE_PER_SEC) / done_geture_radius;
-            ttime += 1000f / SAMPLE_PER_SEC;
-        }
+            for (int cj = 1; cj >= -1; cj -= 2)
+            {
+                ArrayList<GesturePoint> points = new ArrayList<>();
+                double ttime = 0;
+                double tangle = 0;
+                while (tangle < 2 * Math.PI)
+                {
+                    points.add(new GesturePoint((float)(done_gesture_center[0] + ci * done_geture_radius * Math.cos(tangle)),
+                            (float)(done_gesture_center[0] + cj * done_geture_radius * Math.sin(tangle)),
+                            (long)(ttime)));
+                    tangle += (GESTURE_SPEED * 1000f / SAMPLE_PER_SEC) / done_geture_radius;
+                    ttime += 1000f / SAMPLE_PER_SEC;
+                }
 
-        Gesture gesture = new Gesture();
-        gesture.addStroke(new GestureStroke(points));
-        store.addGesture(done_gesture_label, gesture);
+                Gesture gesture = new Gesture();
+                gesture.addStroke(new GestureStroke(points));
+                store.addGesture(done_gesture_label, gesture);
+            }
+        }
     }
 
     public static GestureStore get()
