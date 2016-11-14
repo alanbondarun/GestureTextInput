@@ -176,75 +176,92 @@ public class PalmActivity extends AppCompatActivity
     private View.OnTouchListener m_gestureViewTouchListener =
             new View.OnTouchListener()
     {
+        private boolean multi_occurred = false;
         private ArrayList<GesturePoint> m_curGPoints = new ArrayList<>();
         @Override
         public boolean onTouch(View view, MotionEvent motionEvent)
         {
-            if (motionEvent.getAction() == MotionEvent.ACTION_MOVE ||
-                    motionEvent.getAction() == MotionEvent.ACTION_DOWN)
+            if (multi_occurred)
             {
-                m_curGPoints.add(new GesturePoint(motionEvent.getX(), motionEvent.getY(),
-                        System.currentTimeMillis()));
-                if (m_curGPoints.size() >= 2)
+                highlightBasic();
+                if (motionEvent.getPointerCount() <= 1 && !(motionEvent.getAction() == MotionEvent.ACTION_MOVE ||
+                        motionEvent.getAction() == MotionEvent.ACTION_DOWN))
                 {
-                    double dx = motionEvent.getX() - m_curGPoints.get(0).x;
-                    double dy = m_curGPoints.get(0).y - motionEvent.getY();
-                    if (Math.hypot(dx, dy) >= FIRST_SAMPLE_DIST_THRESH)
+                    multi_occurred = false;
+                }
+            }
+            else
+            {
+                if (motionEvent.getPointerCount() >= 2)
+                {
+                    multi_occurred = true;
+                }
+                else if (motionEvent.getAction() == MotionEvent.ACTION_MOVE ||
+                        motionEvent.getAction() == MotionEvent.ACTION_DOWN)
+                {
+                    m_curGPoints.add(new GesturePoint(motionEvent.getX(), motionEvent.getY(),
+                            System.currentTimeMillis()));
+                    if (m_curGPoints.size() >= 2)
                     {
-                        m_point_angles.add(atan2(dy, dx));
-                    }
-                    if (m_point_angles.size() >= FIRST_DIR_SAMPLE && !m_group_selected)
-                    {
-                        // ASSUMPTION: angles do not change radically during the gesture...
-                        double angle_sum = 0;
-                        for (double a: m_point_angles)
+                        double dx = motionEvent.getX() - m_curGPoints.get(0).x;
+                        double dy = m_curGPoints.get(0).y - motionEvent.getY();
+                        if (Math.hypot(dx, dy) >= FIRST_SAMPLE_DIST_THRESH)
                         {
-                            if (a <= -Math.PI + ANGLE_THRESH)
-                            {
-                                angle_sum += (2 * Math.PI) + a;
-                            }
-                            else
-                            {
-                                angle_sum += a;
-                            }
+                            m_point_angles.add(atan2(dy, dx));
                         }
-                        angle_sum /= m_point_angles.size();
-                        angle_sum -= Math.floor(angle_sum / (2.0 * Math.PI)) * (2.0 * Math.PI);
-                        // now angle_sum in range [0, 2*PI]
-                        int angle_idx = ((int) Math.round(angle_sum * 8 / (2.0 * Math.PI))) % 8;
-
-                        final LayoutDir[] dirs_cw = { LayoutDir.R, LayoutDir.RU, LayoutDir.U,
-                                LayoutDir.LU, LayoutDir.L, LayoutDir.LD, LayoutDir.D, LayoutDir.RD};
-                        highlightGroup(dirs_cw[angle_idx]);
-                        m_group_selected = true;
-                    }
-                    if (m_curGPoints.size() >= SECOND_DIR_SAMPLE &&
-                            (m_curGPoints.size() - SECOND_DIR_SAMPLE) % SECOND_DIR_PERIOD == 0)
-                    {
-                        String input_str = predictGesture(m_curGPoints, PalmGestureGenerator.get());
-                        if (input_str != null)
+                        if (m_point_angles.size() >= FIRST_DIR_SAMPLE && !m_group_selected)
                         {
-                            for (int ci=0; ci<PalmGestureGenerator.gesture_labels.length; ci++)
+                            // ASSUMPTION: angles do not change radically during the gesture...
+                            double angle_sum = 0;
+                            for (double a : m_point_angles)
                             {
-                                if (PalmGestureGenerator.gesture_labels[ci].equals(input_str))
+                                if (a <= -Math.PI + ANGLE_THRESH)
                                 {
-                                    highlightCharacter(PalmGestureGenerator.gesture_layout_dir[ci][0],
-                                            PalmGestureGenerator.gesture_layout_dir[ci][1]);
+                                    angle_sum += (2 * Math.PI) + a;
+                                }
+                                else
+                                {
+                                    angle_sum += a;
+                                }
+                            }
+                            angle_sum /= m_point_angles.size();
+                            angle_sum -= Math.floor(angle_sum / (2.0 * Math.PI)) * (2.0 * Math.PI);
+                            // now angle_sum in range [0, 2*PI]
+                            int angle_idx = ((int) Math.round(angle_sum * 8 / (2.0 * Math.PI))) % 8;
+
+                            final LayoutDir[] dirs_cw = {LayoutDir.R, LayoutDir.RU, LayoutDir.U,
+                                    LayoutDir.LU, LayoutDir.L, LayoutDir.LD, LayoutDir.D, LayoutDir.RD};
+                            highlightGroup(dirs_cw[angle_idx]);
+                            m_group_selected = true;
+                        }
+                        if (m_curGPoints.size() >= SECOND_DIR_SAMPLE &&
+                                (m_curGPoints.size() - SECOND_DIR_SAMPLE) % SECOND_DIR_PERIOD == 0)
+                        {
+                            String input_str = predictGesture(m_curGPoints, PalmGestureGenerator.get());
+                            if (input_str != null)
+                            {
+                                for (int ci = 0; ci < PalmGestureGenerator.gesture_labels.length; ci++)
+                                {
+                                    if (PalmGestureGenerator.gesture_labels[ci].equals(input_str))
+                                    {
+                                        highlightCharacter(PalmGestureGenerator.gesture_layout_dir[ci][0],
+                                                PalmGestureGenerator.gesture_layout_dir[ci][1]);
+                                    }
                                 }
                             }
                         }
                     }
                 }
-            }
-            else
-            {
-                processInput(m_curGPoints);
-                m_curGPoints.clear();
+                else
+                {
+                    processInput(m_curGPoints);
+                    m_curGPoints.clear();
 
-                // initialization for next gesture input
-                m_point_angles.clear();
-                m_group_selected = false;
-                highlightBasic();
+                    // initialization for next gesture input
+                    m_point_angles.clear();
+                    m_group_selected = false;
+                    highlightBasic();
+                }
             }
             return false;
         }
