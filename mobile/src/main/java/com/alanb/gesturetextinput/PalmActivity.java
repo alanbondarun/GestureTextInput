@@ -41,8 +41,8 @@ public class PalmActivity extends AppCompatActivity
     private final boolean DEBUG_MODE = false;
     private final double FIRST_SAMPLE_DIST_THRESH = 50.0;
     private final int FIRST_DIR_SAMPLE = 7;
-    private final int SECOND_DIR_SAMPLE = 25;
-    private final int SECOND_DIR_PERIOD = 3;
+    private final int SECOND_DIR_SAMPLE = 15;
+    private final int SECOND_DIR_PERIOD = 5;
     private ArrayList<Double> m_point_angles;
     private boolean m_group_selected = false;
     private final double ANGLE_THRESH = 22.5 * Math.PI / 180.0;
@@ -97,6 +97,9 @@ public class PalmActivity extends AppCompatActivity
             int ccand = 0;
             for (; ccand < pred_list.size(); ccand++)
             {
+                if (pred_list.get(ccand).name.equals("done"))
+                    break;
+
                 // prune out the gesture prediction based on direction from start pos to finish pos
                 double dx = points.get(points.size()-1).x - points.get(0).x;
                 double dy = points.get(0).y - points.get(points.size()-1).y;
@@ -137,7 +140,7 @@ public class PalmActivity extends AppCompatActivity
         String input_str = predictGesture(points, PalmGestureGenerator.get());
         m_predictTimer.check();
         m_predictTimer.end();
-        Log.d(TAG, "predict time: " + m_predictTimer.getDiffInSeconds());
+        //Log.d(TAG, "predict time: " + m_predictTimer.getDiffInSeconds());
 
         if (!m_phraseTimer.running())
             m_phraseTimer.begin();
@@ -307,7 +310,7 @@ public class PalmActivity extends AppCompatActivity
                 TextView tv = m_charViewGroups.get(cd1.ordinal()).get(cd2.ordinal());
                 if (tv != null)
                 {
-                    if (cd1 == dir1 && cd2 == dir2)
+                    if (dir1 != LayoutDir.N && cd1 == dir1 && cd2 == dir2)
                     {
                         tv.setBackgroundColor(selectedColor);
                     }

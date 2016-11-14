@@ -11,9 +11,15 @@ import java.util.ArrayList;
 
 public class PalmGestureGenerator
 {
+    // length traveled in units of pixels, per millisecond
     private static final float GESTURE_SPEED = 1.6f;
+
     private static final float SAMPLE_PER_SEC = 120f;
     private static GestureStore m_store = null;
+
+    private static final String done_gesture_label = "done";
+    private static final double[] done_gesture_center = { 500, 500 };
+    private static final double done_geture_radius = 400;
 
     private static final float[][] gesture_vertices = {
             {900, 500, 500, 100, 100, 100},
@@ -33,7 +39,6 @@ public class PalmGestureGenerator
             {900, 500, 500, 500},
             {900, 100, 500, 100, 500, 500},
             {900, 100, 500, 100, 900, 500},
-            {900, 500, 500, 500, 100, 100},
 
             {500, 500, 900, 500, 500, 100},
             {500, 500, 900, 500, 900, 100},
@@ -51,23 +56,24 @@ public class PalmGestureGenerator
 
             {100, 100, 500, 500, 100, 500},
             {100, 100, 500, 500},
-            {100, 100, 500, 500, 900, 500}
+            {100, 100, 500, 500, 900, 500},
+            // done is generated procedurally
     };
     public static final String[] gesture_labels = {
             "Q", "W", "E",
             "R", "T", "Y",
             "U", "I", "O",
-            "A", "S", "D", "F", "G", "done",
+            "A", "S", "D", "F", "G",
             "H", "J", "K", "L", "P",
             "Z", "X", "C",
             "V", "B", "N",
-            "M", "spc", "del"
+            "M", "spc", "del", done_gesture_label
     };
     public static final double[] gesture_angles = {
             Math.atan2(1, -2), Math.atan2(1, -1), Math.atan2(1, 0),
             Math.atan2(1, -1), Math.atan2(1, 0), Math.atan2(1, 1),
             Math.atan2(1, 0), Math.atan2(1, 1), Math.atan2(1, 2),
-            Math.atan2(1, -1), Math.atan2(1, 0), Math.atan2(0, -1), Math.atan2(-1, -1), Math.atan2(-1, 0), Math.atan2(1, -2),
+            Math.atan2(1, -1), Math.atan2(1, 0), Math.atan2(0, -1), Math.atan2(-1, -1), Math.atan2(-1, 0),
             Math.atan2(1, 0), Math.atan2(1, 1), Math.atan2(0, 1), Math.atan2(-1, 0), Math.atan2(-1, 1),
             Math.atan2(-1, -2), Math.atan2(-1, -1), Math.atan2(-1, 0),
             Math.atan2(-1, -1), Math.atan2(-1, 0), Math.atan2(-1, 1),
@@ -77,17 +83,17 @@ public class PalmGestureGenerator
             {LayoutDir.LU, LayoutDir.L}, {LayoutDir.LU, LayoutDir.N}, {LayoutDir.LU, LayoutDir.R},
             {LayoutDir.U, LayoutDir.L}, {LayoutDir.U, LayoutDir.N}, {LayoutDir.U, LayoutDir.R},
             {LayoutDir.RU, LayoutDir.L}, {LayoutDir.RU, LayoutDir.N}, {LayoutDir.RU, LayoutDir.R},
-            {LayoutDir.L, LayoutDir.U}, {LayoutDir.L, LayoutDir.RU}, {LayoutDir.L, LayoutDir.N}, {LayoutDir.L, LayoutDir.D}, {LayoutDir.L, LayoutDir.RD}, {LayoutDir.L, LayoutDir.LU},
+            {LayoutDir.L, LayoutDir.U}, {LayoutDir.L, LayoutDir.RU}, {LayoutDir.L, LayoutDir.N}, {LayoutDir.L, LayoutDir.D}, {LayoutDir.L, LayoutDir.RD},
             {LayoutDir.R, LayoutDir.LU}, {LayoutDir.R, LayoutDir.U}, {LayoutDir.R, LayoutDir.N}, {LayoutDir.R, LayoutDir.LD}, {LayoutDir.R, LayoutDir.D},
             {LayoutDir.LD, LayoutDir.L}, {LayoutDir.LD, LayoutDir.N}, {LayoutDir.LD, LayoutDir.R},
             {LayoutDir.D, LayoutDir.L}, {LayoutDir.D, LayoutDir.N}, {LayoutDir.D, LayoutDir.R},
-            {LayoutDir.RD, LayoutDir.L}, {LayoutDir.RD, LayoutDir.N}, {LayoutDir.RD, LayoutDir.R},
+            {LayoutDir.RD, LayoutDir.L}, {LayoutDir.RD, LayoutDir.N}, {LayoutDir.RD, LayoutDir.R}, {LayoutDir.N, LayoutDir.N}
     };
 
     private static GestureStore createGestureLibFromSource()
     {
         GestureStore store = new GestureStore();
-        for (int ci=0; ci<gesture_labels.length; ci++)
+        for (int ci=0; ci<gesture_vertices.length; ci++)
         {
             ArrayList<GesturePoint> points = new ArrayList<>();
             long tt = 0;
@@ -118,7 +124,28 @@ public class PalmGestureGenerator
             gesture.addStroke(new GestureStroke(points));
             store.addGesture(gesture_labels[ci], gesture);
         }
+
+        addDoneGesture(store);
         return store;
+    }
+
+    private static void addDoneGesture(GestureStore store)
+    {
+        ArrayList<GesturePoint> points = new ArrayList<>();
+        double ttime = 0;
+        double tangle = 0;
+        while (tangle < 2 * Math.PI)
+        {
+            points.add(new GesturePoint((float)(done_gesture_center[0] + done_geture_radius * Math.cos(tangle)),
+                    (float)(done_gesture_center[0] + done_geture_radius * Math.sin(tangle)),
+                    (long)(ttime)));
+            tangle += (GESTURE_SPEED * 1000f / SAMPLE_PER_SEC) / done_geture_radius;
+            ttime += 1000f / SAMPLE_PER_SEC;
+        }
+
+        Gesture gesture = new Gesture();
+        gesture.addStroke(new GestureStroke(points));
+        store.addGesture(done_gesture_label, gesture);
     }
 
     public static GestureStore get()
