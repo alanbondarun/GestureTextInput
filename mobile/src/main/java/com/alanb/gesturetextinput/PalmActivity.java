@@ -193,6 +193,9 @@ public class PalmActivity extends AppCompatActivity
                 if (motionEvent.getPointerCount() <= 1 && !(motionEvent.getAction() == MotionEvent.ACTION_MOVE ||
                         motionEvent.getAction() == MotionEvent.ACTION_DOWN))
                 {
+                    m_phraseTimer.check();
+                    m_timedActions.add(new TaskRecordWriter.TimedAction(m_phraseTimer.getDiffInSeconds(), "cancel"));
+                    m_canceled_num++;
                     multi_occurred = false;
                 }
             }
@@ -201,7 +204,6 @@ public class PalmActivity extends AppCompatActivity
                 if (motionEvent.getPointerCount() >= 2)
                 {
                     multi_occurred = true;
-                    m_timedActions.add(new TaskRecordWriter.TimedAction(m_phraseTimer.getDiffInSeconds(), "cancel"));
                 }
                 else if (motionEvent.getAction() == MotionEvent.ACTION_MOVE ||
                         motionEvent.getAction() == MotionEvent.ACTION_DOWN)
