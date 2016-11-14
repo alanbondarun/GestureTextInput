@@ -1,12 +1,9 @@
 package com.alanb.gesturecommon;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 
 public class WatchWriteInputView extends View
 {

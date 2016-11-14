@@ -66,9 +66,11 @@ public class PalmActivity extends AppCompatActivity
 
     private int m_inc_fixed_num = 0;
     private int m_fix_num = 0;
+    private int m_canceled_num = 0;
 
     private NanoTimer m_phraseTimer;
     private NanoTimer m_predictTimer;
+    private ArrayList<TaskRecordWriter.TimedAction> m_timedActions;
 
     private TaskRecordWriter m_taskRecordWriter = null;
 
@@ -155,21 +157,23 @@ public class PalmActivity extends AppCompatActivity
                 m_inputStr = m_inputStr.substring(0, max(0, m_inputStr.length()-1));
                 m_inc_fixed_num++;
                 m_fix_num++;
+                m_timedActions.add(new TaskRecordWriter.TimedAction(m_phraseTimer.getDiffInSeconds(), "del"));
             }
             else if (input_str.equals("spc"))
             {
                 m_phraseTimer.check();
                 m_inputStr += " ";
+                m_timedActions.add(new TaskRecordWriter.TimedAction(m_phraseTimer.getDiffInSeconds(), " "));
             }
             else if (input_str.equals("done"))
             {
-                m_phraseTimer.end();
                 doneTask();
             }
             else
             {
                 m_phraseTimer.check();
                 m_inputStr += input_str.toLowerCase();
+                m_timedActions.add(new TaskRecordWriter.TimedAction(m_phraseTimer.getDiffInSeconds(), input_str));
             }
             m_inputTextView.setText(m_inputStr + getString(R.string.end_of_input));
         }
@@ -197,6 +201,7 @@ public class PalmActivity extends AppCompatActivity
                 if (motionEvent.getPointerCount() >= 2)
                 {
                     multi_occurred = true;
+                    m_timedActions.add(new TaskRecordWriter.TimedAction(m_phraseTimer.getDiffInSeconds(), "cancel"));
                 }
                 else if (motionEvent.getAction() == MotionEvent.ACTION_MOVE ||
                         motionEvent.getAction() == MotionEvent.ACTION_DOWN)
@@ -411,6 +416,7 @@ public class PalmActivity extends AppCompatActivity
         SharedPreferences prefs = getSharedPreferences(getString(R.string.app_pref_key), MODE_PRIVATE);
         m_taskMode = prefs.getInt(getString(R.string.prefkey_task_mode),
                 getResources().getInteger(R.integer.pref_task_mode_default)) == 0;
+        m_timedActions = new ArrayList<>();
 
         m_taskTextView = (TextView) findViewById(R.id.p_task_text);
         if (m_taskMode)
@@ -440,6 +446,8 @@ public class PalmActivity extends AppCompatActivity
         m_taskTextView.setText(m_taskStr);
         m_inc_fixed_num = 0;
         m_fix_num = 0;
+        m_canceled_num = 0;
+        m_timedActions.clear();
     }
 
     private void doneTask()
@@ -448,20 +456,25 @@ public class PalmActivity extends AppCompatActivity
             return;
 
         EditDistCalculator.EditInfo info = EditDistCalculator.calc(m_taskStr, m_inputStr);
-        int inc_correct = info.num_correct;
-        int inc_not_fixed = info.num_delete + info.num_insert+ info.num_modify;
+
+        double time_before_last = m_phraseTimer.getDiffInSeconds();
+        m_phraseTimer.check();
+        m_timedActions.add(new TaskRecordWriter.TimedAction(m_phraseTimer.getDiffInSeconds(), "done"));
+        m_phraseTimer.end();
 
         if (m_taskRecordWriter != null)
         {
             m_taskRecordWriter.write(m_taskRecordWriter.new InfoBuilder()
-                    .setInputTime(m_phraseTimer.getDiffInSeconds())
+                    .setInputTime(time_before_last)
                     .setInputStr(m_inputStr)
                     .setPresentedStr(m_taskStr)
                     .setLayoutNum(0)
                     .setNumC(info.num_correct)
                     .setNumIf(m_inc_fixed_num)
                     .setNumF(m_fix_num)
-                    .setNumInf(info.num_delete + info.num_insert+ info.num_modify));
+                    .setNumInf(info.num_delete + info.num_insert + info.num_modify)
+                    .setNumCancel(m_canceled_num)
+                    .setTimedActions(m_timedActions));
         }
 
         m_inputStr = "";

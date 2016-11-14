@@ -2,7 +2,6 @@ package com.alanb.gesturetextinput;
 
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,16 +9,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alanb.gesturecommon.WatchWriteInputView;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import static java.lang.Math.max;
 
@@ -45,9 +38,11 @@ public class WatchWriteActivity extends AppCompatActivity {
 
     private int m_inc_fixed_num = 0;
     private int m_fix_num = 0;
+    private int m_canceled_num = 0;
 
     private NanoTimer m_phraseTimer;
     private TaskRecordWriter m_taskRecordWriter = null;
+    private ArrayList<TaskRecordWriter.TimedAction> m_timedActions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,6 +106,7 @@ public class WatchWriteActivity extends AppCompatActivity {
         SharedPreferences prefs = getSharedPreferences(getString(R.string.app_pref_key), MODE_PRIVATE);
         m_taskMode = prefs.getInt(getString(R.string.prefkey_task_mode),
                 getResources().getInteger(R.integer.pref_task_mode_default)) == 0;
+        m_timedActions = new ArrayList<>();
 
         m_taskTextView = (TextView) findViewById(R.id.w_task_text);
         if (m_taskMode)
@@ -140,6 +136,8 @@ public class WatchWriteActivity extends AppCompatActivity {
         m_taskTextView.setText(m_taskStr);
         m_inc_fixed_num = 0;
         m_fix_num = 0;
+        m_canceled_num = 0;
+        m_timedActions.clear();
     }
 
     public WatchWriteInputView.OnTouchEventListener m_wwTouchListener =
@@ -160,10 +158,10 @@ public class WatchWriteActivity extends AppCompatActivity {
                     m_inputStr = m_inputStr.substring(0, max(0, m_inputStr.length()-1));
                     m_inc_fixed_num++;
                     m_fix_num++;
+                    m_timedActions.add(new TaskRecordWriter.TimedAction(m_phraseTimer.getDiffInSeconds(), "del"));
                 }
                 else if (m_curNode.getAct() == KeyNode.Act.DONE)
                 {
-                    m_phraseTimer.end();
                     Log.d(TAG, "Input Done");
                     doneTask();
                 }
@@ -172,6 +170,13 @@ public class WatchWriteActivity extends AppCompatActivity {
                     m_phraseTimer.check();
                     Log.d(TAG, "Input Result: " + m_curNode.getCharVal());
                     m_inputStr += String.valueOf(m_curNode.getCharVal());
+                    m_timedActions.add(new TaskRecordWriter.TimedAction(m_phraseTimer.getDiffInSeconds(), m_curNode.getCharVal().toString()));
+                }
+                else
+                {
+                    m_phraseTimer.check();
+                    m_timedActions.add(new TaskRecordWriter.TimedAction(m_phraseTimer.getDiffInSeconds(), "cancel"));
+                    m_canceled_num++;
                 }
 
                 // initialization for next touch(or gesture) input
@@ -255,17 +260,24 @@ public class WatchWriteActivity extends AppCompatActivity {
 
         EditDistCalculator.EditInfo info = EditDistCalculator.calc(m_taskStr, m_inputStr);
 
+        double time_before_last = m_phraseTimer.getDiffInSeconds();
+        m_phraseTimer.check();
+        m_timedActions.add(new TaskRecordWriter.TimedAction(m_phraseTimer.getDiffInSeconds(), "done"));
+        m_phraseTimer.end();
+
         if (m_taskRecordWriter != null)
         {
             m_taskRecordWriter.write(m_taskRecordWriter.new InfoBuilder()
-                    .setInputTime(m_phraseTimer.getDiffInSeconds())
+                    .setInputTime(time_before_last)
                     .setInputStr(m_inputStr)
                     .setPresentedStr(m_taskStr)
                     .setLayoutNum(m_pref_layout)
                     .setNumC(info.num_correct)
                     .setNumIf(m_inc_fixed_num)
                     .setNumF(m_fix_num)
-                    .setNumInf(info.num_delete + info.num_insert+ info.num_modify));
+                    .setNumInf(info.num_delete + info.num_insert+ info.num_modify)
+                    .setNumCancel(m_canceled_num)
+                    .setTimedActions(m_timedActions));
         }
 
         m_inputStr = "";

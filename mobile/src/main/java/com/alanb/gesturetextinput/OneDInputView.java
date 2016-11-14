@@ -3,11 +3,7 @@ package com.alanb.gesturetextinput;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.LinearLayout;
-
-import com.alanb.gesturecommon.WatchWriteInputView;
 
 public class OneDInputView extends LinearLayout
 {

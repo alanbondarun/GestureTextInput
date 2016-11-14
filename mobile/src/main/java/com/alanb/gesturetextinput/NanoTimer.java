@@ -12,8 +12,6 @@ public class NanoTimer
     public boolean running() { return running; }
     public long getDiff()
     {
-        if (this.running)
-            return System.nanoTime() - this.start;
         return this.finish - this.start;
     }
     public double getDiffInSeconds()

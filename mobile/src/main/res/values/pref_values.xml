@@ -10,7 +10,7 @@
         <item>3 Area, Optimized V2</item>
     </string-array>
     <string name="prefkey_watch_layout">prefkey_watch_layout</string>
-    <integer name="pref_watch_layout_default">0</integer>
+    <integer name="pref_watch_layout_default">3</integer>
 
     <string name="oned_layout">1D Input Layout</string>
     <string-array name="oned_layout_kind">
@@ -18,7 +18,7 @@
         <item>Optimized</item>
     </string-array>
     <string name="prefkey_oned_layout">prefkey_oned_layout</string>
-    <integer name="pref_oned_layout_default">0</integer>
+    <integer name="pref_oned_layout_default">1</integer>
 
     <string name="pref_task_mode">Enable Task Mode</string>
     <string-array name="pref_task_mode_item">
@@ -26,5 +26,5 @@
         <item>Off</item>
     </string-array>
     <string name="prefkey_task_mode">prefkey_task_mode</string>
-    <integer name="pref_task_mode_default">1</integer>
+    <integer name="pref_task_mode_default">0</integer>
 </resources>
