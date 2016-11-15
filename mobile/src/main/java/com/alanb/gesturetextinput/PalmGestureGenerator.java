@@ -57,7 +57,7 @@ public class PalmGestureGenerator
             {100, 100, 500, 500, 100, 500},
             {100, 100, 500, 500},
             {100, 100, 500, 500, 900, 500},
-            // done is generated procedurally
+            {900, 500, 500, 500, 100, 100},
     };
     public static final String[] gesture_labels = {
             "Q", "W", "E",
@@ -77,7 +77,7 @@ public class PalmGestureGenerator
             Math.atan2(1, 0), Math.atan2(1, 1), Math.atan2(0, 1), Math.atan2(-1, 0), Math.atan2(-1, 1),
             Math.atan2(-1, -2), Math.atan2(-1, -1), Math.atan2(-1, 0),
             Math.atan2(-1, -1), Math.atan2(-1, 0), Math.atan2(-1, 1),
-            Math.atan2(-1, 0), Math.atan2(-1, 1), Math.atan2(-1, 2),
+            Math.atan2(-1, 0), Math.atan2(-1, 1), Math.atan2(-1, 2), Math.atan2(1, -2)
     };
     public static final LayoutDir[][] gesture_layout_dir = {
             {LayoutDir.LU, LayoutDir.L}, {LayoutDir.LU, LayoutDir.N}, {LayoutDir.LU, LayoutDir.R},
@@ -87,8 +87,7 @@ public class PalmGestureGenerator
             {LayoutDir.R, LayoutDir.LU}, {LayoutDir.R, LayoutDir.U}, {LayoutDir.R, LayoutDir.N}, {LayoutDir.R, LayoutDir.LD}, {LayoutDir.R, LayoutDir.D},
             {LayoutDir.LD, LayoutDir.L}, {LayoutDir.LD, LayoutDir.N}, {LayoutDir.LD, LayoutDir.R},
             {LayoutDir.D, LayoutDir.L}, {LayoutDir.D, LayoutDir.N}, {LayoutDir.D, LayoutDir.R},
-            {LayoutDir.RD, LayoutDir.L}, {LayoutDir.RD, LayoutDir.N}, {LayoutDir.RD, LayoutDir.R},
-            {LayoutDir.N, LayoutDir.R}, {LayoutDir.N, LayoutDir.R}, {LayoutDir.N, LayoutDir.R}, {LayoutDir.N, LayoutDir.R}
+            {LayoutDir.RD, LayoutDir.L}, {LayoutDir.RD, LayoutDir.N}, {LayoutDir.RD, LayoutDir.R}, {LayoutDir.L, LayoutDir.LU}
     };
 
     private static GestureStore createGestureLibFromSource()
@@ -126,7 +125,7 @@ public class PalmGestureGenerator
             store.addGesture(gesture_labels[ci], gesture);
         }
 
-        addDoneGesture(store);
+        //addDoneGesture(store);
         return store;
     }
 

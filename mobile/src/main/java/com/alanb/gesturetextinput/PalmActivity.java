@@ -45,8 +45,8 @@ public class PalmActivity extends AppCompatActivity
     private final int SECOND_DIR_PERIOD = 5;
     private ArrayList<Double> m_point_angles;
     private boolean m_group_selected = false;
-    private final double ANGLE_THRESH = 35.0 * Math.PI / 180.0;
-    private final double SCORE_THRESH = 1.0;
+    private final double ANGLE_THRESH = 22.5 * Math.PI / 180.0;
+    private final int NUM_DONE_ACTIONS = 2;
 
     private final String TAG = this.getClass().getName();
     private GestureOverlayView m_gestureView;
@@ -71,6 +71,8 @@ public class PalmActivity extends AppCompatActivity
     private NanoTimer m_phraseTimer;
     private NanoTimer m_predictTimer;
     private ArrayList<TaskRecordWriter.TimedAction> m_timedActions;
+
+    private int m_doneActions = 0;
 
     private TaskRecordWriter m_taskRecordWriter = null;
 
@@ -100,10 +102,6 @@ public class PalmActivity extends AppCompatActivity
             int ccand = 0;
             for (; ccand < pred_list.size(); ccand++)
             {
-                if (pred_list.get(ccand).score < SCORE_THRESH)
-                    continue;
-                if (pred_list.get(ccand).name.equals("done"))
-                    break;
 
                 // prune out the gesture prediction based on direction from start pos to finish pos
                 double dx = points.get(points.size()-1).x - points.get(0).x;
@@ -153,6 +151,7 @@ public class PalmActivity extends AppCompatActivity
         {
             if (input_str.equals("del"))
             {
+                m_doneActions = 0;
                 m_phraseTimer.check();
                 m_inputStr = m_inputStr.substring(0, max(0, m_inputStr.length()-1));
                 m_inc_fixed_num++;
@@ -161,21 +160,32 @@ public class PalmActivity extends AppCompatActivity
             }
             else if (input_str.equals("spc"))
             {
+                m_doneActions = 0;
                 m_phraseTimer.check();
                 m_inputStr += " ";
                 m_timedActions.add(new TaskRecordWriter.TimedAction(m_phraseTimer.getDiffInSeconds(), " "));
             }
             else if (input_str.equals("done"))
             {
-                doneTask();
+                m_doneActions++;
+                if (m_doneActions >= NUM_DONE_ACTIONS)
+                {
+                    doneTask();
+                }
             }
             else
             {
+                m_doneActions = 0;
                 m_phraseTimer.check();
                 m_inputStr += input_str.toLowerCase();
                 m_timedActions.add(new TaskRecordWriter.TimedAction(m_phraseTimer.getDiffInSeconds(), input_str));
             }
             m_inputTextView.setText(m_inputStr + getString(R.string.end_of_input));
+        }
+        else
+        {
+
+            m_doneActions = 0;
         }
     }
 
@@ -251,11 +261,7 @@ public class PalmActivity extends AppCompatActivity
                             {
                                 for (int ci = 0; ci < PalmGestureGenerator.gesture_labels.length; ci++)
                                 {
-                                    if (input_str.equals(PalmGestureGenerator.done_gesture_label))
-                                    {
-                                        highlightAll(true);
-                                    }
-                                    else if (PalmGestureGenerator.gesture_labels[ci].equals(input_str))
+                                    if (PalmGestureGenerator.gesture_labels[ci].equals(input_str))
                                     {
                                         highlightCharacter(PalmGestureGenerator.gesture_layout_dir[ci][0],
                                                 PalmGestureGenerator.gesture_layout_dir[ci][1]);
@@ -449,6 +455,7 @@ public class PalmActivity extends AppCompatActivity
         m_inc_fixed_num = 0;
         m_fix_num = 0;
         m_canceled_num = 0;
+        m_doneActions = 0;
         m_timedActions.clear();
     }
 
