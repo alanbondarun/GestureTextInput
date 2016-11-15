@@ -229,7 +229,7 @@ public class OneDActivity extends AppCompatActivity {
                         m_inputStr = m_inputStr.substring(0, max(0, m_inputStr.length()-1));
                         m_inc_fixed_num++;
                         m_fix_num++;
-                        m_timedActions.add(new TaskRecordWriter.TimedAction(m_phraseTimer.getDiffInSeconds(), m_curNode.getCharVal().toString()));
+                        m_timedActions.add(new TaskRecordWriter.TimedAction(m_phraseTimer.getDiffInSeconds(), "del"));
                     }
                     else if (m_curNode.getAct() == KeyNode.Act.DONE)
                     {
