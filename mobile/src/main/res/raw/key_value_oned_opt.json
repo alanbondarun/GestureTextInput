@@ -28,7 +28,7 @@
           ]
         },
         {
-          "show_str": "BDJ",
+          "show_str": "JBD",
           "input_char": "d",
           "keys": [
             {
@@ -49,7 +49,7 @@
           ]
         },
         {
-          "show_str": "GZ",
+          "show_str": "ZG",
           "input_char": "g",
           "keys": [
             {
@@ -75,7 +75,7 @@
       "input_char": "e",
       "keys": [
         {
-          "show_str": "FKN",
+          "show_str": "NFK",
           "input_char": "n",
           "keys": [
             {
@@ -99,7 +99,7 @@
           "show_str": "E"
         },
         {
-          "show_str": "HPO",
+          "show_str": "PHO",
           "input_char": "o",
           "keys": [
             {
@@ -120,7 +120,7 @@
           ]
         },
         {
-          "show_str": "LQ",
+          "show_str": "QL",
           "input_char": "l",
           "keys": [
             {
@@ -190,7 +190,7 @@
           "show_str": "T"
         },
         {
-          "show_str": "SXY",
+          "show_str": "XYS",
           "input_char": "s",
           "keys": [
             {

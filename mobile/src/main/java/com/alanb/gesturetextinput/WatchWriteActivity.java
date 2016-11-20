@@ -311,18 +311,7 @@ public class WatchWriteActivity extends AppCompatActivity {
             for (int ci = 0; ci < 4; ci++)
             {
                 String raw_str = node.getNextNode(ci).getShowStr();
-                StringBuilder builder = new StringBuilder();
-
-                int line_chars = 3;
-                if (node.getNextNode(ci).getCharVal() == null)
-                    line_chars = 5;
-                for (int cj = 0; cj < raw_str.length(); cj += line_chars)
-                {
-                    if (cj > 0)
-                        builder.append("\n");
-                    builder.append(raw_str.substring(cj, Math.min(cj+line_chars, raw_str.length())));
-                }
-                m_viewTexts.get(ci).setText(builder.toString());
+                m_viewTexts.get(ci).setText(raw_str);
                 m_viewTexts.get(ci).setBackgroundColor(Color.TRANSPARENT);
             }
         }

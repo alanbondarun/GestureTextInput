@@ -1,14 +1,14 @@
 {
   "keys": [
     {
-      "show_str": "ABCDEFGHI",
+      "show_str": "ABC\nDEF\nGHI",
       "input_char": "a",
       "keys": [
         {
           "show_str": "A"
         },
         {
-          "show_str": "BCD",
+          "show_str": "BC\n D",
           "input_char": "c",
           "keys": [
             {
@@ -29,7 +29,7 @@
           ]
         },
         {
-          "show_str": "EFG",
+          "show_str": "E \nFG",
           "input_char": "f",
           "keys": [
             {
@@ -72,11 +72,11 @@
       ]
     },
     {
-      "show_str": "JKLMNOPQR",
+      "show_str": "JKL\nMNO\nPQR",
       "input_char": "m",
       "keys": [
         {
-          "show_str": "JKL",
+          "show_str": "JK\nL ",
           "input_char": "j",
           "keys": [
             {
@@ -120,7 +120,7 @@
           ]
         },
         {
-          "show_str": "PQR",
+          "show_str": " P\nQR",
           "input_char": "r",
           "keys": [
             {
@@ -143,11 +143,11 @@
       ]
     },
     {
-      "show_str": "STUVWXYZ",
+      "show_str": "STU\nVWX\nYZ",
       "input_char": "x",
       "keys": [
         {
-          "show_str": "STU",
+          "show_str": "ST\nU ",
           "input_char": "s",
           "keys": [
             {
@@ -168,7 +168,7 @@
           ]
         },
         {
-          "show_str": "VW",
+          "show_str": " V\n W",
           "input_char": "v",
           "keys": [
             {

@@ -51,6 +51,7 @@
                         android:layout_weight="0.5">
                         <TextView
                             android:text="A-M"
+                            android:typeface="monospace"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:gravity="center"
@@ -65,6 +66,7 @@
                         android:layout_weight="0.5">
                         <TextView
                             android:text="N-Z"
+                            android:typeface="monospace"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:gravity="center"
@@ -85,6 +87,7 @@
                         android:layout_weight="0.5">
                         <TextView
                             android:text="Del"
+                            android:typeface="monospace"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:gravity="center"
@@ -99,6 +102,7 @@
                         android:layout_weight="0.5">
                         <TextView
                             android:text=""
+                            android:typeface="monospace"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:gravity="center"

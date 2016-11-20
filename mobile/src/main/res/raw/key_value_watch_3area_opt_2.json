@@ -1,14 +1,14 @@
 {
   "keys": [
     {
-      "show_str": "ABCDFGHIJ",
+      "show_str": "ABC\nDFG\nHIJ",
       "input_char": "a",
       "keys": [
         {
           "show_str": "A"
         },
         {
-          "show_str": "BCH",
+          "show_str": "BH\n C",
           "input_char": "h",
           "keys": [
             {
@@ -29,7 +29,7 @@
           ]
         },
         {
-          "show_str": "FGI",
+          "show_str": "F \nIG",
           "input_char": "i",
           "keys": [
             {
@@ -50,7 +50,7 @@
           ]
         },
         {
-          "show_str": "DJ",
+          "show_str": "JD",
           "input_char": "d",
           "keys": [
             {
@@ -72,11 +72,11 @@
       ]
     },
     {
-      "show_str": "EKLMNOPQ",
+      "show_str": "EKL\nMNO\nPQ",
       "input_char": "e",
       "keys": [
         {
-          "show_str": "KMN",
+          "show_str": "NK\nM ",
           "input_char": "n",
           "keys": [
             {
@@ -119,7 +119,7 @@
           ]
         },
         {
-          "show_str": "OPQ",
+          "show_str": " P\nQO",
           "input_char": "o",
           "keys": [
             {
@@ -142,11 +142,11 @@
       ]
     },
     {
-      "show_str": "RSTUVWXYZ",
+      "show_str": "RST\nUVW\nXYZ",
       "input_char": "t",
       "keys": [
         {
-          "show_str": "RVW",
+          "show_str": "RV\nW ",
           "input_char": "r",
           "keys": [
             {
@@ -189,7 +189,7 @@
           "show_str": "T"
         },
         {
-          "show_str": "SXYZ",
+          "show_str": "ZX\nYS",
           "input_char": "s",
           "keys": [
             {
