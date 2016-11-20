@@ -21,6 +21,8 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.alanb.gesturecommon.CommonUtils;
+
 import org.w3c.dom.Text;
 
 import java.lang.reflect.Array;
@@ -386,7 +388,7 @@ public class PalmActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_palm);
 
-        selectedColor = getColorVersion(this, R.color.colorTouchBackground);
+        selectedColor = CommonUtils.getColorVersion(this, R.color.colorTouchBackground);
 
         m_point_angles = new ArrayList<>();
 
@@ -488,19 +490,6 @@ public class PalmActivity extends AppCompatActivity
 
         m_inputStr = "";
         prepareTask();
-    }
-
-    private int getColorVersion(Context context, int id)
-    {
-        final int version = Build.VERSION.SDK_INT;
-        if (version >= Build.VERSION_CODES.M)
-        {
-            return context.getColor(id);
-        }
-        else
-        {
-            return context.getResources().getColor(id);
-        }
     }
 
     private ArrayList< ArrayList<TextView> > setCharViewGroups()

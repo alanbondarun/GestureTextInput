@@ -1,16 +1,21 @@
 package com.alanb.gesturetextinput;
 
+import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.wearable.activity.WearableActivity;
 import android.support.wearable.view.BoxInsetLayout;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.alanb.gesturecommon.CommonUtils;
 import com.alanb.gesturecommon.WatchWriteInputView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -29,7 +34,7 @@ public class MainActivity extends WearableActivity
     private final String TAG = this.getClass().getName();
     private BoxInsetLayout mContainerView;
     private GoogleApiClient m_googleApiClient = null;
-    private LinearLayout m_charTouchLayout;
+    private RelativeLayout m_charTouchLayout;
 
     private float m_touchX;
     private float m_touchY;
@@ -40,14 +45,14 @@ public class MainActivity extends WearableActivity
         setContentView(R.layout.activity_main);
         setAmbientEnabled();
 
-        /*WatchWriteInputView.Builder wwbuilder = new WatchWriteInputView.Builder(this);
-        wwbuilder.setOnTouchEventListener(wwTouchEventListener);
-        wwbuilder.setOnTouchListener(wwTouchListener);
-        wwbuilder.setBackground(R.drawable.w_touch_back);
-        WatchWriteInputView touchInputView = wwbuilder.build();
+        m_charTouchLayout = (RelativeLayout) findViewById(R.id.w_touch_frame);
+        LayoutInflater inflater = LayoutInflater.from(this);
+        WatchWriteInputView touchInputView = (WatchWriteInputView) inflater.inflate(R.layout.watch_touch_area,
+                m_charTouchLayout, false);
+        m_charTouchLayout.addView(touchInputView);
 
-        m_charTouchLayout = (LinearLayout)(findViewById(R.id.w_char_touch));
-        m_charTouchLayout.addView(touchInputView);*/
+        touchInputView.setOnTouchListener(wwTouchListener);
+        touchInputView.setOnTouchEventListener(wwTouchEventListener);
 
         GoogleApiClient.Builder builder = new GoogleApiClient.Builder(this);
         builder.addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks()
@@ -116,7 +121,7 @@ public class MainActivity extends WearableActivity
 
     private void updateDisplay() {
         if (isAmbient()) {
-            mContainerView.setBackgroundColor(getResources().getColor(android.R.color.black));
+            mContainerView.setBackgroundColor(CommonUtils.getColorVersion(this, android.R.color.black));
 //            mTextView.setTextColor(getResources().getColor(android.R.color.white));
 //            mClockView.setVisibility(View.VISIBLE);
 

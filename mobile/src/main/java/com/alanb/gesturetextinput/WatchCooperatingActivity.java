@@ -50,9 +50,11 @@ public class WatchCooperatingActivity extends AppCompatActivity
 
     private int m_inc_fixed_num = 0;
     private int m_fix_num = 0;
+    private int m_canceled_num = 0;
 
     private NanoTimer m_phraseTimer;
     private TaskRecordWriter m_taskRecordWriter = null;
+    private ArrayList<TaskRecordWriter.TimedAction> m_timedActions;
 
     private GoogleApiClient.ConnectionCallbacks connectionCallbacks =
             new GoogleApiClient.ConnectionCallbacks()
@@ -169,6 +171,7 @@ public class WatchCooperatingActivity extends AppCompatActivity
         SharedPreferences prefs = getSharedPreferences(getString(R.string.app_pref_key), MODE_PRIVATE);
         m_taskMode = prefs.getInt(getString(R.string.prefkey_task_mode),
                 getResources().getInteger(R.integer.pref_task_mode_default)) == 0;
+        m_timedActions = new ArrayList<>();
 
         m_taskTextView = (TextView) findViewById(R.id.c_task_text);
         if (m_taskMode)
@@ -198,6 +201,8 @@ public class WatchCooperatingActivity extends AppCompatActivity
         m_taskTextView.setText(m_taskStr);
         m_inc_fixed_num = 0;
         m_fix_num = 0;
+        m_canceled_num = 0;
+        m_timedActions.clear();
     }
 
     @Override
@@ -238,10 +243,10 @@ public class WatchCooperatingActivity extends AppCompatActivity
                 m_inputStr = m_inputStr.substring(0, max(0, m_inputStr.length()-1));
                 m_inc_fixed_num++;
                 m_fix_num++;
+                m_timedActions.add(new TaskRecordWriter.TimedAction(m_phraseTimer.getDiffInSeconds(), "del"));
             }
             else if (m_curNode.getAct() == KeyNode.Act.DONE)
             {
-                m_phraseTimer.end();
                 Log.d(TAG, "Input Done");
                 doneTask();
             }
@@ -250,6 +255,13 @@ public class WatchCooperatingActivity extends AppCompatActivity
                 m_phraseTimer.check();
                 Log.d(TAG, "Input Result: " + m_curNode.getCharVal());
                 m_inputStr += String.valueOf(m_curNode.getCharVal());
+                m_timedActions.add(new TaskRecordWriter.TimedAction(m_phraseTimer.getDiffInSeconds(), m_curNode.getCharVal().toString()));
+            }
+            else
+            {
+                m_phraseTimer.check();
+                m_timedActions.add(new TaskRecordWriter.TimedAction(m_phraseTimer.getDiffInSeconds(), "cancel"));
+                m_canceled_num++;
             }
 
             // initialization for next touch(or gesture) input
@@ -268,9 +280,7 @@ public class WatchCooperatingActivity extends AppCompatActivity
         }
         else if (te != WatchWriteInputView.TouchEvent.AREA_OTHER)
         {
-            if (m_gestureTouchAreas.size() <= 0 ||
-                    (m_gestureTouchAreas.get(m_gestureTouchAreas.size()-1) != WatchWriteInputView.TouchEvent.DROP &&
-                            m_gestureTouchAreas.get(m_gestureTouchAreas.size()-1) != WatchWriteInputView.TouchEvent.MULTITOUCH))
+            if (isValidTouchSequence(m_gestureTouchAreas))
             {
                 KeyNode next_node = null;
                 KeyNode sibling_node = m_curNode.getParent();
@@ -318,6 +328,15 @@ public class WatchCooperatingActivity extends AppCompatActivity
         }
     }
 
+    private boolean isValidTouchSequence(ArrayList<WatchWriteInputView.TouchEvent> events)
+    {
+        if (events.size() <= 0 ||
+                (events.get(events.size()-1) != WatchWriteInputView.TouchEvent.DROP &&
+                        events.get(events.size()-1) != WatchWriteInputView.TouchEvent.MULTITOUCH))
+            return true;
+        return (events.size() == 1 && events.get(0) == WatchWriteInputView.TouchEvent.DROP);
+    }
+
     private void doneTask()
     {
         if (!m_taskMode)
@@ -325,17 +344,24 @@ public class WatchCooperatingActivity extends AppCompatActivity
 
         EditDistCalculator.EditInfo info = EditDistCalculator.calc(m_taskStr, m_inputStr);
 
+        double time_before_last = m_phraseTimer.getDiffInSeconds();
+        m_phraseTimer.check();
+        m_timedActions.add(new TaskRecordWriter.TimedAction(m_phraseTimer.getDiffInSeconds(), "done"));
+        m_phraseTimer.end();
+
         if (m_taskRecordWriter != null)
         {
             m_taskRecordWriter.write(m_taskRecordWriter.new InfoBuilder()
-                    .setInputTime(m_phraseTimer.getDiffInSeconds())
+                    .setInputTime(time_before_last)
                     .setInputStr(m_inputStr)
                     .setPresentedStr(m_taskStr)
                     .setLayoutNum(m_pref_layout)
                     .setNumC(info.num_correct)
                     .setNumIf(m_inc_fixed_num)
                     .setNumF(m_fix_num)
-                    .setNumInf(info.num_delete + info.num_insert+ info.num_modify));
+                    .setNumInf(info.num_delete + info.num_insert+ info.num_modify)
+                    .setNumCancel(m_canceled_num)
+                    .setTimedActions(m_timedActions));
         }
 
         m_inputStr = "";

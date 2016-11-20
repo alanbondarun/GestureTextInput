@@ -9,15 +9,7 @@
     tools:deviceIds="wear">
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <LinearLayout
-            android:id="@+id/w_char_touch"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:layout_gravity="center"
-            android:orientation="vertical"
-            android:layout_width="132dip"
-            android:layout_height="132dip">
-        </LinearLayout>
+        android:layout_height="match_parent"
+        android:id="@+id/w_touch_frame">
     </RelativeLayout>
 </android.support.wearable.view.BoxInsetLayout>
