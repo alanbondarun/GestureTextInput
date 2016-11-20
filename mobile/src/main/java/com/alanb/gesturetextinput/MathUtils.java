@@ -1,9 +1,5 @@
 package com.alanb.gesturetextinput;
 
-/**
- * Created by alanb on 2016-11-13.
- */
-
 public class MathUtils
 {
     public static boolean fequal(double f1, double f2)
@@ -25,5 +21,10 @@ public class MathUtils
         {
             return diff / Math.min(abs_1 + abs_2, Double.MAX_VALUE) < e;
         }
+    }
+
+    public static double vectorAngle(double x1, double y1, double x2, double y2)
+    {
+        return Math.acos((x1*x2 + y1*y2) / (Math.hypot(x1, y1) * Math.hypot(x2, y2)));
     }
 }

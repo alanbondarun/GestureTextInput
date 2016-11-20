@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -74,7 +75,7 @@ public class OneDActivity extends AppCompatActivity {
         m_viewTexts.add((TextView) findViewById(R.id.o_char_indi_3));
         m_viewTexts.add((TextView) findViewById(R.id.o_char_indi_4));
 
-        updateViews(m_rootNode);
+        updateNode(m_rootNode, true);
 
         TouchFeedbackFrameLayout feedbackFrameLayout = (TouchFeedbackFrameLayout)
                 findViewById(R.id.o_touch_point_area);
@@ -91,6 +92,7 @@ public class OneDActivity extends AppCompatActivity {
         LayoutInflater inflater = LayoutInflater.from(this);
         OneDInputView inputView = (OneDInputView) inflater.inflate(R.layout.oned_touch_area, feedbackFrameLayout, false);
         inputView.setOnTouchEventListener(m_onedTouchEventListener);
+        inputView.setOnTouchListener(m_onedTouchListener);
         feedbackFrameLayout.addView(inputView);
 
         m_phraseTimer = new NanoTimer();
@@ -136,6 +138,18 @@ public class OneDActivity extends AppCompatActivity {
         m_timedActions.clear();
     }
 
+    public void updateNode(KeyNode node, boolean refreshView)
+    {
+        m_curNode = node;
+        if (refreshView)
+            updateViews(node);
+    }
+
+    public void updateViews()
+    {
+        updateViews(m_curNode);
+    }
+
     public void updateViews(KeyNode node)
     {
         m_inputTextView.setText(m_inputStr + getString(R.string.end_of_input));
@@ -176,7 +190,6 @@ public class OneDActivity extends AppCompatActivity {
                 m_viewTexts.get(ci).setBackgroundColor(Color.TRANSPARENT);
             }
         }
-        m_curNode = node;
     }
 
     private void doneTask()
@@ -209,6 +222,50 @@ public class OneDActivity extends AppCompatActivity {
         m_inputStr = "";
         prepareTask();
     }
+
+    public OneDInputView.OnTouchListener m_onedTouchListener = new OneDInputView.OnTouchListener()
+    {
+        final double stopSpeedThresh = 0.5;
+        final double angleThresh = Math.PI * 0.35;
+        int m_dir = 0;
+        @Override
+        public void onTouch(MotionEvent e)
+        {
+            int lastIndex = e.getHistorySize() - 1;
+            if (e.getAction() == MotionEvent.ACTION_MOVE && lastIndex >= 0)
+            {
+                if ((Math.hypot(e.getX() - e.getHistoricalX(lastIndex), e.getY() - e.getHistoricalY(lastIndex)) /
+                        (e.getEventTime() - e.getHistoricalEventTime(lastIndex))) <= stopSpeedThresh)
+                {
+                    updateViews();
+                }
+                else
+                {
+                    int cdir = 0;
+                    double aa = MathUtils.vectorAngle(e.getX() - e.getHistoricalX(lastIndex),
+                            e.getY() - e.getHistoricalY(lastIndex), 1, 0);
+                    if (Math.abs(aa) <= angleThresh)
+                    {
+                        cdir = 1;
+                    }
+                    else if (Math.abs(Math.PI - aa) <= angleThresh)
+                    {
+                        cdir = -1;
+                    }
+
+                    if (cdir*m_dir < 0)
+                    {
+                        updateViews();
+                    }
+                    m_dir = cdir;
+                }
+            }
+            else
+            {
+                m_dir = 0;
+            }
+        }
+    };
 
     public OneDInputView.OnTouchEventListener m_onedTouchEventListener =
             new OneDInputView.OnTouchEventListener()
@@ -256,7 +313,7 @@ public class OneDActivity extends AppCompatActivity {
                     m_timedActions.add(new TaskRecordWriter.TimedAction(m_phraseTimer.getDiffInSeconds(), "cancel"));
                     m_canceled_num++;
                 }
-                updateViews(m_rootNode);
+                updateNode(m_rootNode, true);
                 m_touchArray.clear();
             }
             else if (te.val == TouchEvent.DROP)
@@ -265,7 +322,7 @@ public class OneDActivity extends AppCompatActivity {
             }
             else if (te.val == TouchEvent.MULTITOUCH)
             {
-                updateViews(m_rootNode);
+                updateNode(m_rootNode, true);
                 m_touchArray.clear();
                 m_touchArray.add(te);
             }
@@ -301,12 +358,12 @@ public class OneDActivity extends AppCompatActivity {
 
                     if (next_node != null)
                     {
-                        updateViews(next_node);
+                        updateNode(next_node, false);
                         m_touchArray.add(te);
                     }
                     else if (sibling_node != null)
                     {
-                        updateViews(sibling_node);
+                        updateNode(sibling_node, true);
                         m_touchArray.add(te);
                     }
                     else
