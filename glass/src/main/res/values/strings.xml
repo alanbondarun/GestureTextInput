@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">GestureTextInput</string>
+    <string name="gesture_text_title">GestureInput</string>
+    <string name="front_message">Tap to select an input method.</string>
+
+    <string name="menu_oned">1D Input</string>
+    <string name="menu_watch">WatchWrite</string>
 </resources>
