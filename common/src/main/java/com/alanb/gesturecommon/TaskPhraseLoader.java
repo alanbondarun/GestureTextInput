@@ -1,4 +1,4 @@
-package com.alanb.gesturetextinput;
+package com.alanb.gesturecommon;
 
 import android.content.Context;
 
@@ -16,7 +16,7 @@ public class TaskPhraseLoader
 
     public TaskPhraseLoader(Context context)
     {
-        m_phrases = new ArrayList<>();
+        m_phrases = new ArrayList<String>();
         BufferedReader phrase_rdr = new BufferedReader(new InputStreamReader(
                 context.getResources().openRawResource(R.raw.phrases2)));
 

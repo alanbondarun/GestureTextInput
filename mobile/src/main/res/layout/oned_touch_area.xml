@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.alanb.gesturetextinput.OneDInputView
+<com.alanb.gesturecommon.OneDInputView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_centerHorizontal="true"
     android:layout_centerVertical="true"
@@ -35,4 +35,4 @@
         android:layout_weight="0.25"
         android:background="@color/colorTouchPink">
     </RelativeLayout>
-</com.alanb.gesturetextinput.OneDInputView>
+</com.alanb.gesturecommon.OneDInputView>

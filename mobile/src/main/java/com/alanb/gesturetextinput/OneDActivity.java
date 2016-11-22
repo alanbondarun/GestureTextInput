@@ -12,8 +12,15 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.alanb.gesturecommon.EditDistCalculator;
+import com.alanb.gesturecommon.KeyNode;
+import com.alanb.gesturecommon.MathUtils;
+import com.alanb.gesturecommon.NanoTimer;
+import com.alanb.gesturecommon.OneDInputView;
+import com.alanb.gesturecommon.TaskPhraseLoader;
+import com.alanb.gesturecommon.TaskRecordWriter;
 import com.alanb.gesturecommon.TouchFeedbackFrameLayout;
-import com.alanb.gesturetextinput.OneDInputView.TouchEvent;
+import com.alanb.gesturecommon.OneDInputView.TouchEvent;
 
 import java.util.ArrayList;
 

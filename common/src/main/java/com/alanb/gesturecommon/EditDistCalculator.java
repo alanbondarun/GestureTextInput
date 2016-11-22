@@ -1,4 +1,4 @@
-package com.alanb.gesturetextinput;
+package com.alanb.gesturecommon;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -50,7 +50,7 @@ public class EditDistCalculator
                 }
                 else
                 {
-                    ArrayList<Integer> choice = new ArrayList<>();
+                    ArrayList<Integer> choice = new ArrayList<Integer>();
                     choice.add(min_dist[ci-1][cj] + 1);
                     choice.add(min_dist[ci][cj-1] + 1);
                     choice.add(min_dist[ci-1][cj-1] + 1);

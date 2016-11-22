@@ -1,7 +1,3 @@
 <resources>
     <string name="app_name">GestureTextInput</string>
-    <string name="end_of_input">&#x23ce;</string>
-    <string name="done_input">&#x2713;</string>
-    <string name="task_record_prefix">TaskRecord</string>
-    <string name="task_record_ext">.csv</string>
 </resources>

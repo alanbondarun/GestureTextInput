@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorTouchBackground">#8afce5</color>
-    <color name="colorTouchPink">#f780db</color>
+    <color name="colorGlassBackground">#0e5d68</color>
+    <color name="colorGlassPink">#610c44</color>
 </resources>

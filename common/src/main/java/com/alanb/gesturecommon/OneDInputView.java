@@ -1,4 +1,4 @@
-package com.alanb.gesturetextinput;
+package com.alanb.gesturecommon;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -9,9 +9,9 @@ public class OneDInputView extends LinearLayout
 {
     public static class TouchEvent
     {
-        final static int DROP = -1;
-        final static int END = -2;
-        final static int MULTITOUCH = -3;
+        public final static int DROP = -1;
+        public final static int END = -2;
+        public final static int MULTITOUCH = -3;
         public final int val;
         public TouchEvent(int v)
         {
