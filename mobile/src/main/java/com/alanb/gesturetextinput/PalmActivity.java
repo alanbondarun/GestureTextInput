@@ -1,20 +1,15 @@
 package com.alanb.gesturetextinput;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.gesture.Gesture;
-import android.gesture.GestureLibraries;
-import android.gesture.GestureLibrary;
 import android.gesture.GestureOverlayView;
 import android.gesture.GesturePoint;
 import android.gesture.GestureStore;
 import android.gesture.GestureStroke;
 import android.gesture.Prediction;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Layout;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -22,10 +17,8 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.alanb.gesturecommon.CommonUtils;
+import com.alanb.gesturecommon.TouchFeedbackFrameLayout;
 
-import org.w3c.dom.Text;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import static java.lang.Math.atan2;

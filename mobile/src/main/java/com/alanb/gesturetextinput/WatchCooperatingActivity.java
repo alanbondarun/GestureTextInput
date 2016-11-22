@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.alanb.gesturecommon.TouchFeedbackFrameLayout;
 import com.alanb.gesturecommon.WatchWriteInputView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;

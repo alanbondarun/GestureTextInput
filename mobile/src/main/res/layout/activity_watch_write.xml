@@ -116,10 +116,10 @@
         </RelativeLayout>
     </FrameLayout>
 
-    <com.alanb.gesturetextinput.TouchFeedbackFrameLayout
+    <com.alanb.gesturecommon.TouchFeedbackFrameLayout
         android:id="@+id/w_touch_frame"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1">
-    </com.alanb.gesturetextinput.TouchFeedbackFrameLayout>
+    </com.alanb.gesturecommon.TouchFeedbackFrameLayout>
 </LinearLayout>

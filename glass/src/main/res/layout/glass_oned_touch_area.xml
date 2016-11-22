@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.alanb.gesturetextinput.OneDInputView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_centerHorizontal="true"
+    android:layout_centerVertical="true"
+    android:layout_gravity="center"
+    android:orientation="horizontal"
+    android:layout_width="440dip"
+    android:layout_height="60dip">
+    <RelativeLayout
+        android:id="@+id/o_touchArea1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0.25"
+        android:background="@color/colorTouchBackground">
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/o_touchArea2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0.25"
+        android:background="@color/colorTouchPink">
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/o_touchArea3"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0.25"
+        android:background="@color/colorTouchBackground">
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/o_touchArea4"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0.25"
+        android:background="@color/colorTouchPink">
+    </RelativeLayout>
+</com.alanb.gesturetextinput.OneDInputView>

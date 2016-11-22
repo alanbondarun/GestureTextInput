@@ -15,7 +15,7 @@
         android:id="@+id/c_input_text"
         android:textSize="@dimen/input_text_size" />
 
-    <com.alanb.gesturetextinput.TouchFeedbackFrameLayout
+    <com.alanb.gesturecommon.TouchFeedbackFrameLayout
         android:id="@+id/c_touch_frame"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
@@ -100,5 +100,5 @@
                 </RelativeLayout>
             </LinearLayout>
         </LinearLayout>
-    </com.alanb.gesturetextinput.TouchFeedbackFrameLayout>
+    </com.alanb.gesturecommon.TouchFeedbackFrameLayout>
 </RelativeLayout>

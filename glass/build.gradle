@@ -8,13 +8,12 @@ repositories {
 }
 
 android {
-    compileSdkVersion "Google Inc.:Glass Development Kit Preview:19"
+    compileSdkVersion 'Google Inc.:Glass Development Kit Preview:19'
     buildToolsVersion "25.0.0"
-
     defaultConfig {
         applicationId "com.alanb.gesturetextinput"
         minSdkVersion 19
-        targetSdkVersion 25
+        targetSdkVersion 19
         versionCode 1
         versionName "1.0"
     }
@@ -24,8 +23,12 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    productFlavors {
+    }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile 'com.android.support:appcompat-v7:19.+'
+    compile project(':common')
 }

@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.alanb.gesturecommon.TouchFeedbackFrameLayout;
 import com.alanb.gesturetextinput.OneDInputView.TouchEvent;
 
 import java.util.ArrayList;
