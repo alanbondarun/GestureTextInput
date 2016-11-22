@@ -21,6 +21,8 @@ public class TouchFeedbackFrameLayout extends FrameLayout
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
     }
 
+    public TouchFeedbackView getFeedbackView() { return m_feedback_view; }
+
     public void attachFeedbackTo(ViewGroup view)
     {
         if (m_parent_view != null)
@@ -56,5 +58,10 @@ public class TouchFeedbackFrameLayout extends FrameLayout
     public void setCursor(float x, float y, int action)
     {
         m_feedback_view.setCursorPos(x, y, action);
+    }
+
+    public void setCursorRatio(float x, float y, int action)
+    {
+        m_feedback_view.setCursorRatio(x, y, action);
     }
 }

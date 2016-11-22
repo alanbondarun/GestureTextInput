@@ -31,14 +31,13 @@ import static java.lang.Math.min;
 
 public class GlassOneDActivity extends Activity
 {
-    private View mView;
-
     private final String TAG = this.getClass().getName();
     private ArrayList<TextView> m_viewTexts;
     private KeyNode m_rootNode;
     // DO NOT modify this directly; use updateCurNode() instead
     private KeyNode m_curNode;
     private ArrayList<OneDInputView.TouchEvent> m_touchArray;
+    private TouchFeedbackFrameLayout m_feedbackFrameLayout;
 
     private String m_inputStr = "";
     private TextView m_inputTextView;
@@ -63,7 +62,7 @@ public class GlassOneDActivity extends Activity
     {
         super.onCreate(bundle);
 
-        mView = buildView();
+        View mView = buildView();
         setContentView(mView);
 
         SharedPreferences prefs = getSharedPreferences(getString(R.string.app_pref_key), MODE_PRIVATE);
@@ -83,6 +82,19 @@ public class GlassOneDActivity extends Activity
 
         m_inputTextView = (TextView) findViewById(R.id.o_input_text);
 
+        m_feedbackFrameLayout = (TouchFeedbackFrameLayout)
+                findViewById(R.id.o_touch_point_area);
+        m_feedbackFrameLayout.attachFeedbackTo(m_feedbackFrameLayout);
+
+        LayoutInflater inflater = LayoutInflater.from(this);
+        OneDInputView inputView = (GlassOneDInputView) inflater.inflate(R.layout.glass_oned_touch_area,
+                m_feedbackFrameLayout, false);
+        inputView.setOnTouchEventListener(m_onedTouchEventListener);
+        inputView.setOnTouchListener(m_onedTouchListener);
+        m_feedbackFrameLayout.addView(inputView);
+        m_feedbackFrameLayout.getFeedbackView().setPointColor(Color.argb(80, 255, 255, 255));
+        m_feedbackFrameLayout.getFeedbackView().setRadius(20.0f);
+
         m_viewTexts = new ArrayList<TextView>();
         m_viewTexts.add((TextView) findViewById(R.id.o_char_indi_1));
         m_viewTexts.add((TextView) findViewById(R.id.o_char_indi_2));
@@ -90,10 +102,6 @@ public class GlassOneDActivity extends Activity
         m_viewTexts.add((TextView) findViewById(R.id.o_char_indi_4));
 
         updateNode(m_rootNode, true);
-
-        TouchFeedbackFrameLayout feedbackFrameLayout = (TouchFeedbackFrameLayout)
-                findViewById(R.id.o_touch_point_area);
-        feedbackFrameLayout.attachFeedbackTo(feedbackFrameLayout);
 
         m_phraseTimer = new NanoTimer();
         initTask();
@@ -162,11 +170,11 @@ public class GlassOneDActivity extends Activity
                 {
                     if (np.getNextNode(ci) == node)
                     {
-                        //m_viewTexts.get(ci).setBackgroundColor(getResources().getColor(R.color.colorGlassBackground));
+                        m_viewTexts.get(ci).setBackgroundColor(getResources().getColor(R.color.colorGlassBackground));
                     }
                     else
                     {
-                        //m_viewTexts.get(ci).setBackgroundColor(Color.TRANSPARENT);
+                        m_viewTexts.get(ci).setBackgroundColor(Color.TRANSPARENT);
                     }
                 }
             }
@@ -186,7 +194,7 @@ public class GlassOneDActivity extends Activity
                             Math.min(cj + MAX_CHAR_PER_LINE, raw_str.length())));
                 }
                 m_viewTexts.get(ci).setText(builder.toString());
-                //m_viewTexts.get(ci).setBackgroundColor(Color.TRANSPARENT);
+                m_viewTexts.get(ci).setBackgroundColor(Color.TRANSPARENT);
             }
         }
     }
@@ -224,45 +232,11 @@ public class GlassOneDActivity extends Activity
 
     public OneDInputView.OnTouchListener m_onedTouchListener = new OneDInputView.OnTouchListener()
     {
-        final double stopSpeedThresh = 0.5;
-        final double angleThresh = Math.PI * 0.35;
-        int m_dir = 0;
         @Override
         public void onTouch(MotionEvent e)
         {
-            int lastIndex = e.getHistorySize() - 1;
-            if (e.getAction() == MotionEvent.ACTION_MOVE && lastIndex >= 0)
-            {
-                if ((Math.hypot(e.getX() - e.getHistoricalX(lastIndex), e.getY() - e.getHistoricalY(lastIndex)) /
-                        (e.getEventTime() - e.getHistoricalEventTime(lastIndex))) <= stopSpeedThresh)
-                {
-                    updateViews();
-                }
-                else
-                {
-                    int cdir = 0;
-                    double aa = MathUtils.vectorAngle(e.getX() - e.getHistoricalX(lastIndex),
-                            e.getY() - e.getHistoricalY(lastIndex), 1, 0);
-                    if (Math.abs(aa) <= angleThresh)
-                    {
-                        cdir = 1;
-                    }
-                    else if (Math.abs(Math.PI - aa) <= angleThresh)
-                    {
-                        cdir = -1;
-                    }
-
-                    if (cdir*m_dir < 0)
-                    {
-                        updateViews();
-                    }
-                    m_dir = cdir;
-                }
-            }
-            else
-            {
-                m_dir = 0;
-            }
+            m_feedbackFrameLayout.setCursorRatio(e.getX()/getResources().getInteger(R.integer.glass_touchpad_w),
+                    e.getY()/getResources().getInteger(R.integer.glass_touchpad_h), e.getAction());
         }
     };
 
@@ -372,6 +346,7 @@ public class GlassOneDActivity extends Activity
                             }
                         }
                     }
+                    updateViews();
                 }
             };
 
@@ -398,6 +373,7 @@ public class GlassOneDActivity extends Activity
             m_taskRecordWriter.close();
         }
     }
+
     private View buildView()
     {
         CardBuilder card = new CardBuilder(this, CardBuilder.Layout.EMBED_INSIDE);

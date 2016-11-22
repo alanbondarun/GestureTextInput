@@ -97,6 +97,7 @@ public class WatchWriteActivity extends AppCompatActivity {
         {
             feedbackFrameLayout.attachFeedbackTo(feedbackFrameLayout);
         }
+        feedbackFrameLayout.getFeedbackView().setPointColor(Color.argb(80, 0, 0, 0));
 
         LayoutInflater inflater = LayoutInflater.from(this);
         m_touchInputView = (WatchWriteInputView) inflater.inflate(R.layout.watch_touch_area, feedbackFrameLayout, false);

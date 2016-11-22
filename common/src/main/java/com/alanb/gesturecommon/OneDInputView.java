@@ -2,6 +2,7 @@ package com.alanb.gesturecommon;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.LinearLayout;
 
@@ -37,10 +38,21 @@ public class OneDInputView extends LinearLayout
 
     private OnTouchListener m_onTouchListener;
     private OnTouchEventListener m_onTouchEventlistener;
+    private double m_touchW = 0, m_touchH = 0;
 
     public OneDInputView(Context context, AttributeSet set)
     {
         super(context, set);
+    }
+
+    protected void setCustomTouchWidth(double w)
+    {
+        this.m_touchW = w;
+    }
+
+    protected void setCustomTouchHeight(double h)
+    {
+        this.m_touchH = h;
     }
 
     public void setOnTouchEventListener(OnTouchEventListener l)
@@ -59,6 +71,15 @@ public class OneDInputView extends LinearLayout
     @Override
     public boolean onTouchEvent(MotionEvent motionEvent)
     {
+        if (this.m_touchW <= 0)
+        {
+            this.m_touchW = getWidth();
+        }
+        if (this.m_touchH <= 0)
+        {
+            this.m_touchH = getHeight();
+        }
+
         TouchEvent cur_e;
         if (multi_occurred && (motionEvent.getAction() == MotionEvent.ACTION_DOWN
                 || motionEvent.getAction() == MotionEvent.ACTION_MOVE))
@@ -77,8 +98,8 @@ public class OneDInputView extends LinearLayout
             else if (motionEvent.getAction() == MotionEvent.ACTION_DOWN
                     || motionEvent.getAction() == MotionEvent.ACTION_MOVE)
             {
-                double xrel = motionEvent.getX() / this.getWidth();
-                double yrel = motionEvent.getY() / this.getHeight();
+                double xrel = motionEvent.getX() / m_touchW;
+                double yrel = motionEvent.getY() / m_touchH;
                 if (0 <= xrel && xrel <= 1 && 0 <= yrel && yrel <= 1)
                 {
                     cur_e = new TouchEvent((int) (xrel * 4.0));

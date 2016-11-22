@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.alanb.gesturetextinput.GlassOneDInputView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/o_char_view"
+    android:layout_gravity="center"
+    android:layout_centerHorizontal="true"
+    android:layout_centerVertical="true"
+    android:orientation="horizontal"
+    android:layout_width="400dip"
+    android:layout_height="72dip">
+
+    <TextView
+        android:text=""
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0.25"
+        android:gravity="center"
+        android:id="@+id/o_char_indi_1"
+        android:textSize="20sp" />
+    <TextView
+        android:text=""
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0.25"
+        android:gravity="center"
+        android:id="@+id/o_char_indi_2"
+        android:textSize="20sp" />
+    <TextView
+        android:text=""
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0.25"
+        android:gravity="center"
+        android:id="@+id/o_char_indi_3"
+        android:textSize="20sp" />
+    <TextView
+        android:text=""
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0.25"
+        android:gravity="center"
+        android:id="@+id/o_char_indi_4"
+        android:textSize="20sp" />
+</com.alanb.gesturetextinput.GlassOneDInputView>

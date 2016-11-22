@@ -11,8 +11,10 @@ import android.view.View;
 
 public class TouchFeedbackView extends View
 {
-    boolean m_activated = false;
-    float m_posx=100, m_posy=100;
+    private boolean m_activated = false;
+    private float m_posx=100, m_posy=100, m_radius=50;
+    private int m_color;
+    private ShapeDrawable m_cursor;
 
     public void setCursorPos(MotionEvent motionEvent)
     {
@@ -35,13 +37,33 @@ public class TouchFeedbackView extends View
         invalidate();
     }
 
+    public void setCursorRatio(float x, float y, int action)
+    {
+        if (action == MotionEvent.ACTION_DOWN || action == MotionEvent.ACTION_MOVE)
+        {
+            m_activated = true;
+            m_posx = x * this.getWidth();
+            m_posy = y * this.getHeight();
+        }
+        else
+        {
+            m_activated = false;
+        }
+
+        invalidate();
+    }
+
+    public void setPointColor(int color) { m_color = color; }
+    public void setRadius(float radius) { m_radius = radius; }
+
     public TouchFeedbackView(Context context)
     {
-        super(context, null);
+        this(context, null);
     }
     public TouchFeedbackView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
+        m_cursor = new ShapeDrawable(new OvalShape());
     }
 
     @Override
@@ -51,11 +73,10 @@ public class TouchFeedbackView extends View
 
         if (m_activated)
         {
-            ShapeDrawable cursor = new ShapeDrawable(new OvalShape());
-            cursor.getPaint().setColor(Color.argb(85, 0, 0, 0));
-            cursor.setBounds((int) (m_posx - 50), (int) (m_posy - 50),
-                    (int) (m_posx + 50), (int) (m_posy + 50));
-            cursor.draw(canvas);
+            m_cursor.getPaint().setColor(m_color);
+            m_cursor.setBounds((int) (m_posx - m_radius), (int) (m_posy - m_radius),
+                    (int) (m_posx + m_radius), (int) (m_posy + m_radius));
+            m_cursor.draw(canvas);
         }
     }
 }

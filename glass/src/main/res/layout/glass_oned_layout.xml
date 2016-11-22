@@ -21,56 +21,7 @@
     <com.alanb.gesturecommon.TouchFeedbackFrameLayout
         android:id="@+id/o_touch_point_area"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:layout_weight="1">
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <LinearLayout
-                android:id="@+id/o_char_view"
-                android:layout_gravity="center"
-                android:orientation="horizontal"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:layout_width="400dip"
-                android:layout_height="72dip">
-                <TextView
-                    android:text=""
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.25"
-                    android:gravity="center"
-                    android:background="@color/colorGlassBackground"
-                    android:id="@+id/o_char_indi_1"
-                    android:textSize="20sp" />
-                <TextView
-                    android:text=""
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.25"
-                    android:gravity="center"
-                    android:background="@color/colorGlassPink"
-                    android:id="@+id/o_char_indi_2"
-                    android:textSize="20sp" />
-                <TextView
-                    android:text=""
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.25"
-                    android:gravity="center"
-                    android:background="@color/colorGlassBackground"
-                    android:id="@+id/o_char_indi_3"
-                    android:textSize="20sp" />
-                <TextView
-                    android:text=""
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.25"
-                    android:gravity="center"
-                    android:background="@color/colorGlassPink"
-                    android:id="@+id/o_char_indi_4"
-                    android:textSize="20sp" />
-            </LinearLayout>
-        </RelativeLayout>
     </com.alanb.gesturecommon.TouchFeedbackFrameLayout>
 </LinearLayout>

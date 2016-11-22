@@ -96,6 +96,7 @@ public class OneDActivity extends AppCompatActivity {
         {
             feedbackFrameLayout.attachFeedbackTo(feedbackFrameLayout);
         }
+        feedbackFrameLayout.getFeedbackView().setPointColor(Color.argb(80, 0, 0, 0));
 
         LayoutInflater inflater = LayoutInflater.from(this);
         OneDInputView inputView = (OneDInputView) inflater.inflate(R.layout.oned_touch_area, feedbackFrameLayout, false);

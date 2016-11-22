@@ -161,6 +161,7 @@ public class WatchCooperatingActivity extends AppCompatActivity
 
         m_feedbackFrameLayout = (TouchFeedbackFrameLayout) findViewById(R.id.c_touch_frame);
         m_feedbackFrameLayout.attachFeedbackTo(m_feedbackFrameLayout);
+        m_feedbackFrameLayout.getFeedbackView().setPointColor(Color.argb(80, 0, 0, 0));
 
         GoogleApiClient.Builder g_builder = new GoogleApiClient.Builder(this);
         g_builder.addApi(Wearable.API);
