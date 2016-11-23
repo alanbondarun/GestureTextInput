@@ -57,7 +57,6 @@ public class GlassWatchWriteActivity extends Activity
     // implementation as the requestCode parameter.
     int REQUEST_ENABLE_BT = 1;
     AcceptThread accThread;
-    TextView connectedDevices, mMsgView;
     Handler handle;
     BroadcastReceiver receiver;
 
@@ -71,8 +70,6 @@ public class GlassWatchWriteActivity extends Activity
 
         uuids[0] = UUID.fromString(uuid1);
         uuids[1] = UUID.fromString(uuid2);
-        connectedDevices = (TextView) findViewById(R.id.connected_devices_values);
-        mMsgView = (TextView) findViewById(R.id.w_msg_text);
         handle = new Handler(Looper.getMainLooper()) {
             @Override
             public void handleMessage(Message msg)
@@ -87,7 +84,6 @@ public class GlassWatchWriteActivity extends Activity
                         startListening();
                         break;
                     case MESSAGE_ARRIVED:
-                        mMsgView.setText(msg.getData().getString("Message"));
                         break;
                     default:
                         break;
