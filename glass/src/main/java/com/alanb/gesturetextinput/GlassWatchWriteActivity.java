@@ -30,6 +30,9 @@ import com.alanb.gesturecommon.TouchFeedbackFrameLayout;
 import com.alanb.gesturecommon.WatchWriteInputView;
 import com.google.android.glass.widget.CardBuilder;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -133,8 +136,6 @@ public class GlassWatchWriteActivity extends Activity
         LayoutInflater inflater = LayoutInflater.from(this);
         WatchWriteInputView inputView = (WatchWriteInputView) inflater.inflate(
                 R.layout.glass_watch_touch_area, m_feedbackFrameLayout, false);
-        inputView.setOnTouchEventListener(m_wwTouchEventListener);
-        inputView.setOnTouchListener(m_wwTouchListener);
         m_feedbackFrameLayout.addView(inputView);
         m_feedbackFrameLayout.getFeedbackView().setPointColor(Color.argb(80, 255, 255, 255));
         m_feedbackFrameLayout.getFeedbackView().setRadius(20.0f);
@@ -157,6 +158,7 @@ public class GlassWatchWriteActivity extends Activity
         uuids[0] = UUID.fromString(uuid1);
         uuids[1] = UUID.fromString(uuid2);
         handle = new Handler(Looper.getMainLooper()) {
+            private long prevTimeStamp = 0;
             @Override
             public void handleMessage(Message msg)
             {
@@ -170,6 +172,34 @@ public class GlassWatchWriteActivity extends Activity
                         startListening();
                         break;
                     case MESSAGE_ARRIVED:
+                        JSONObject jsonTouch = null;
+                        try
+                        {
+                            jsonTouch = new JSONObject(msg.getData().getString("Message"));
+
+                            long timeStamp = jsonTouch.getLong("timestamp");
+                            Log.d(TAG, "ts: " + timeStamp + ", prev-ts:" + prevTimeStamp);
+                            if (timeStamp < prevTimeStamp)
+                                break;
+                            prevTimeStamp = timeStamp;
+
+                            if (jsonTouch.has("touchevent"))
+                            {
+                                Log.d(TAG, "has touchevent");
+                                JSONObject jsonTE = jsonTouch.getJSONObject("touchevent");
+                                String teString = jsonTE.getString(getResources().getString(R.string.wear_touch_key));
+                                Log.d(TAG, "te str: " + teString);
+                                processTouchEvent(WatchWriteInputView.TouchEvent.valueOf(teString));
+                            }
+                            else if (jsonTouch.has("touchpos"))
+                            {
+                                // TODO
+                            }
+                        }
+                        catch (JSONException e)
+                        {
+                            e.printStackTrace();
+                        }
                         break;
                     default:
                         break;
@@ -255,109 +285,104 @@ public class GlassWatchWriteActivity extends Activity
         m_timedActions.clear();
     }
 
-    private WatchWriteInputView.OnTouchEventListener m_wwTouchEventListener =
-            new WatchWriteInputView.OnTouchEventListener()
+    private void processTouchEvent(WatchWriteInputView.TouchEvent te)
     {
-        @Override
-        public void onTouchEvent(WatchWriteInputView.TouchEvent te)
+        Log.d(TAG, "event = " + te.toString());
+        if (te == WatchWriteInputView.TouchEvent.END)
         {
-            Log.d(TAG, "event = " + te.toString());
-            if (te == WatchWriteInputView.TouchEvent.END)
+            if (!m_phraseTimer.running())
+                m_phraseTimer.begin();
+            if (m_curNode.getAct() == KeyNode.Act.DELETE)
             {
-                if (!m_phraseTimer.running())
-                    m_phraseTimer.begin();
-                if (m_curNode.getAct() == KeyNode.Act.DELETE)
+                m_phraseTimer.check();
+                Log.d(TAG, "Delete one character");
+                m_inputStr = m_inputStr.substring(0, max(0, m_inputStr.length()-1));
+                m_inc_fixed_num++;
+                m_fix_num++;
+                m_timedActions.add(new TaskRecordWriter.TimedAction(m_phraseTimer.getDiffInSeconds(), "del"));
+            }
+            else if (m_curNode.getAct() == KeyNode.Act.DONE)
+            {
+                Log.d(TAG, "Input Done");
+                doneTask();
+            }
+            else if (m_curNode.getCharVal() != null)
+            {
+                m_phraseTimer.check();
+                Log.d(TAG, "Input Result: " + m_curNode.getCharVal());
+                m_inputStr += String.valueOf(m_curNode.getCharVal());
+                m_timedActions.add(new TaskRecordWriter.TimedAction(m_phraseTimer.getDiffInSeconds(), m_curNode.getCharVal().toString()));
+            }
+            else
+            {
+                m_phraseTimer.check();
+                m_timedActions.add(new TaskRecordWriter.TimedAction(m_phraseTimer.getDiffInSeconds(), "cancel"));
+                m_canceled_num++;
+            }
+
+            // initialization for next touch(or gesture) input
+            m_gestureTouchAreas.clear();
+            updateViews(m_rootNode);
+        }
+        else if (te == WatchWriteInputView.TouchEvent.DROP)
+        {
+            m_gestureTouchAreas.add(te);
+        }
+        else if (te == WatchWriteInputView.TouchEvent.MULTITOUCH)
+        {
+            updateViews(m_rootNode);
+            m_gestureTouchAreas.clear();
+            m_gestureTouchAreas.add(te);
+        }
+        else if (te != WatchWriteInputView.TouchEvent.AREA_OTHER)
+        {
+            if (isValidTouchSequence(m_gestureTouchAreas))
+            {
+                KeyNode next_node = null;
+                KeyNode sibling_node = m_curNode.getParent();
+                switch (te)
                 {
-                    m_phraseTimer.check();
-                    Log.d(TAG, "Delete one character");
-                    m_inputStr = m_inputStr.substring(0, max(0, m_inputStr.length()-1));
-                    m_inc_fixed_num++;
-                    m_fix_num++;
-                    m_timedActions.add(new TaskRecordWriter.TimedAction(m_phraseTimer.getDiffInSeconds(), "del"));
+                    case AREA1:
+                        next_node = m_curNode.getNextNode(0);
+                        if (sibling_node != null)
+                            sibling_node = sibling_node.getNextNode(0);
+                        break;
+                    case AREA2:
+                        next_node = m_curNode.getNextNode(1);
+                        if (sibling_node != null)
+                            sibling_node = sibling_node.getNextNode(1);
+                        break;
+                    case AREA3:
+                        next_node = m_curNode.getNextNode(2);
+                        if (sibling_node != null)
+                            sibling_node = sibling_node.getNextNode(2);
+                        break;
+                    case AREA4:
+                        next_node = m_curNode.getNextNode(3);
+                        if (sibling_node != null)
+                            sibling_node = sibling_node.getNextNode(3);
+                        break;
                 }
-                else if (m_curNode.getAct() == KeyNode.Act.DONE)
+                if (next_node != null)
                 {
-                    Log.d(TAG, "Input Done");
-                    doneTask();
+                    updateViews(next_node);
+                    m_gestureTouchAreas.add(te);
                 }
-                else if (m_curNode.getCharVal() != null)
+                else if (sibling_node != null)
                 {
-                    m_phraseTimer.check();
-                    Log.d(TAG, "Input Result: " + m_curNode.getCharVal());
-                    m_inputStr += String.valueOf(m_curNode.getCharVal());
-                    m_timedActions.add(new TaskRecordWriter.TimedAction(m_phraseTimer.getDiffInSeconds(), m_curNode.getCharVal().toString()));
+                    updateViews(sibling_node);
+                    if (m_gestureTouchAreas.size() >= 1)
+                        m_gestureTouchAreas.remove(m_gestureTouchAreas.size()-1);
+                    m_gestureTouchAreas.add(te);
                 }
                 else
                 {
-                    m_phraseTimer.check();
-                    m_timedActions.add(new TaskRecordWriter.TimedAction(m_phraseTimer.getDiffInSeconds(), "cancel"));
-                    m_canceled_num++;
-                }
-
-                // initialization for next touch(or gesture) input
-                m_gestureTouchAreas.clear();
-                updateViews(m_rootNode);
-            }
-            else if (te == WatchWriteInputView.TouchEvent.DROP)
-            {
-                m_gestureTouchAreas.add(te);
-            }
-            else if (te == WatchWriteInputView.TouchEvent.MULTITOUCH)
-            {
-                updateViews(m_rootNode);
-                m_gestureTouchAreas.clear();
-                m_gestureTouchAreas.add(te);
-            }
-            else if (te != WatchWriteInputView.TouchEvent.AREA_OTHER)
-            {
-                if (isValidTouchSequence(m_gestureTouchAreas))
-                {
-                    KeyNode next_node = null;
-                    KeyNode sibling_node = m_curNode.getParent();
-                    switch (te)
-                    {
-                        case AREA1:
-                            next_node = m_curNode.getNextNode(0);
-                            if (sibling_node != null)
-                                sibling_node = sibling_node.getNextNode(0);
-                            break;
-                        case AREA2:
-                            next_node = m_curNode.getNextNode(1);
-                            if (sibling_node != null)
-                                sibling_node = sibling_node.getNextNode(1);
-                            break;
-                        case AREA3:
-                            next_node = m_curNode.getNextNode(2);
-                            if (sibling_node != null)
-                                sibling_node = sibling_node.getNextNode(2);
-                            break;
-                        case AREA4:
-                            next_node = m_curNode.getNextNode(3);
-                            if (sibling_node != null)
-                                sibling_node = sibling_node.getNextNode(3);
-                            break;
-                    }
-                    if (next_node != null)
-                    {
-                        updateViews(next_node);
-                        m_gestureTouchAreas.add(te);
-                    }
-                    else if (sibling_node != null)
-                    {
-                        updateViews(sibling_node);
-                        if (m_gestureTouchAreas.size() >= 1)
-                            m_gestureTouchAreas.remove(m_gestureTouchAreas.size()-1);
-                        m_gestureTouchAreas.add(te);
-                    }
-                    else
-                    {
-                        m_gestureTouchAreas.add(WatchWriteInputView.TouchEvent.DROP);
-                        Log.d(TAG, "Touch drop: end reached");
-                    }
+                    m_gestureTouchAreas.add(WatchWriteInputView.TouchEvent.DROP);
+                    Log.d(TAG, "Touch drop: end reached");
                 }
             }
         }
-    };
+    }
 
     private boolean isValidTouchSequence(ArrayList<WatchWriteInputView.TouchEvent> events)
     {
