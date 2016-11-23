@@ -240,7 +240,7 @@ public class MainActivity extends WearableActivity
             if (m_connectedThread != null && m_connectedThread.isAlive())
             {
                 String data = "na mid god mid";
-                m_connectedThread.write(data.getBytes());
+                m_connectedThread.write(data);
             }
             mDetector.onTouchEvent(motionEvent);
             /*PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/touchpos");
@@ -479,17 +479,11 @@ public class MainActivity extends WearableActivity
             Message msg = handle.obtainMessage(CANCEL_CONN);
             handle.sendMessage(msg);
         }
-        /**
-         * Write to the connected OutStream.
-         * @param buffer  The bytes to write
-         */
-        public void write(byte[] buffer) {
-            try {
-                mmOutStream.write(buffer);
 
-                // Share the sent message back to the UI Activity
-                //              mHandler.obtainMessage(BluetoothChat.MESSAGE_WRITE, -1, -1, buffer)
-                //              .sendToTarget();
+        public void write(String strData) {
+            try {
+                mmOutStream.write(strData.concat(getString(R.string.bt_json_token)).
+                        getBytes(getResources().getString(R.string.default_json_charset)));
             } catch (IOException e) {
                 Log.e(TAG, "Exception during write", e);
             }

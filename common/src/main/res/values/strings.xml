@@ -9,4 +9,7 @@
     <string name="done_input">&#x2713;</string>
     <string name="task_record_prefix">TaskRecord</string>
     <string name="task_record_ext">.csv</string>
+
+    <string name="default_json_charset">utf-8</string>
+    <string name="bt_json_token">\n</string>
 </resources>

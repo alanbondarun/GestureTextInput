@@ -75,13 +75,12 @@ public class GlassWatchWriteActivity extends Activity
         mMsgView = (TextView) findViewById(R.id.w_msg_text);
         handle = new Handler(Looper.getMainLooper()) {
             @Override
-            public void handleMessage(Message msg) {
+            public void handleMessage(Message msg)
+            {
                 switch (msg.what) {
                     case STATE_CONNECTION_STARTED:
-                        connectedDevices.setText(msg.getData().getString("NAMES"));
                         break;
                     case STATE_CONNECTION_LOST:
-                        connectedDevices.setText("");
                         startListening();
                         break;
                     case READY_TO_CONN:
@@ -237,12 +236,17 @@ public class GlassWatchWriteActivity extends Activity
                     bytes = mmInStream.read(buffer);
                     if (bytes > 0)
                     {
-                        Log.d(TAG, "message received: " + new String(buffer));
-                        Message msg = handle.obtainMessage(MESSAGE_ARRIVED);
-                        Bundle data = new Bundle();
-                        data.putString("data", new String(buffer));
-                        msg.setData(data);
-                        handle.sendMessage(msg);
+                        String recv_str = new String(buffer, getResources().getString(R.string.default_json_charset));
+                        String[] recv_strs = recv_str.trim().split(getString(R.string.bt_json_token));
+                        for (String str: recv_strs)
+                        {
+                            Log.d(TAG, "message received: " + str);
+                            Message msg = handle.obtainMessage(MESSAGE_ARRIVED);
+                            Bundle data = new Bundle();
+                            data.putString("Message", str);
+                            msg.setData(data);
+                            handle.sendMessage(msg);
+                        }
                     }
                     if(!msgToSend.equals("")) {
                         Log.e(TAG,"writing!");
