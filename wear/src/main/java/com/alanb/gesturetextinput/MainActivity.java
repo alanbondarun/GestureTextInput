@@ -74,6 +74,7 @@ public class MainActivity extends WearableActivity
     String uuid2 = "c2911cd0-5c3c-11e3-949a-0800200c9a66";
     //  DateFormat df = new DateFormat("ddyyyy")
     ConnectThread mConnThread;
+    ConnectedThread m_connectedThread;
     Handler handle;
     // constant we define and pass to startActForResult (must be >0), that the system passes back to you in your onActivityResult()
     // implementation as the requestCode parameter.
@@ -157,15 +158,10 @@ public class MainActivity extends WearableActivity
                         // construct a string from the valid bytes in the buffer
                         String readMessage = new String(readBuf, 0, msg.arg1);
                         Log.e(TAG,"received: "+readMessage);
-                        if (readMessage.length() > 0) {
+                        if (readMessage.length() > 0)
+                        {
                             // do soemthing...
                         }
-
-
-                        //                      updateCards(ctx, readMessage);
-                        //                          update()
-                        //  mConversationArrayAdapter.add(mConnectedDeviceName+":  " + readMessage);
-
                         break;
                     default:
                         break;
@@ -226,7 +222,14 @@ public class MainActivity extends WearableActivity
         @Override
         public void onTouch(MotionEvent motionEvent)
         {
-            PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/touchpos");
+
+
+            if (m_connectedThread != null && m_connectedThread.isAlive())
+            {
+                String data = "na mid god mid";
+                m_connectedThread.write(data.getBytes());
+            }
+            /*PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/touchpos");
             putDataMapReq.getDataMap().putFloat(getResources().getString(R.string.wear_xpos_key),
                     motionEvent.getX() / m_charTouchLayout.getWidth());
             putDataMapReq.getDataMap().putFloat(getResources().getString(R.string.wear_ypos_key),
@@ -236,7 +239,7 @@ public class MainActivity extends WearableActivity
 
             PutDataRequest dataReq = putDataMapReq.asPutDataRequest();
             PendingResult<DataApi.DataItemResult> pendingResult =
-                    Wearable.DataApi.putDataItem(m_googleApiClient, dataReq);
+                    Wearable.DataApi.putDataItem(m_googleApiClient, dataReq);*/
         }
     };
 
@@ -246,14 +249,14 @@ public class MainActivity extends WearableActivity
         @Override
         public void onTouchEvent(WatchWriteInputView.TouchEvent te)
         {
-            PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/touchevent");
+            /*PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/touchevent");
             putDataMapReq.getDataMap().putString(getResources().getString(R.string.wear_touch_key),
                     te.name());
             putDataMapReq.setUrgent();
 
             PutDataRequest dataReq = putDataMapReq.asPutDataRequest();
             PendingResult<DataApi.DataItemResult> pendingResult =
-                    Wearable.DataApi.putDataItem(m_googleApiClient, dataReq);
+                    Wearable.DataApi.putDataItem(m_googleApiClient, dataReq);*/
         }
     };
 
@@ -411,14 +414,8 @@ public class MainActivity extends WearableActivity
 
     private void manageConnectedSocket(BluetoothSocket mmSocket)
     {
-        ConnectedThread t = new ConnectedThread(mmSocket);
-        t.start();
-
-        if (t.isAlive())
-        {
-            String data = "na mid god mid";
-            t.write(data.getBytes());
-        }
+        m_connectedThread = new ConnectedThread(mmSocket);
+        m_connectedThread.start();
     }
 
     private class ConnectedThread extends Thread {
@@ -452,31 +449,21 @@ public class MainActivity extends WearableActivity
             // Keep listening to the InputStream while connected
             while (true) {
                 try {
-                    //                  byte[] blah = ("System Time:" +System.currentTimeMillis()).getBytes();
-                    //                  write(blah);
-                    //                  Thread.sleep(1000);
-                    // Read from the InputStream
                     bytes = mmInStream.read(buffer);
                     // Send the obtained bytes to the UI Activity
                     handle.obtainMessage(MESSAGE_READ, bytes, -1, buffer)
                             .sendToTarget();
-
-                    //                  .sendToTarget();
                 } catch (Exception e) {
                     Log.e(TAG, "disconnected", e);
                     connectionLost();
-                    //                  break;
+                    break;
                 }
             }
         }
-        public void connectionLost() {
+        public void connectionLost()
+        {
             Message msg = handle.obtainMessage(CANCEL_CONN);
-            //          Bundle bundle = new Bundle();
-            //          bundle.putString("NAMES", devs);
-            //          msg.setData(bundle);
-
             handle.sendMessage(msg);
-
         }
         /**
          * Write to the connected OutStream.

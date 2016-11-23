@@ -32,6 +32,7 @@ public class GlassWatchWriteActivity extends Activity
     public static final int STATE_CONNECTION_STARTED = 0;
     public static final int STATE_CONNECTION_LOST = 1;
     public static final int READY_TO_CONN = 2;
+    public static final int MESSAGE_ARRIVED = 3;
     public static final String DEVICE_NAME = "device_name";
     public static final String TOAST = "toast";
 
@@ -56,7 +57,7 @@ public class GlassWatchWriteActivity extends Activity
     // implementation as the requestCode parameter.
     int REQUEST_ENABLE_BT = 1;
     AcceptThread accThread;
-    TextView connectedDevices;
+    TextView connectedDevices, mMsgView;
     Handler handle;
     BroadcastReceiver receiver;
 
@@ -71,6 +72,7 @@ public class GlassWatchWriteActivity extends Activity
         uuids[0] = UUID.fromString(uuid1);
         uuids[1] = UUID.fromString(uuid2);
         connectedDevices = (TextView) findViewById(R.id.connected_devices_values);
+        mMsgView = (TextView) findViewById(R.id.w_msg_text);
         handle = new Handler(Looper.getMainLooper()) {
             @Override
             public void handleMessage(Message msg) {
@@ -84,6 +86,10 @@ public class GlassWatchWriteActivity extends Activity
                         break;
                     case READY_TO_CONN:
                         startListening();
+                        break;
+                    case MESSAGE_ARRIVED:
+                        mMsgView.setText(msg.getData().getString("Message"));
+                        break;
                     default:
                         break;
                 }
@@ -215,10 +221,18 @@ public class GlassWatchWriteActivity extends Activity
             byte[] buffer = new byte[1024];
             int bytes;
 
-            // Keep listening to the InputStream while connected
             while (true) {
                 try {
-                    //byte[] blah = ("System Time:" +System.currentTimeMillis()).getBytes();
+                    bytes = mmInStream.read(buffer);
+                    if (bytes > 0)
+                    {
+                        Log.d(TAG, "message received: " + new String(buffer));
+                        Message msg = handle.obtainMessage(MESSAGE_ARRIVED);
+                        Bundle data = new Bundle();
+                        data.putString("data", new String(buffer));
+                        msg.setData(data);
+                        handle.sendMessage(msg);
+                    }
                     if(!msgToSend.equals("")) {
                         Log.e(TAG,"writing!");
                         write(msgToSend.getBytes());
@@ -259,21 +273,9 @@ public class GlassWatchWriteActivity extends Activity
         }
     }
 
-    public static synchronized void setMsg(String newMsg)
+    public synchronized void setMsg(String newMsg)
     {
         msgToSend = newMsg;
         Log.d(TAG, "msg = " + msgToSend);
-    }
-
-    public static class HostBroadRec extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Bundle b= intent.getExtras();
-            String vals ="";
-            for(String key: b.keySet()) {
-                vals+=key+"&"+b.getString(key)+"Z";
-            }
-            GlassWatchWriteActivity.setMsg(vals);
-        }
     }
 }
