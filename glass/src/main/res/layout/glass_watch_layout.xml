@@ -1,6 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-</RelativeLayout>
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:weightSum="2">
+
+    <LinearLayout
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <TextView
+            android:text="tttttt"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/glass_input_text_size_4line_margin"
+            android:id="@+id/w_task_text"
+            android:textSize="@dimen/glass_input_text_size" />
+        <TextView
+            android:text="uuuuuu"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/glass_input_text_size_4line_margin"
+            android:id="@+id/w_input_text"
+            android:textSize="@dimen/glass_input_text_size" />
+    </LinearLayout>
+
+    <com.alanb.gesturecommon.TouchFeedbackFrameLayout
+        android:layout_weight="1"
+        android:id="@+id/w_touch_point_area"
+        android:layout_width="0dp"
+        android:layout_height="match_parent">
+    </com.alanb.gesturecommon.TouchFeedbackFrameLayout>
+</LinearLayout>

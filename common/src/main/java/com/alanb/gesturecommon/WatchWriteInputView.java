@@ -4,8 +4,9 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.LinearLayout;
 
-public class WatchWriteInputView extends View
+public class WatchWriteInputView extends LinearLayout
 {
     public enum TouchEvent
     {

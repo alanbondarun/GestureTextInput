@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.alanb.gesturecommon.WatchWriteInputView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/w_char_view"
+    android:layout_centerHorizontal="true"
+    android:layout_centerVertical="true"
+    android:layout_gravity="center"
+    android:orientation="vertical"
+    android:layout_width="160dip"
+    android:layout_height="160dip">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0.5"
+        android:orientation="horizontal">
+        <TextView
+            android:text="aaa"
+            android:typeface="monospace"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5"
+            android:gravity="center"
+            android:id="@+id/w_char_indi_1"
+            android:textSize="@dimen/glass_watch_charview" />
+        <TextView
+            android:text="bbb"
+            android:typeface="monospace"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5"
+            android:gravity="center"
+            android:id="@+id/w_char_indi_2"
+            android:textSize="@dimen/glass_watch_charview" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0.5"
+        android:orientation="horizontal">
+        <TextView
+            android:text="ccc"
+            android:typeface="monospace"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5"
+            android:gravity="center"
+            android:id="@+id/w_char_indi_3"
+            android:textSize="@dimen/glass_watch_charview" />
+        <TextView
+            android:text="ddd"
+            android:typeface="monospace"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5"
+            android:gravity="center"
+            android:id="@+id/w_char_indi_4"
+            android:textSize="@dimen/glass_watch_charview" />
+    </LinearLayout>
+</com.alanb.gesturecommon.WatchWriteInputView>
