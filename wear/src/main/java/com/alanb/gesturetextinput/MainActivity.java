@@ -18,7 +18,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.wearable.activity.WearableActivity;
 import android.support.wearable.view.BoxInsetLayout;
+import android.support.wearable.view.DismissOverlayView;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -60,6 +62,9 @@ public class MainActivity extends WearableActivity
 
     private float m_touchX;
     private float m_touchY;
+
+    private DismissOverlayView mDismissOverlay;
+    private GestureDetector mDetector;
 
     public static final int READY_TO_CONN =0;
     public static final int CANCEL_CONN =1;
@@ -140,6 +145,14 @@ public class MainActivity extends WearableActivity
         });
         builder.addApi(Wearable.API);
         m_googleApiClient = builder.build();
+
+        mDismissOverlay = (DismissOverlayView) findViewById(R.id.dismiss_overlay);
+        mDetector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener(){
+            public void onLongPress(MotionEvent event)
+            {
+                mDismissOverlay.show();
+            }
+        });
 
         ctx = this;
         handle = new Handler(Looper.getMainLooper()) {
@@ -229,6 +242,7 @@ public class MainActivity extends WearableActivity
                 String data = "na mid god mid";
                 m_connectedThread.write(data.getBytes());
             }
+            mDetector.onTouchEvent(motionEvent);
             /*PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/touchpos");
             putDataMapReq.getDataMap().putFloat(getResources().getString(R.string.wear_xpos_key),
                     motionEvent.getX() / m_charTouchLayout.getWidth());
