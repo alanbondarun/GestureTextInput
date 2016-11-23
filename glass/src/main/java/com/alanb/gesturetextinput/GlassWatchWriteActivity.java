@@ -102,6 +102,17 @@ public class GlassWatchWriteActivity extends Activity
         accThread = new AcceptThread();
         accThread.start();
     }
+
+    @Override
+    protected void onDestroy()
+    {
+        if (mConnectedThread != null)
+            mConnectedThread.cancel();
+        if (accThread != null)
+            accThread.cancel();
+        super.onDestroy();
+    }
+
     public void startListening() {
         if(accThread!=null) {
             accThread.cancel();
@@ -242,6 +253,7 @@ public class GlassWatchWriteActivity extends Activity
                 } catch (Exception e) {
                     Log.e(TAG, "disconnected", e);
                     connectionLost();
+                    break;
                 }
             }
         }
