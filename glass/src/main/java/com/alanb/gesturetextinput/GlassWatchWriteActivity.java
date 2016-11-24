@@ -137,7 +137,7 @@ public class GlassWatchWriteActivity extends Activity
         WatchWriteInputView inputView = (WatchWriteInputView) inflater.inflate(
                 R.layout.glass_watch_touch_area, m_feedbackFrameLayout, false);
         m_feedbackFrameLayout.addView(inputView);
-        m_feedbackFrameLayout.getFeedbackView().setPointColor(Color.argb(80, 255, 255, 255));
+        m_feedbackFrameLayout.getFeedbackView().setPointColor(Color.argb(165, 255, 255, 255));
         m_feedbackFrameLayout.getFeedbackView().setRadius(20.0f);
 
         m_gestureTouchAreas = new ArrayList<WatchWriteInputView.TouchEvent>();
@@ -432,33 +432,35 @@ public class GlassWatchWriteActivity extends Activity
     private void updateViews(KeyNode node)
     {
         m_inputTextView.setText(m_inputStr + getString(R.string.end_of_input));
-        if (node.isLeaf())
+
+        for (int ci = 0; ci < 4; ci++)
         {
-            KeyNode np = node.getParent();
-            if (np != null)
-            {
-                for (int ci=0; ci < np.getNextNodeNum(); ci++)
-                {
-                    if (np.getNextNode(ci) == node)
-                    {
-                        m_viewTexts.get(ci).setBackgroundColor(getResources().getColor(R.color.colorGlassBackground));
-                    }
-                    else
-                    {
-                        m_viewTexts.get(ci).setBackgroundColor(Color.TRANSPARENT);
-                    }
-                }
-            }
-        }
-        else
-        {
-            for (int ci = 0; ci < 4; ci++)
+            if (!node.isLeaf())
             {
                 String raw_str = node.getNextNode(ci).getShowStr();
                 m_viewTexts.get(ci).setText(raw_str);
-                m_viewTexts.get(ci).setBackgroundColor(Color.TRANSPARENT);
             }
         }
+
+        KeyNode np = node.getParent();
+        for (int ci = 0; ci < 4; ci++)
+        {
+            if (ci == 0 || ci == 3)
+            {
+                if (np != null && np.getNextNode(ci) == node)
+                    m_viewTexts.get(ci).setBackgroundColor(getResources().getColor(R.color.colorGlassBackground));
+                else
+                    m_viewTexts.get(ci).setBackgroundColor(getResources().getColor(R.color.colorGlassBackgroundWeak));
+            }
+            else
+            {
+                if (np != null && np.getNextNode(ci) == node)
+                    m_viewTexts.get(ci).setBackgroundColor(getResources().getColor(R.color.colorGlassPink));
+                else
+                    m_viewTexts.get(ci).setBackgroundColor(getResources().getColor(R.color.colorGlassPinkWeak));
+            }
+        }
+
         this.m_curNode = node;
     }
 

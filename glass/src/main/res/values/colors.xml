@@ -2,4 +2,9 @@
 <resources>
     <color name="colorGlassBackground">#0e5d68</color>
     <color name="colorGlassPink">#610c44</color>
+
+    <color name="colorGlassBackgroundWeak">#740e5d68</color>
+    <color name="colorGlassPinkWeak">#74610c44</color>
+
+    <color name="colorGlassWatchOutline">#ffffff</color>
 </resources>

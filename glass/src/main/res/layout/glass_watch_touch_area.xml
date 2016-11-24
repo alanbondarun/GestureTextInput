@@ -15,21 +15,23 @@
         android:layout_weight="0.5"
         android:orientation="horizontal">
         <TextView
-            android:text="aaa"
+            android:text=""
             android:typeface="monospace"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="0.5"
             android:gravity="center"
+            android:background="@drawable/glass_layout_border"
             android:id="@+id/w_char_indi_1"
             android:textSize="@dimen/glass_watch_charview" />
         <TextView
-            android:text="bbb"
+            android:text=""
             android:typeface="monospace"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="0.5"
             android:gravity="center"
+            android:background="@drawable/glass_layout_border"
             android:id="@+id/w_char_indi_2"
             android:textSize="@dimen/glass_watch_charview" />
     </LinearLayout>
@@ -39,21 +41,23 @@
         android:layout_weight="0.5"
         android:orientation="horizontal">
         <TextView
-            android:text="ccc"
+            android:text=""
             android:typeface="monospace"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="0.5"
             android:gravity="center"
+            android:background="@drawable/glass_layout_border"
             android:id="@+id/w_char_indi_3"
             android:textSize="@dimen/glass_watch_charview" />
         <TextView
-            android:text="ddd"
+            android:text=""
             android:typeface="monospace"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="0.5"
             android:gravity="center"
+            android:background="@drawable/glass_layout_border"
             android:id="@+id/w_char_indi_4"
             android:textSize="@dimen/glass_watch_charview" />
     </LinearLayout>
