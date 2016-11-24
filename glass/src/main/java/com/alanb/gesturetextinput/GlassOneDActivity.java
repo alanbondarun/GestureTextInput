@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.alanb.gesturecommon.EditDistCalculator;
 import com.alanb.gesturecommon.KeyNode;
 import com.alanb.gesturecommon.MathUtils;
+import com.alanb.gesturecommon.MotionEventRecorder;
 import com.alanb.gesturecommon.NanoTimer;
 import com.alanb.gesturecommon.OneDInputView;
 import com.alanb.gesturecommon.TaskPhraseLoader;
@@ -56,6 +57,8 @@ public class GlassOneDActivity extends Activity
     private int m_pref_layout;
     private TaskRecordWriter m_taskRecordWriter = null;
     private ArrayList<TaskRecordWriter.TimedAction> m_timedActions;
+
+    private MotionEventRecorder m_motionRecorder;
 
     @Override
     protected void onCreate(Bundle bundle)
@@ -105,6 +108,15 @@ public class GlassOneDActivity extends Activity
 
         m_phraseTimer = new NanoTimer();
         initTask();
+
+        try
+        {
+            m_motionRecorder = new MotionEventRecorder(this, this.getClass());
+        }
+        catch (java.io.IOException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     private void initTask()
@@ -237,6 +249,8 @@ public class GlassOneDActivity extends Activity
         {
             m_feedbackFrameLayout.setCursorRatio(e.getX()/getResources().getInteger(R.integer.glass_touchpad_w),
                     e.getY()/getResources().getInteger(R.integer.glass_touchpad_h), e.getAction());
+            if (m_motionRecorder != null)
+                m_motionRecorder.write(e);
         }
     };
 
@@ -371,6 +385,10 @@ public class GlassOneDActivity extends Activity
         if (m_taskRecordWriter != null)
         {
             m_taskRecordWriter.close();
+        }
+        if (m_motionRecorder != null)
+        {
+            m_motionRecorder.close();
         }
     }
 

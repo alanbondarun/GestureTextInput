@@ -7,12 +7,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.alanb.gesturecommon.EditDistCalculator;
 import com.alanb.gesturecommon.KeyNode;
+import com.alanb.gesturecommon.MotionEventRecorder;
 import com.alanb.gesturecommon.NanoTimer;
 import com.alanb.gesturecommon.TaskPhraseLoader;
 import com.alanb.gesturecommon.TaskRecordWriter;
@@ -49,6 +51,8 @@ public class WatchWriteActivity extends AppCompatActivity {
     private NanoTimer m_phraseTimer;
     private TaskRecordWriter m_taskRecordWriter = null;
     private ArrayList<TaskRecordWriter.TimedAction> m_timedActions;
+
+    private MotionEventRecorder m_motionRecorder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,10 +106,20 @@ public class WatchWriteActivity extends AppCompatActivity {
         LayoutInflater inflater = LayoutInflater.from(this);
         m_touchInputView = (WatchWriteInputView) inflater.inflate(R.layout.watch_touch_area, feedbackFrameLayout, false);
         m_touchInputView.setOnTouchEventListener(m_wwTouchListener);
+        m_touchInputView.setOnTouchListener(m_touchListener);
         feedbackFrameLayout.addView(m_touchInputView);
 
         m_phraseTimer = new NanoTimer();
         initTask();
+
+        try
+        {
+            m_motionRecorder = new MotionEventRecorder(this, this.getClass());
+        }
+        catch (java.io.IOException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     private void initTask()
@@ -146,6 +160,17 @@ public class WatchWriteActivity extends AppCompatActivity {
         m_canceled_num = 0;
         m_timedActions.clear();
     }
+
+    private WatchWriteInputView.OnTouchListener m_touchListener =
+            new WatchWriteInputView.OnTouchListener()
+    {
+        @Override
+        public void onTouch(MotionEvent motionEvent)
+        {
+            if (m_motionRecorder != null)
+                m_motionRecorder.write(motionEvent);
+        }
+    };
 
     public WatchWriteInputView.OnTouchEventListener m_wwTouchListener =
             new WatchWriteInputView.OnTouchEventListener()
@@ -332,6 +357,10 @@ public class WatchWriteActivity extends AppCompatActivity {
         if (m_taskRecordWriter != null)
         {
             m_taskRecordWriter.close();
+        }
+        if (m_motionRecorder != null)
+        {
+            m_motionRecorder.close();
         }
     }
 }

@@ -120,7 +120,7 @@ public class TaskRecordWriter
             m_recordStream.write(stringBuilder.toString().getBytes());
         }
         catch (java.io.IOException e) { e.printStackTrace(); }
-        Log.d(TAG, "record added: " + stringBuilder.toString());
+        Log.d(TAG, "task record added: " + stringBuilder.toString());
     }
 
     public void close()

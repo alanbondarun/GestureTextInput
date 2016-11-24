@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.alanb.gesturecommon.EditDistCalculator;
 import com.alanb.gesturecommon.KeyNode;
 import com.alanb.gesturecommon.MathUtils;
+import com.alanb.gesturecommon.MotionEventRecorder;
 import com.alanb.gesturecommon.NanoTimer;
 import com.alanb.gesturecommon.OneDInputView;
 import com.alanb.gesturecommon.TaskPhraseLoader;
@@ -22,6 +23,7 @@ import com.alanb.gesturecommon.TaskRecordWriter;
 import com.alanb.gesturecommon.TouchFeedbackFrameLayout;
 import com.alanb.gesturecommon.OneDInputView.TouchEvent;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import static java.lang.Math.abs;
@@ -54,6 +56,8 @@ public class OneDActivity extends AppCompatActivity {
     private int m_pref_layout;
     private TaskRecordWriter m_taskRecordWriter = null;
     private ArrayList<TaskRecordWriter.TimedAction> m_timedActions;
+
+    private MotionEventRecorder m_motionRecorder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,6 +110,15 @@ public class OneDActivity extends AppCompatActivity {
 
         m_phraseTimer = new NanoTimer();
         initTask();
+
+        try
+        {
+            m_motionRecorder = new MotionEventRecorder(this, this.getClass());
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     private void initTask()
@@ -240,6 +253,8 @@ public class OneDActivity extends AppCompatActivity {
         @Override
         public void onTouch(MotionEvent e)
         {
+            if (m_motionRecorder != null)
+                m_motionRecorder.write(e);
             int lastIndex = e.getHistorySize() - 1;
             if (e.getAction() == MotionEvent.ACTION_MOVE && lastIndex >= 0)
             {
@@ -406,6 +421,10 @@ public class OneDActivity extends AppCompatActivity {
         if (m_taskRecordWriter != null)
         {
             m_taskRecordWriter.close();
+        }
+        if (m_motionRecorder != null)
+        {
+            m_motionRecorder.close();
         }
     }
 }

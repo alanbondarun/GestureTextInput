@@ -32,6 +32,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alanb.gesturecommon.MotionEventRecorder;
 import com.alanb.gesturecommon.WatchWriteInputView;
 
 import org.json.JSONException;
@@ -57,6 +58,8 @@ public class MainActivity extends WearableActivity
 
     private DismissOverlayView mDismissOverlay;
     private GestureDetector mDetector;
+
+    private MotionEventRecorder m_motionRecorder = null;
 
     public static final int READY_TO_CONN =0;
     public static final int CANCEL_CONN =1;
@@ -120,6 +123,15 @@ public class MainActivity extends WearableActivity
             }
         });
 
+        try
+        {
+            m_motionRecorder = new MotionEventRecorder(this, this.getClass());
+        }
+        catch (java.io.IOException e)
+        {
+            e.printStackTrace();
+        }
+
         ctx = this;
         handle = new Handler(Looper.getMainLooper()) {
             @Override
@@ -166,6 +178,10 @@ public class MainActivity extends WearableActivity
     public void onDestroy()
     {
         unregisterReceiver(mReceiver);
+        if (m_motionRecorder != null)
+        {
+            m_motionRecorder.close();
+        }
         super.onDestroy();
     }
 
@@ -175,6 +191,10 @@ public class MainActivity extends WearableActivity
         @Override
         public void onTouch(MotionEvent motionEvent)
         {
+            if (m_motionRecorder != null)
+            {
+                m_motionRecorder.write(motionEvent);
+            }
             if (m_connectedThread != null && m_connectedThread.isAlive())
             {
                 JSONObject pos_actions = new JSONObject();

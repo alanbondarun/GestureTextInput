@@ -18,11 +18,13 @@ import android.widget.TextView;
 
 import com.alanb.gesturecommon.CommonUtils;
 import com.alanb.gesturecommon.EditDistCalculator;
+import com.alanb.gesturecommon.MotionEventRecorder;
 import com.alanb.gesturecommon.NanoTimer;
 import com.alanb.gesturecommon.TaskPhraseLoader;
 import com.alanb.gesturecommon.TaskRecordWriter;
 import com.alanb.gesturecommon.TouchFeedbackFrameLayout;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import static java.lang.Math.atan2;
@@ -74,6 +76,7 @@ public class PalmActivity extends AppCompatActivity
     private int m_doneActions = 0;
 
     private TaskRecordWriter m_taskRecordWriter = null;
+    private MotionEventRecorder m_motionRecorder = null;
 
     private double angle_diff(double a, double b)
     {
@@ -196,6 +199,8 @@ public class PalmActivity extends AppCompatActivity
         @Override
         public boolean onTouch(View view, MotionEvent motionEvent)
         {
+            if (m_motionRecorder != null)
+                m_motionRecorder.write(motionEvent);
             if (multi_occurred)
             {
                 highlightBasic();
@@ -416,6 +421,15 @@ public class PalmActivity extends AppCompatActivity
         m_phraseTimer = new NanoTimer();
         m_predictTimer = new NanoTimer();
         initTask();
+
+        try
+        {
+            m_motionRecorder = new MotionEventRecorder(this, this.getClass());
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     private void initTask()
@@ -523,6 +537,10 @@ public class PalmActivity extends AppCompatActivity
         if (m_taskRecordWriter != null)
         {
             m_taskRecordWriter.close();
+        }
+        if (m_motionRecorder != null)
+        {
+            m_motionRecorder.close();
         }
     }
 }
