@@ -246,7 +246,7 @@ public class GlassOneDActivity extends Activity
                 @Override
                 public void onTouchEvent(OneDInputView.TouchEvent te)
                 {
-                    if (te.val == OneDInputView.TouchEvent.END)
+                    if (te == OneDInputView.TouchEvent.END)
                     {
                         if (!m_phraseTimer.running())
                             m_phraseTimer.begin();
@@ -289,11 +289,11 @@ public class GlassOneDActivity extends Activity
                         updateNode(m_rootNode, true);
                         m_touchArray.clear();
                     }
-                    else if (te.val == OneDInputView.TouchEvent.DROP)
+                    else if (te == OneDInputView.TouchEvent.DROP)
                     {
                         m_touchArray.add(te);
                     }
-                    else if (te.val == OneDInputView.TouchEvent.MULTITOUCH)
+                    else if (te == OneDInputView.TouchEvent.MULTITOUCH)
                     {
                         updateNode(m_rootNode, true);
                         m_touchArray.clear();
@@ -304,29 +304,29 @@ public class GlassOneDActivity extends Activity
                         KeyNode next_node = null;
                         if (isValidTouchSequence(m_touchArray))
                         {
-                            Log.d(TAG, "Touch = " + te.val);
+                            Log.d(TAG, "Touch = " + te);
                             if (m_touchArray.size() >= 2)
                             {
-                                int dx1 = te.val - m_touchArray.get(m_touchArray.size()-1).val;
-                                int dx2 = m_touchArray.get(m_touchArray.size()-1).val - m_touchArray.get(m_touchArray.size()-2).val;
+                                int dx1 = te.ordinal() - m_touchArray.get(m_touchArray.size()-1).ordinal();
+                                int dx2 = m_touchArray.get(m_touchArray.size()-1).ordinal() - m_touchArray.get(m_touchArray.size()-2).ordinal();
                                 if (dx1/abs(dx1) == dx2/abs(dx2))
                                 {
-                                    next_node = m_curNode.getParent().getNextNode(te.val);
+                                    next_node = m_curNode.getParent().getNextNode(te.ordinal());
                                 }
                                 else
                                 {
-                                    next_node = m_curNode.getNextNode(te.val);
+                                    next_node = m_curNode.getNextNode(te.ordinal());
                                 }
                             }
                             else
                             {
-                                next_node = m_curNode.getNextNode(te.val);
+                                next_node = m_curNode.getNextNode(te.ordinal());
                             }
 
                             KeyNode sibling_node = m_curNode.getParent();
                             if (sibling_node != null)
                             {
-                                sibling_node = sibling_node.getNextNode(te.val);
+                                sibling_node = sibling_node.getNextNode(te.ordinal());
                             }
 
                             if (next_node != null)
@@ -341,7 +341,7 @@ public class GlassOneDActivity extends Activity
                             }
                             else
                             {
-                                m_touchArray.add(new OneDInputView.TouchEvent(OneDInputView.TouchEvent.DROP));
+                                m_touchArray.add(OneDInputView.TouchEvent.DROP);
                                 Log.d(TAG, "Touch drop: end reached");
                             }
                         }
@@ -353,10 +353,10 @@ public class GlassOneDActivity extends Activity
     private boolean isValidTouchSequence(ArrayList<OneDInputView.TouchEvent> events)
     {
         if (events.size() <= 0 ||
-                (events.get(events.size()-1).val != OneDInputView.TouchEvent.DROP &&
-                        events.get(events.size()-1).val != OneDInputView.TouchEvent.MULTITOUCH))
+                (events.get(events.size()-1) != OneDInputView.TouchEvent.DROP &&
+                        events.get(events.size()-1) != OneDInputView.TouchEvent.MULTITOUCH))
             return true;
-        if (events.size() == 1 && events.get(0).val == OneDInputView.TouchEvent.DROP)
+        if (events.size() == 1 && events.get(0) == OneDInputView.TouchEvent.DROP)
         {
             events.clear();
             return true;

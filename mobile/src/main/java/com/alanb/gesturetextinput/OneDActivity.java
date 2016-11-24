@@ -282,7 +282,7 @@ public class OneDActivity extends AppCompatActivity {
         @Override
         public void onTouchEvent(TouchEvent te)
         {
-            if (te.val == TouchEvent.END)
+            if (te == TouchEvent.END)
             {
                 if (!m_phraseTimer.running())
                     m_phraseTimer.begin();
@@ -325,11 +325,11 @@ public class OneDActivity extends AppCompatActivity {
                 updateNode(m_rootNode, true);
                 m_touchArray.clear();
             }
-            else if (te.val == TouchEvent.DROP)
+            else if (te == TouchEvent.DROP)
             {
                 m_touchArray.add(te);
             }
-            else if (te.val == TouchEvent.MULTITOUCH)
+            else if (te == TouchEvent.MULTITOUCH)
             {
                 updateNode(m_rootNode, true);
                 m_touchArray.clear();
@@ -340,29 +340,29 @@ public class OneDActivity extends AppCompatActivity {
                 KeyNode next_node = null;
                 if (isValidTouchSequence(m_touchArray))
                 {
-                    Log.d(TAG, "Touch = " + te.val);
+                    Log.d(TAG, "Touch = " + te);
                     if (m_touchArray.size() >= 2)
                     {
-                        int dx1 = te.val - m_touchArray.get(m_touchArray.size()-1).val;
-                        int dx2 = m_touchArray.get(m_touchArray.size()-1).val - m_touchArray.get(m_touchArray.size()-2).val;
+                        int dx1 = te.ordinal() - m_touchArray.get(m_touchArray.size()-1).ordinal();
+                        int dx2 = m_touchArray.get(m_touchArray.size()-1).ordinal() - m_touchArray.get(m_touchArray.size()-2).ordinal();
                         if (dx1/abs(dx1) == dx2/abs(dx2))
                         {
-                            next_node = m_curNode.getParent().getNextNode(te.val);
+                            next_node = m_curNode.getParent().getNextNode(te.ordinal());
                         }
                         else
                         {
-                            next_node = m_curNode.getNextNode(te.val);
+                            next_node = m_curNode.getNextNode(te.ordinal());
                         }
                     }
                     else
                     {
-                        next_node = m_curNode.getNextNode(te.val);
+                        next_node = m_curNode.getNextNode(te.ordinal());
                     }
 
                     KeyNode sibling_node = m_curNode.getParent();
                     if (sibling_node != null)
                     {
-                        sibling_node = sibling_node.getNextNode(te.val);
+                        sibling_node = sibling_node.getNextNode(te.ordinal());
                     }
 
                     if (next_node != null)
@@ -377,7 +377,7 @@ public class OneDActivity extends AppCompatActivity {
                     }
                     else
                     {
-                        m_touchArray.add(new TouchEvent(TouchEvent.DROP));
+                        m_touchArray.add(TouchEvent.DROP);
                         Log.d(TAG, "Touch drop: end reached");
                     }
                 }
@@ -388,10 +388,10 @@ public class OneDActivity extends AppCompatActivity {
     private boolean isValidTouchSequence(ArrayList<TouchEvent> events)
     {
         if (events.size() <= 0 ||
-                (events.get(events.size()-1).val != TouchEvent.DROP &&
-                        events.get(events.size()-1).val != TouchEvent.MULTITOUCH))
+                (events.get(events.size()-1) != TouchEvent.DROP &&
+                        events.get(events.size()-1) != TouchEvent.MULTITOUCH))
             return true;
-        if (events.size() == 1 && events.get(0).val == TouchEvent.DROP)
+        if (events.size() == 1 && events.get(0) == TouchEvent.DROP)
         {
             events.clear();
             return true;
