@@ -49,8 +49,8 @@ public class MainActivity extends WearableActivity
     private final String TAG = this.getClass().getName();
     public static final String CONNECT_DEVICE = "Glass";
 
-    private BoxInsetLayout mContainerView;
     private RelativeLayout m_charTouchLayout;
+    private WatchWriteInputView m_charTouchArea;
 
     private float m_touchX;
     private float m_touchY;
@@ -105,12 +105,12 @@ public class MainActivity extends WearableActivity
 
         m_charTouchLayout = (RelativeLayout) findViewById(R.id.w_touch_frame);
         LayoutInflater inflater = LayoutInflater.from(this);
-        WatchWriteInputView touchInputView = (WatchWriteInputView) inflater.inflate(R.layout.watch_touch_area,
+        m_charTouchArea = (WatchWriteInputView) inflater.inflate(R.layout.watch_touch_area,
                 m_charTouchLayout, false);
-        m_charTouchLayout.addView(touchInputView);
+        m_charTouchLayout.addView(m_charTouchArea);
 
-        touchInputView.setOnTouchListener(wwTouchListener);
-        touchInputView.setOnTouchEventListener(wwTouchEventListener);
+        m_charTouchArea.setOnTouchListener(wwTouchListener);
+        m_charTouchArea.setOnTouchEventListener(wwTouchEventListener);
 
         mDismissOverlay = (DismissOverlayView) findViewById(R.id.dismiss_overlay);
         mDetector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener(){
@@ -181,8 +181,8 @@ public class MainActivity extends WearableActivity
                 JSONObject sendObject = new JSONObject();
                 try
                 {
-                    pos_actions.put(getResources().getString(R.string.wear_xpos_key), motionEvent.getX() / m_charTouchLayout.getWidth());
-                    pos_actions.put(getResources().getString(R.string.wear_ypos_key), motionEvent.getY() / m_charTouchLayout.getHeight());
+                    pos_actions.put(getResources().getString(R.string.wear_xpos_key), motionEvent.getX() / m_charTouchArea.getWidth());
+                    pos_actions.put(getResources().getString(R.string.wear_ypos_key), motionEvent.getY() / m_charTouchArea.getHeight());
                     pos_actions.put(getResources().getString(R.string.wear_action_key), motionEvent.getAction());
                     sendObject.put("touchpos", pos_actions);
                     sendObject.put("timestamp", System.currentTimeMillis());

@@ -178,22 +178,22 @@ public class GlassWatchWriteActivity extends Activity
                             jsonTouch = new JSONObject(msg.getData().getString("Message"));
 
                             long timeStamp = jsonTouch.getLong("timestamp");
-                            Log.d(TAG, "ts: " + timeStamp + ", prev-ts:" + prevTimeStamp);
                             if (timeStamp < prevTimeStamp)
                                 break;
                             prevTimeStamp = timeStamp;
 
                             if (jsonTouch.has("touchevent"))
                             {
-                                Log.d(TAG, "has touchevent");
                                 JSONObject jsonTE = jsonTouch.getJSONObject("touchevent");
                                 String teString = jsonTE.getString(getResources().getString(R.string.wear_touch_key));
-                                Log.d(TAG, "te str: " + teString);
                                 processTouchEvent(WatchWriteInputView.TouchEvent.valueOf(teString));
                             }
                             else if (jsonTouch.has("touchpos"))
                             {
-                                // TODO
+                                JSONObject jsonTP = jsonTouch.getJSONObject("touchpos");
+                                processTouchMotion(jsonTP.getDouble(getResources().getString(R.string.wear_xpos_key)),
+                                        jsonTP.getDouble(getResources().getString(R.string.wear_ypos_key)),
+                                        jsonTP.getInt(getResources().getString(R.string.wear_action_key)));
                             }
                         }
                         catch (JSONException e)
@@ -283,6 +283,11 @@ public class GlassWatchWriteActivity extends Activity
         m_fix_num = 0;
         m_canceled_num = 0;
         m_timedActions.clear();
+    }
+
+    private void processTouchMotion(double x, double y, int action)
+    {
+        m_feedbackFrameLayout.setCursorRatio((float)x, (float)y, action);
     }
 
     private void processTouchEvent(WatchWriteInputView.TouchEvent te)
@@ -457,16 +462,6 @@ public class GlassWatchWriteActivity extends Activity
         this.m_curNode = node;
     }
 
-    private WatchWriteInputView.OnTouchListener m_wwTouchListener =
-            new WatchWriteInputView.OnTouchListener()
-    {
-        @Override
-        public void onTouch(MotionEvent motionEvent)
-        {
-
-        }
-    };
-
     private class AcceptThread extends Thread {
         private BluetoothServerSocket mmServerSocket;
         BluetoothServerSocket tmp;
@@ -590,7 +585,7 @@ public class GlassWatchWriteActivity extends Activity
                         write(msgToSend.getBytes());
                         setMsg("");
                     }
-                    Thread.sleep(1000);
+                    Thread.sleep(25);
                 } catch (Exception e) {
                     Log.e(TAG, "disconnected", e);
                     connectionLost();
