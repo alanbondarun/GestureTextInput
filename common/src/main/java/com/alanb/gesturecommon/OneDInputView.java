@@ -8,23 +8,9 @@ import android.widget.LinearLayout;
 
 public class OneDInputView extends LinearLayout
 {
-    public static class TouchEvent
+    public static enum TouchEvent
     {
-        public final static int DROP = -1;
-        public final static int END = -2;
-        public final static int MULTITOUCH = -3;
-        public final int val;
-        public TouchEvent(int v)
-        {
-            if (-3 <= v && v < 4)
-            {
-                this.val = v;
-            }
-            else
-            {
-                this.val = -1;
-            }
-        }
+        AREA1, AREA2, AREA3, AREA4, DROP, END, MULTITOUCH
     }
 
     public interface OnTouchListener
@@ -65,7 +51,7 @@ public class OneDInputView extends LinearLayout
         this.m_onTouchListener = l;
     }
 
-    private TouchEvent prev_e = new TouchEvent(TouchEvent.DROP);
+    private TouchEvent prev_e = TouchEvent.DROP;
     private boolean multi_occurred = false;
 
     @Override
@@ -84,7 +70,7 @@ public class OneDInputView extends LinearLayout
         if (multi_occurred && (motionEvent.getAction() == MotionEvent.ACTION_DOWN
                 || motionEvent.getAction() == MotionEvent.ACTION_MOVE))
         {
-            cur_e = new TouchEvent(TouchEvent.MULTITOUCH);
+            cur_e = TouchEvent.MULTITOUCH;
         }
         else
         {
@@ -93,7 +79,7 @@ public class OneDInputView extends LinearLayout
             {
                 // multi-touch detected, cancel the input
                 multi_occurred = true;
-                cur_e = new TouchEvent(TouchEvent.MULTITOUCH);
+                cur_e = TouchEvent.MULTITOUCH;
             }
             else if (motionEvent.getAction() == MotionEvent.ACTION_DOWN
                     || motionEvent.getAction() == MotionEvent.ACTION_MOVE)
@@ -102,19 +88,26 @@ public class OneDInputView extends LinearLayout
                 double yrel = motionEvent.getY() / m_touchH;
                 if (0 <= xrel && xrel <= 1 && 0 <= yrel && yrel <= 1)
                 {
-                    cur_e = new TouchEvent((int) (xrel * 4.0));
+                    if (xrel < 0.25)
+                        cur_e = TouchEvent.AREA1;
+                    else if (xrel < 0.5)
+                        cur_e = TouchEvent.AREA2;
+                    else if (xrel < 0.75)
+                        cur_e = TouchEvent.AREA3;
+                    else
+                        cur_e = TouchEvent.AREA4;
                 }
                 else
                 {
-                    cur_e = new TouchEvent(TouchEvent.DROP);
+                    cur_e = TouchEvent.DROP;
                 }
             }
             else
             {
-                cur_e = new TouchEvent(TouchEvent.END);
+                cur_e = TouchEvent.END;
             }
         }
-        if (cur_e.val != prev_e.val && this.m_onTouchEventlistener != null)
+        if (cur_e != prev_e && this.m_onTouchEventlistener != null)
         {
             this.m_onTouchEventlistener.onTouchEvent(cur_e);
             prev_e = cur_e;
