@@ -18,15 +18,19 @@
             android:required="false" />
 
         <activity
-            android:name=".MainActivity"
-            android:label="@string/app_name"
-            android:theme="@style/AppTheme">
+            android:name=".WatchFrontActivity"
+            android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".WatchInputToGlassActivity"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".WatchInputToMobileActivity"
+            android:theme="@style/AppTheme" />
     </application>
 
 </manifest>
