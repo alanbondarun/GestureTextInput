@@ -173,32 +173,32 @@ public class GlassOneDActivity extends Activity
     public void updateViews(KeyNode node)
     {
         m_inputTextView.setText(m_inputStr + getString(R.string.end_of_input));
-        if (node.isLeaf())
+
+        if (!node.isLeaf())
         {
-            KeyNode np = node.getParent();
-            if (np != null)
-            {
-                for (int ci=0; ci < np.getNextNodeNum(); ci++)
-                {
-                    if (np.getNextNode(ci) == node)
-                    {
-                        m_viewTexts.get(ci).setBackgroundColor(getResources().getColor(R.color.colorGlassBackground));
-                    }
-                    else
-                    {
-                        m_viewTexts.get(ci).setBackgroundColor(Color.TRANSPARENT);
-                    }
-                }
-            }
-        }
-        else
-        {
-            // update only for non-leaf node
-            for (int ci=0; ci<min(node.getNextNodeNum(), 4); ci++)
+            for (int ci = 0; ci < 4; ci++)
             {
                 String raw_str = node.getNextNode(ci).getShowStr();
                 m_viewTexts.get(ci).setText(raw_str);
-                m_viewTexts.get(ci).setBackgroundColor(Color.TRANSPARENT);
+            }
+        }
+
+        KeyNode np = node.getParent();
+        for (int ci=0; ci < 4; ci++)
+        {
+            if (ci % 2 == 0)
+            {
+                if (np != null && np.getNextNode(ci) == node)
+                    m_viewTexts.get(ci).setBackgroundColor(getResources().getColor(R.color.colorGlassBackground));
+                else
+                    m_viewTexts.get(ci).setBackgroundColor(getResources().getColor(R.color.colorGlassBackgroundWeak));
+            }
+            else
+            {
+                if (np != null && np.getNextNode(ci) == node)
+                    m_viewTexts.get(ci).setBackgroundColor(getResources().getColor(R.color.colorGlassPink));
+                else
+                    m_viewTexts.get(ci).setBackgroundColor(getResources().getColor(R.color.colorGlassPinkWeak));
             }
         }
     }

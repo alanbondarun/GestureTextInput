@@ -11,6 +11,7 @@ public class TouchFeedbackFrameLayout extends FrameLayout
 {
     private TouchFeedbackView m_feedback_view;
     private ViewGroup m_parent_view = null;
+    private boolean m_feedbackIsFront = false;
 
     public TouchFeedbackFrameLayout(Context context, AttributeSet attrs)
     {
@@ -55,13 +56,25 @@ public class TouchFeedbackFrameLayout extends FrameLayout
         return true;
     }
 
+    private void bringFeedbackToFront()
+    {
+        if (!m_feedbackIsFront)
+        {
+            m_feedback_view.bringToFront();
+            m_parent_view.invalidate();
+            m_feedbackIsFront = true;
+        }
+    }
+
     public void setCursor(float x, float y, int action)
     {
         m_feedback_view.setCursorPos(x, y, action);
+        bringFeedbackToFront();
     }
 
     public void setCursorRatio(float x, float y, int action)
     {
         m_feedback_view.setCursorRatio(x, y, action);
+        bringFeedbackToFront();
     }
 }
