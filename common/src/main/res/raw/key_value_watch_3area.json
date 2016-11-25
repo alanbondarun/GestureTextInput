@@ -1,56 +1,56 @@
 {
   "keys": [
     {
-      "show_str": "ABC\nDEF\nGHI",
+      "show_str": "a b c\nd e f\ng h i",
       "input_char": "a",
       "keys": [
         {
-          "show_str": "A"
+          "show_str": "a"
         },
         {
-          "show_str": "BC\n D",
+          "show_str": "b c\n  d",
           "input_char": "c",
           "keys": [
             {
-              "show_str": "B",
+              "show_str": "b",
               "input_char": "b"
             },
             {
-              "show_str": "C",
+              "show_str": "c",
               "input_char": "c"
             },
             {
               "show_str": ""
             },
             {
-              "show_str": "D",
+              "show_str": "d",
               "input_char": "d"
             }
           ]
         },
         {
-          "show_str": "E \nFG",
+          "show_str": "e  \nf g",
           "input_char": "f",
           "keys": [
             {
-              "show_str": "E",
+              "show_str": "e",
               "input_char": "e"
             },
             {
               "show_str": ""
             },
             {
-              "show_str": "F",
+              "show_str": "f",
               "input_char": "f"
             },
             {
-              "show_str": "G",
+              "show_str": "g",
               "input_char": "g"
             }
           ]
         },
         {
-          "show_str": "HI",
+          "show_str": "h i",
           "input_char": "i",
           "keys": [
             {
@@ -60,11 +60,11 @@
               "show_str": ""
             },
             {
-              "show_str": "H",
+              "show_str": "h",
               "input_char": "h"
             },
             {
-              "show_str": "I",
+              "show_str": "i",
               "input_char": "i"
             }
           ]
@@ -72,23 +72,23 @@
       ]
     },
     {
-      "show_str": "JKL\nMNO\nPQR",
+      "show_str": "j k l\nm n o\np q r",
       "input_char": "m",
       "keys": [
         {
-          "show_str": "JK\nL ",
+          "show_str": "j k\nl  ",
           "input_char": "j",
           "keys": [
             {
-              "show_str": "J",
+              "show_str": "j",
               "input_char": "j"
             },
             {
-              "show_str": "K",
+              "show_str": "k",
               "input_char": "k"
             },
             {
-              "show_str": "L",
+              "show_str": "l",
               "input_char": "l"
             },
             {
@@ -97,10 +97,10 @@
           ]
         },
         {
-          "show_str": "M"
+          "show_str": "m"
         },
         {
-          "show_str": "NO",
+          "show_str": "n o",
           "input_char": "n",
           "keys": [
             {
@@ -110,32 +110,32 @@
               "show_str": ""
             },
             {
-              "show_str": "N",
+              "show_str": "n",
               "input_char": "n"
             },
             {
-              "show_str": "O",
+              "show_str": "o",
               "input_char": "o"
             }
           ]
         },
         {
-          "show_str": " P\nQR",
+          "show_str": "  p\nq r",
           "input_char": "r",
           "keys": [
             {
               "show_str": ""
             },
             {
-              "show_str": "P",
+              "show_str": "p",
               "input_char": "p"
             },
             {
-              "show_str": "Q",
+              "show_str": "q",
               "input_char": "q"
             },
             {
-              "show_str": "R",
+              "show_str": "r",
               "input_char": "r"
             }
           ]
@@ -143,23 +143,23 @@
       ]
     },
     {
-      "show_str": "STU\nVWX\nYZ",
+      "show_str": "s t u\nv w x\ny z",
       "input_char": "x",
       "keys": [
         {
-          "show_str": "ST\nU ",
+          "show_str": "s t\nu  ",
           "input_char": "s",
           "keys": [
             {
-              "show_str": "S",
+              "show_str": "s",
               "input_char": "s"
             },
             {
-              "show_str": "T",
+              "show_str": "t",
               "input_char": "t"
             },
             {
-              "show_str": "U",
+              "show_str": "u",
               "input_char": "u"
             },
             {
@@ -168,30 +168,30 @@
           ]
         },
         {
-          "show_str": " V\n W",
+          "show_str": "v\nw",
           "input_char": "v",
           "keys": [
             {
               "show_str": ""
             },
             {
-              "show_str": "V",
+              "show_str": "v",
               "input_char": "v"
             },
             {
               "show_str": ""
             },
             {
-              "show_str": "W",
+              "show_str": "w",
               "input_char": "w"
             }
           ]
         },
         {
-          "show_str": "X"
+          "show_str": "x"
         },
         {
-          "show_str": "YZ",
+          "show_str": "y z",
           "input_char": "z",
           "keys": [
             {
@@ -201,11 +201,11 @@
               "show_str": ""
             },
             {
-              "show_str": "Y",
+              "show_str": "y",
               "input_char": "y"
             },
             {
-              "show_str": "Z",
+              "show_str": "z",
               "input_char": "z"
             }
           ]
@@ -213,7 +213,7 @@
       ]
     },
     {
-      "show_str": "Fun",
+      "show_str": "FUNC",
       "input_char": " ",
       "keys": [
         {

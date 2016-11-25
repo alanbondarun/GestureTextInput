@@ -1,22 +1,22 @@
 {
   "keys": [
     {
-      "show_str": "ABCDGJIZ",
+      "show_str": "a b c d\ng j i z",
       "input_char": "a",
       "keys": [
         {
-          "show_str": "A"
+          "show_str": "a"
         },
         {
-          "show_str": "CI",
+          "show_str": "c i",
           "input_char": "i",
           "keys": [
             {
-              "show_str": "C",
+              "show_str": "c",
               "input_char": "c"
             },
             {
-              "show_str": "I",
+              "show_str": "i",
               "input_char": "i"
             },
             {
@@ -28,19 +28,19 @@
           ]
         },
         {
-          "show_str": "JBD",
+          "show_str": "j b d",
           "input_char": "d",
           "keys": [
             {
-              "show_str": "J",
+              "show_str": "j",
               "input_char": "j"
             },
             {
-              "show_str": "B",
+              "show_str": "b",
               "input_char": "b"
             },
             {
-              "show_str": "D",
+              "show_str": "d",
               "input_char": "d"
             },
             {
@@ -49,7 +49,7 @@
           ]
         },
         {
-          "show_str": "ZG",
+          "show_str": "z g",
           "input_char": "g",
           "keys": [
             {
@@ -59,11 +59,11 @@
               "show_str": ""
             },
             {
-              "show_str": "Z",
+              "show_str": "z",
               "input_char": "z"
             },
             {
-              "show_str": "G",
+              "show_str": "g",
               "input_char": "g"
             }
           ]
@@ -71,23 +71,23 @@
       ]
     },
     {
-      "show_str": "EFHKLNOPQ",
+      "show_str": "e f h k l\nn o p q",
       "input_char": "e",
       "keys": [
         {
-          "show_str": "NFK",
+          "show_str": "n f k",
           "input_char": "n",
           "keys": [
             {
-              "show_str": "N",
+              "show_str": "n",
               "input_char": "n"
             },
             {
-              "show_str": "F",
+              "show_str": "f",
               "input_char": "f"
             },
             {
-              "show_str": "K",
+              "show_str": "k",
               "input_char": "k"
             },
             {
@@ -96,22 +96,22 @@
           ]
         },
         {
-          "show_str": "E"
+          "show_str": "e"
         },
         {
-          "show_str": "PHO",
+          "show_str": "p h o",
           "input_char": "o",
           "keys": [
             {
-              "show_str": "P",
+              "show_str": "p",
               "input_char": "p"
             },
             {
-              "show_str": "H",
+              "show_str": "h",
               "input_char": "h"
             },
             {
-              "show_str": "O",
+              "show_str": "o",
               "input_char": "o"
             },
             {
@@ -120,7 +120,7 @@
           ]
         },
         {
-          "show_str": "QL",
+          "show_str": "q l",
           "input_char": "l",
           "keys": [
             {
@@ -130,11 +130,11 @@
               "show_str": ""
             },
             {
-              "show_str": "Q",
+              "show_str": "q",
               "input_char": "q"
             },
             {
-              "show_str": "L",
+              "show_str": "l",
               "input_char": "l"
             }
           ]
@@ -142,19 +142,19 @@
       ]
     },
     {
-      "show_str": "MRSTUVWXY",
+      "show_str": "m r s t u\nv w x y",
       "input_char": "t",
       "keys": [
         {
-          "show_str": "MV",
+          "show_str": "m v",
           "input_char": "m",
           "keys": [
             {
-              "show_str": "M",
+              "show_str": "m",
               "input_char": "m"
             },
             {
-              "show_str": "V",
+              "show_str": "v",
               "input_char": "v"
             },
             {
@@ -166,46 +166,46 @@
           ]
         },
         {
-          "show_str": "RUW",
+          "show_str": "r u w",
           "input_char": "r",
           "keys": [
             {
               "show_str": ""
             },
             {
-              "show_str": "R",
+              "show_str": "r",
               "input_char": "r"
             },
             {
-              "show_str": "U",
+              "show_str": "u",
               "input_char": "u"
             },
             {
-              "show_str": "W",
+              "show_str": "w",
               "input_char": "w"
             }
           ]
         },
         {
-          "show_str": "T"
+          "show_str": "t"
         },
         {
-          "show_str": "XYS",
+          "show_str": "x y s",
           "input_char": "s",
           "keys": [
             {
               "show_str": ""
             },
             {
-              "show_str": "X",
+              "show_str": "x",
               "input_char": "x"
             },
             {
-              "show_str": "Y",
+              "show_str": "y",
               "input_char": "y"
             },
             {
-              "show_str": "S",
+              "show_str": "s",
               "input_char": "s"
             }
           ]
@@ -213,7 +213,7 @@
       ]
     },
     {
-      "show_str": "Func",
+      "show_str": "FUNC",
       "input_char": " ",
       "keys": [
         {

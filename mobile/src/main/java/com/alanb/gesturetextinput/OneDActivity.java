@@ -200,15 +200,7 @@ public class OneDActivity extends AppCompatActivity {
             for (int ci=0; ci<min(node.getNextNodeNum(), 4); ci++)
             {
                 String raw_str = node.getNextNode(ci).getShowStr();
-                StringBuilder builder = new StringBuilder();
-                for (int cj = 0; cj < raw_str.length(); cj += MAX_CHAR_PER_LINE)
-                {
-                    if (cj > 0)
-                        builder.append("\n");
-                    builder.append(raw_str.substring(cj,
-                            Math.min(cj + MAX_CHAR_PER_LINE, raw_str.length())));
-                }
-                m_viewTexts.get(ci).setText(builder.toString());
+                m_viewTexts.get(ci).setText(raw_str);
                 m_viewTexts.get(ci).setBackgroundColor(Color.TRANSPARENT);
             }
         }
