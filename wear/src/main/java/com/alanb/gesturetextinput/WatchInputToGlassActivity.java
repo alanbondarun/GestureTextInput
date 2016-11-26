@@ -20,6 +20,7 @@ import android.view.MotionEvent;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.alanb.gesturecommon.MathUtils;
 import com.alanb.gesturecommon.MotionEventRecorder;
 import com.alanb.gesturecommon.WatchWriteInputView;
 
@@ -47,6 +48,8 @@ public class WatchInputToGlassActivity extends WearableActivity
     private final long TOUCH_PRESS_MSEC = 5000;
 
     private MotionEventRecorder m_motionRecorder = null;
+
+    private final double BLUETOOTH_MOTION_SEND_RATE = 3.5;
 
     public static final int READY_TO_CONN =0;
     public static final int CANCEL_CONN =1;
@@ -170,6 +173,7 @@ public class WatchInputToGlassActivity extends WearableActivity
             new WatchWriteInputView.OnTouchListener()
     {
         private LongPressNotifyTask mmLongPressTask = null;
+        private int mmEventSendTurn = 0;
         @Override
         public void onTouch(MotionEvent motionEvent)
         {
@@ -193,24 +197,36 @@ public class WatchInputToGlassActivity extends WearableActivity
             }
             if (m_connectedThread != null && m_connectedThread.isAlive())
             {
-                JSONObject pos_actions = new JSONObject();
-                JSONObject sendObject = new JSONObject();
-                try
+                if (motionEvent.getAction() != MotionEvent.ACTION_MOVE ||
+                        isNewPeriod(mmEventSendTurn, BLUETOOTH_MOTION_SEND_RATE))
                 {
-                    pos_actions.put(getResources().getString(R.string.wear_xpos_key), motionEvent.getX() / m_charTouchArea.getWidth());
-                    pos_actions.put(getResources().getString(R.string.wear_ypos_key), motionEvent.getY() / m_charTouchArea.getHeight());
-                    pos_actions.put(getResources().getString(R.string.wear_action_key), motionEvent.getAction());
-                    sendObject.put("touchpos", pos_actions);
-                    sendObject.put("timestamp", System.currentTimeMillis());
-                    m_connectedThread.write(sendObject.toString());
+                    JSONObject pos_actions = new JSONObject();
+                    JSONObject sendObject = new JSONObject();
+                    try
+                    {
+                        pos_actions.put(getResources().getString(R.string.wear_xpos_key), motionEvent.getX() / m_charTouchArea.getWidth());
+                        pos_actions.put(getResources().getString(R.string.wear_ypos_key), motionEvent.getY() / m_charTouchArea.getHeight());
+                        pos_actions.put(getResources().getString(R.string.wear_action_key), motionEvent.getAction());
+                        sendObject.put("touchpos", pos_actions);
+                        sendObject.put("timestamp", System.currentTimeMillis());
+                        m_connectedThread.write(sendObject.toString());
+                    } catch (JSONException e)
+                    {
+                        e.printStackTrace();
+                    }
                 }
-                catch (JSONException e)
+                if (motionEvent.getAction() == MotionEvent.ACTION_MOVE)
                 {
-                    e.printStackTrace();
+                    mmEventSendTurn++;
                 }
             }
         }
     };
+
+    private boolean isNewPeriod(int turn, double rate)
+    {
+        return !MathUtils.fequal(Math.floor((turn + 1)/rate) - Math.floor(turn/rate), 0);
+    }
 
     WatchWriteInputView.OnTouchEventListener wwTouchEventListener =
             new WatchWriteInputView.OnTouchEventListener()
