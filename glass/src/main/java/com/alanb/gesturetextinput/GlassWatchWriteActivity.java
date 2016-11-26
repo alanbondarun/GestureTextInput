@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.alanb.gesturecommon.EditDistCalculator;
@@ -109,6 +110,8 @@ public class GlassWatchWriteActivity extends Activity
 
         View mView = buildView();
         setContentView(mView);
+
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         SharedPreferences prefs = getSharedPreferences(getString(R.string.app_pref_key), MODE_PRIVATE);
         m_pref_layout = prefs.getInt(getString(R.string.prefkey_watch_layout),
