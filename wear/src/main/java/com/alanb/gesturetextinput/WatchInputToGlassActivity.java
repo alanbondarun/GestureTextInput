@@ -44,7 +44,7 @@ public class WatchInputToGlassActivity extends WearableActivity
     private float m_touchY;
 
     private DismissOverlayView mDismissOverlay;
-    private GestureDetector mDetector;
+    private final long TOUCH_PRESS_MSEC = 5000;
 
     private MotionEventRecorder m_motionRecorder = null;
 
@@ -103,12 +103,6 @@ public class WatchInputToGlassActivity extends WearableActivity
         m_charTouchArea.setOnTouchEventListener(wwTouchEventListener);
 
         mDismissOverlay = (DismissOverlayView) findViewById(R.id.dismiss_overlay);
-        mDetector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener(){
-            public void onLongPress(MotionEvent event)
-            {
-                mDismissOverlay.show();
-            }
-        });
 
         try
         {
@@ -175,9 +169,24 @@ public class WatchInputToGlassActivity extends WearableActivity
     WatchWriteInputView.OnTouchListener wwTouchListener =
             new WatchWriteInputView.OnTouchListener()
     {
+        private LongPressNotifyTask mmLongPressTask = null;
         @Override
         public void onTouch(MotionEvent motionEvent)
         {
+            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN)
+            {
+                mmLongPressTask = new LongPressNotifyTask();
+                mmLongPressTask.execute(new LongPressNotifyTaskData(TOUCH_PRESS_MSEC, mDismissOverlay));
+            }
+            else
+            {
+                if (mmLongPressTask != null)
+                {
+                    mmLongPressTask.cancel(true);
+                    mmLongPressTask = null;
+                }
+            }
+
             if (m_motionRecorder != null)
             {
                 m_motionRecorder.write(motionEvent);
@@ -200,7 +209,6 @@ public class WatchInputToGlassActivity extends WearableActivity
                     e.printStackTrace();
                 }
             }
-            mDetector.onTouchEvent(motionEvent);
         }
     };
 

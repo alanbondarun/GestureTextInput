@@ -29,7 +29,9 @@ public class WatchInputToMobileActivity extends WearableActivity
     private final String TAG = this.getClass().getName();
     private GoogleApiClient m_googleApiClient = null;
     private RelativeLayout m_charTouchLayout;
-    private GestureDetector m_gestureDetector;
+
+    private DismissOverlayView mDismissOverlayView;
+    private final long TOUCH_PRESS_MSEC = 5000;
 
     private MotionEventRecorder m_motionRecorder;
 
@@ -48,13 +50,7 @@ public class WatchInputToMobileActivity extends WearableActivity
         touchInputView.setOnTouchListener(wwTouchListener);
         touchInputView.setOnTouchEventListener(wwTouchEventListener);
 
-        final DismissOverlayView dismissOverlayView = (DismissOverlayView) findViewById(R.id.wm_dismiss_overlay);
-        m_gestureDetector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener(){
-            public void onLongPress(MotionEvent event)
-            {
-                dismissOverlayView.show();
-            }
-        });
+        mDismissOverlayView = (DismissOverlayView) findViewById(R.id.wm_dismiss_overlay);
 
         try
         {
@@ -125,12 +121,26 @@ public class WatchInputToMobileActivity extends WearableActivity
     WatchWriteInputView.OnTouchListener wwTouchListener =
             new WatchWriteInputView.OnTouchListener()
     {
+        private LongPressNotifyTask mmLongPress = null;
         @Override
         public void onTouch(MotionEvent motionEvent)
         {
+            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN)
+            {
+                mmLongPress = new LongPressNotifyTask();
+                mmLongPress.execute(new LongPressNotifyTaskData(TOUCH_PRESS_MSEC, mDismissOverlayView));
+            }
+            else
+            {
+                if (mmLongPress != null)
+                {
+                    mmLongPress.cancel(true);
+                    mmLongPress = null;
+                }
+            }
+
             if (m_motionRecorder != null)
                 m_motionRecorder.write(motionEvent);
-            m_gestureDetector.onTouchEvent(motionEvent);
 
             PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/touchpos");
             putDataMapReq.getDataMap().putFloat(getResources().getString(R.string.wear_xpos_key),
