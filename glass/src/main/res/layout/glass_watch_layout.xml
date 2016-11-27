@@ -14,13 +14,13 @@
         <TextView
             android:text="tttttt"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/glass_input_text_size_4line_margin"
+            android:layout_height="@dimen/glass_input_text_size_3line_margin"
             android:id="@+id/w_task_text"
             android:textSize="@dimen/glass_input_text_size" />
         <TextView
             android:text="uuuuuu"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/glass_input_text_size_4line_margin"
+            android:layout_height="@dimen/glass_input_text_size_3line_margin"
             android:id="@+id/w_input_text"
             android:textSize="@dimen/glass_input_text_size" />
     </LinearLayout>
