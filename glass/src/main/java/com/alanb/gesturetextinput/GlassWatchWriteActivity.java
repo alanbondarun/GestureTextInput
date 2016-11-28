@@ -85,13 +85,10 @@ public class GlassWatchWriteActivity extends Activity
     ArrayList<BluetoothSocket> mSockets = new ArrayList<BluetoothSocket>();
     // list of addresses for devices we've connected to
     ArrayList<String> mDeviceAddresses = new ArrayList<String>();
-    // just a name, nothing more...
-    String NAME="G6BITCHES";
-    // We can handle up to 7 connections... or something...
-    UUID[] uuids = new UUID[2];
-    // some uuid's we like to use..
-    String uuid1 = "05f2934c-1e81-4554-bb08-44aa761afbfb";
-    String uuid2 = "c2911cd0-5c3c-11e3-949a-0800200c9a66";
+
+    private final String NAME = "GoogleGlassss";
+    private UUID bt_uuid;
+
     // constant we define and pass to startActForResult (must be >0), that the system passes back to you in your onActivityResult()
     // implementation as the requestCode parameter.
     int REQUEST_ENABLE_BT = 1;
@@ -154,8 +151,7 @@ public class GlassWatchWriteActivity extends Activity
         m_phraseTimer = new NanoTimer();
         initTask();
 
-        uuids[0] = UUID.fromString(uuid1);
-        uuids[1] = UUID.fromString(uuid2);
+        bt_uuid = UUID.fromString(getResources().getString(R.string.bt_uuid_str));
         handle = new Handler(Looper.getMainLooper()) {
             private long prevTimeStamp = 0;
             @Override
@@ -470,7 +466,7 @@ public class GlassWatchWriteActivity extends Activity
         public AcceptThread() {
             BluetoothServerSocket tmp = null;
             try {
-                tmp = myBt.listenUsingInsecureRfcommWithServiceRecord(NAME, uuids[0]);
+                tmp = myBt.listenUsingInsecureRfcommWithServiceRecord(NAME, bt_uuid);
 
             } catch (IOException e) { }
             mmServerSocket = tmp;

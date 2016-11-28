@@ -30,7 +30,6 @@ public class WatchInputToMobileActivity extends WearableActivity
     private RelativeLayout m_charTouchLayout;
 
     private DismissOverlayView mDismissOverlayView;
-    private final long TOUCH_PRESS_MSEC = 5000;
 
     private MotionEventRecorder m_motionRecorder;
 
@@ -127,7 +126,8 @@ public class WatchInputToMobileActivity extends WearableActivity
             if (motionEvent.getAction() == MotionEvent.ACTION_DOWN)
             {
                 mmLongPress = new LongPressNotifyTask();
-                mmLongPress.execute(new LongPressNotifyTaskData(TOUCH_PRESS_MSEC, mDismissOverlayView));
+                mmLongPress.execute(new LongPressNotifyTaskData(
+                        getResources().getInteger(R.integer.watch_exit_touch_msec), mDismissOverlayView));
             }
             else
             {

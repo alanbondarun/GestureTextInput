@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="watch_exit_touch_msec">5000</integer>
+    <string name="watch_bt_motion_send_rate">3.5</string>
+</resources>

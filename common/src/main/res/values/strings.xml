@@ -16,4 +16,5 @@
 
     <string name="default_json_charset">utf-8</string>
     <string name="bt_json_token">\n</string>
+    <string name="bt_uuid_str">05f2934c-1e81-4554-bb08-44aa761afbfb</string>
 </resources>

@@ -38,15 +38,11 @@ public class WatchInputToGlassActivity extends WearableActivity
     private final String TAG = this.getClass().getName();
     public static final String CONNECT_DEVICE = "Glass";
 
-    private RelativeLayout m_charTouchLayout;
     private WatchWriteInputView m_charTouchArea;
 
     private DismissOverlayView mDismissOverlay;
-    private final long TOUCH_PRESS_MSEC = 5000;
 
     private MotionEventRecorder m_motionRecorder = null;
-
-    private final double BLUETOOTH_MOTION_SEND_RATE = 3.5;
 
     public static final int READY_TO_CONN =0;
     public static final int CANCEL_CONN =1;
@@ -55,11 +51,8 @@ public class WatchInputToGlassActivity extends WearableActivity
     private BluetoothAdapter myBt;
     private String m_btDeviceName, m_btDeviceMac;
 
-    UUID[] uuids = new UUID[2];
-    // some uuid's we like to use..
-    String uuid1 = "05f2934c-1e81-4554-bb08-44aa761afbfb";
-    String uuid2 = "c2911cd0-5c3c-11e3-949a-0800200c9a66";
-    //  DateFormat df = new DateFormat("ddyyyy")
+    private UUID bt_uuid;
+
     ConnectThread mConnThread;
     ConnectedThread m_connectedThread;
     Handler handle;
@@ -70,11 +63,9 @@ public class WatchInputToGlassActivity extends WearableActivity
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            // When discovery finds a device
-            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-                // Get the BluetoothDevice object from the Intent
+            if (BluetoothDevice.ACTION_FOUND.equals(action))
+            {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                // Add the name and address to an array adapter to show in a ListView
                 if (device.getName().contains(CONNECT_DEVICE))
                 {
                     m_btDeviceName = device.getName();
@@ -85,15 +76,13 @@ public class WatchInputToGlassActivity extends WearableActivity
         }
     };
 
-    Context ctx;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.watch_to_glass);
         setAmbientEnabled();
 
-        m_charTouchLayout = (RelativeLayout) findViewById(R.id.w_touch_frame);
+        RelativeLayout m_charTouchLayout = (RelativeLayout) findViewById(R.id.w_touch_frame);
         LayoutInflater inflater = LayoutInflater.from(this);
         m_charTouchArea = (WatchWriteInputView) inflater.inflate(R.layout.watch_touch_area,
                 m_charTouchLayout, false);
@@ -113,7 +102,7 @@ public class WatchInputToGlassActivity extends WearableActivity
             e.printStackTrace();
         }
 
-        ctx = this;
+        bt_uuid = UUID.fromString(getResources().getString(R.string.bt_uuid_str));
         handle = new Handler(Looper.getMainLooper()) {
             @Override
             public void handleMessage(Message msg) {
@@ -134,9 +123,6 @@ public class WatchInputToGlassActivity extends WearableActivity
                 }
             }
         };
-
-        uuids[0] = UUID.fromString(uuid1);
-        uuids[1] = UUID.fromString(uuid2);
 
         myBt = BluetoothAdapter.getDefaultAdapter();
         if (myBt == null)
@@ -177,7 +163,8 @@ public class WatchInputToGlassActivity extends WearableActivity
             if (motionEvent.getAction() == MotionEvent.ACTION_DOWN)
             {
                 mmLongPressTask = new LongPressNotifyTask();
-                mmLongPressTask.execute(new LongPressNotifyTaskData(TOUCH_PRESS_MSEC, mDismissOverlay));
+                mmLongPressTask.execute(new LongPressNotifyTaskData(
+                        getResources().getInteger(R.integer.watch_exit_touch_msec), mDismissOverlay));
             }
             else
             {
@@ -195,7 +182,8 @@ public class WatchInputToGlassActivity extends WearableActivity
             if (m_connectedThread != null && m_connectedThread.isAlive())
             {
                 if (motionEvent.getAction() != MotionEvent.ACTION_MOVE ||
-                        isNewPeriod(mmEventSendTurn, BLUETOOTH_MOTION_SEND_RATE))
+                        isNewPeriod(mmEventSendTurn,
+                            Double.valueOf(getResources().getString(R.string.watch_bt_motion_send_rate))))
                 {
                     JSONObject pos_actions = new JSONObject();
                     JSONObject sendObject = new JSONObject();
@@ -320,7 +308,7 @@ public class WatchInputToGlassActivity extends WearableActivity
 
             try
             {
-                tmp = device.createRfcommSocketToServiceRecord(uuids[0]);
+                tmp = device.createRfcommSocketToServiceRecord(bt_uuid);
             }
             catch (Exception e)
             {
