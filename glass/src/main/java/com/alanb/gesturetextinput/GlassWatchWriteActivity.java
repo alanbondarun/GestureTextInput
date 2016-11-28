@@ -5,18 +5,14 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
@@ -24,9 +20,9 @@ import android.widget.TextView;
 import com.alanb.gesturecommon.EditDistCalculator;
 import com.alanb.gesturecommon.KeyNode;
 import com.alanb.gesturecommon.NanoTimer;
-import com.alanb.gesturecommon.OneDInputView;
 import com.alanb.gesturecommon.TaskPhraseLoader;
 import com.alanb.gesturecommon.TaskRecordWriter;
+import com.alanb.gesturecommon.TouchEvent;
 import com.alanb.gesturecommon.TouchFeedbackFrameLayout;
 import com.alanb.gesturecommon.WatchWriteInputView;
 import com.google.android.glass.widget.CardBuilder;
@@ -47,7 +43,7 @@ public class GlassWatchWriteActivity extends Activity
     private static final String TAG = GlassWatchWriteActivity.class.getName();
 
     private WatchWriteInputView m_touchInputView;
-    private ArrayList<WatchWriteInputView.TouchEvent> m_gestureTouchAreas;
+    private ArrayList<TouchEvent> m_gestureTouchAreas;
     private KeyNode m_rootNode;
     // DO NOT modify this directly; use updateCurNode() instead
     private KeyNode m_curNode;
@@ -143,7 +139,7 @@ public class GlassWatchWriteActivity extends Activity
         m_feedbackFrameLayout.getFeedbackView().setPointColor(Color.argb(165, 255, 255, 255));
         m_feedbackFrameLayout.getFeedbackView().setRadius(20.0f);
 
-        m_gestureTouchAreas = new ArrayList<WatchWriteInputView.TouchEvent>();
+        m_gestureTouchAreas = new ArrayList<TouchEvent>();
 
         m_inputTextView = (TextView) findViewById(R.id.w_input_text);
 
@@ -189,7 +185,7 @@ public class GlassWatchWriteActivity extends Activity
                             {
                                 JSONObject jsonTE = jsonTouch.getJSONObject("touchevent");
                                 String teString = jsonTE.getString(getResources().getString(R.string.wear_touch_key));
-                                processTouchEvent(WatchWriteInputView.TouchEvent.valueOf(teString));
+                                processTouchEvent(TouchEvent.valueOf(teString));
                             }
                             else if (jsonTouch.has("touchpos"))
                             {
@@ -293,10 +289,10 @@ public class GlassWatchWriteActivity extends Activity
         m_feedbackFrameLayout.setCursorRatio((float)x, (float)y, action);
     }
 
-    private void processTouchEvent(WatchWriteInputView.TouchEvent te)
+    private void processTouchEvent(TouchEvent te)
     {
         Log.d(TAG, "event = " + te.toString());
-        if (te == WatchWriteInputView.TouchEvent.END)
+        if (te == TouchEvent.END)
         {
             if (!m_phraseTimer.running())
                 m_phraseTimer.begin();
@@ -332,17 +328,17 @@ public class GlassWatchWriteActivity extends Activity
             m_gestureTouchAreas.clear();
             updateViews(m_rootNode);
         }
-        else if (te == WatchWriteInputView.TouchEvent.DROP)
+        else if (te == TouchEvent.DROP)
         {
             m_gestureTouchAreas.add(te);
         }
-        else if (te == WatchWriteInputView.TouchEvent.MULTITOUCH)
+        else if (te == TouchEvent.MULTITOUCH)
         {
             updateViews(m_rootNode);
             m_gestureTouchAreas.clear();
             m_gestureTouchAreas.add(te);
         }
-        else if (te != WatchWriteInputView.TouchEvent.AREA_OTHER)
+        else if (te != TouchEvent.AREA_OTHER)
         {
             if (isValidTouchSequence(m_gestureTouchAreas))
             {
@@ -385,20 +381,20 @@ public class GlassWatchWriteActivity extends Activity
                 }
                 else
                 {
-                    m_gestureTouchAreas.add(WatchWriteInputView.TouchEvent.DROP);
+                    m_gestureTouchAreas.add(TouchEvent.DROP);
                     Log.d(TAG, "Touch drop: end reached");
                 }
             }
         }
     }
 
-    private boolean isValidTouchSequence(ArrayList<WatchWriteInputView.TouchEvent> events)
+    private boolean isValidTouchSequence(ArrayList<TouchEvent> events)
     {
         if (events.size() <= 0 ||
-                (events.get(events.size()-1) != WatchWriteInputView.TouchEvent.DROP &&
-                        events.get(events.size()-1) != WatchWriteInputView.TouchEvent.MULTITOUCH))
+                (events.get(events.size()-1) != TouchEvent.DROP &&
+                        events.get(events.size()-1) != TouchEvent.MULTITOUCH))
             return true;
-        return (events.size() == 1 && events.get(0) == WatchWriteInputView.TouchEvent.DROP);
+        return (events.size() == 1 && events.get(0) == TouchEvent.DROP);
     }
 
     private void doneTask()

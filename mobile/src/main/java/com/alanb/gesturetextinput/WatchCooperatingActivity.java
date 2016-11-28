@@ -16,6 +16,7 @@ import com.alanb.gesturecommon.KeyNode;
 import com.alanb.gesturecommon.NanoTimer;
 import com.alanb.gesturecommon.TaskPhraseLoader;
 import com.alanb.gesturecommon.TaskRecordWriter;
+import com.alanb.gesturecommon.TouchEvent;
 import com.alanb.gesturecommon.TouchFeedbackFrameLayout;
 import com.alanb.gesturecommon.WatchWriteInputView;
 import com.google.android.gms.common.ConnectionResult;
@@ -37,7 +38,7 @@ public class WatchCooperatingActivity extends AppCompatActivity
     private final String TAG = this.getClass().getName();
     private GoogleApiClient mGoogleApiClient;
 
-    private ArrayList<WatchWriteInputView.TouchEvent> m_gestureTouchAreas;
+    private ArrayList<TouchEvent> m_gestureTouchAreas;
     private KeyNode m_rootNode;
     // DO NOT modify this directly; use updateCurNode() instead
     private KeyNode m_curNode;
@@ -105,7 +106,7 @@ public class WatchCooperatingActivity extends AppCompatActivity
 
                         String touch_str = dataMap.getString(getResources().getString(R.string.wear_touch_key));
                         Log.d(TAG, "Touch Received = " + touch_str);
-                        processTouchEvent(WatchWriteInputView.TouchEvent.valueOf(touch_str));
+                        processTouchEvent(TouchEvent.valueOf(touch_str));
                     }
                     else if (item.getUri().getPath().compareTo("/touchpos") == 0)
                     {
@@ -237,9 +238,9 @@ public class WatchCooperatingActivity extends AppCompatActivity
         }
     }
 
-    private void processTouchEvent(WatchWriteInputView.TouchEvent te)
+    private void processTouchEvent(TouchEvent te)
     {
-        if (te == WatchWriteInputView.TouchEvent.END)
+        if (te == TouchEvent.END)
         {
             if (!m_phraseTimer.running())
                 m_phraseTimer.begin();
@@ -275,17 +276,17 @@ public class WatchCooperatingActivity extends AppCompatActivity
             m_gestureTouchAreas.clear();
             updateViews(m_rootNode);
         }
-        else if (te == WatchWriteInputView.TouchEvent.DROP)
+        else if (te == TouchEvent.DROP)
         {
             m_gestureTouchAreas.add(te);
         }
-        else if (te == WatchWriteInputView.TouchEvent.MULTITOUCH)
+        else if (te == TouchEvent.MULTITOUCH)
         {
             updateViews(m_rootNode);
             m_gestureTouchAreas.clear();
             m_gestureTouchAreas.add(te);
         }
-        else if (te != WatchWriteInputView.TouchEvent.AREA_OTHER)
+        else if (te != TouchEvent.AREA_OTHER)
         {
             if (isValidTouchSequence(m_gestureTouchAreas))
             {
@@ -328,20 +329,20 @@ public class WatchCooperatingActivity extends AppCompatActivity
                 }
                 else
                 {
-                    m_gestureTouchAreas.add(WatchWriteInputView.TouchEvent.DROP);
+                    m_gestureTouchAreas.add(TouchEvent.DROP);
                     Log.d(TAG, "Touch drop: end reached");
                 }
             }
         }
     }
 
-    private boolean isValidTouchSequence(ArrayList<WatchWriteInputView.TouchEvent> events)
+    private boolean isValidTouchSequence(ArrayList<TouchEvent> events)
     {
         if (events.size() <= 0 ||
-                (events.get(events.size()-1) != WatchWriteInputView.TouchEvent.DROP &&
-                        events.get(events.size()-1) != WatchWriteInputView.TouchEvent.MULTITOUCH))
+                (events.get(events.size()-1) != TouchEvent.DROP &&
+                        events.get(events.size()-1) != TouchEvent.MULTITOUCH))
             return true;
-        return (events.size() == 1 && events.get(0) == WatchWriteInputView.TouchEvent.DROP);
+        return (events.size() == 1 && events.get(0) == TouchEvent.DROP);
     }
 
     private void doneTask()

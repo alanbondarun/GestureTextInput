@@ -4,15 +4,14 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.wearable.activity.WearableActivity;
-import android.support.wearable.view.BoxInsetLayout;
 import android.support.wearable.view.DismissOverlayView;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.widget.RelativeLayout;
 
 import com.alanb.gesturecommon.MotionEventRecorder;
+import com.alanb.gesturecommon.TouchEvent;
 import com.alanb.gesturecommon.WatchWriteInputView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -160,7 +159,7 @@ public class WatchInputToMobileActivity extends WearableActivity
             new WatchWriteInputView.OnTouchEventListener()
     {
         @Override
-        public void onTouchEvent(WatchWriteInputView.TouchEvent te)
+        public void onTouchEvent(TouchEvent te)
         {
             PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/touchevent");
             putDataMapReq.getDataMap().putString(getResources().getString(R.string.wear_touch_key),

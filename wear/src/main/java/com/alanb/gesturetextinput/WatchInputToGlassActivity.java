@@ -14,7 +14,6 @@ import android.os.Message;
 import android.support.wearable.activity.WearableActivity;
 import android.support.wearable.view.DismissOverlayView;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.widget.RelativeLayout;
@@ -22,6 +21,7 @@ import android.widget.Toast;
 
 import com.alanb.gesturecommon.MathUtils;
 import com.alanb.gesturecommon.MotionEventRecorder;
+import com.alanb.gesturecommon.TouchEvent;
 import com.alanb.gesturecommon.WatchWriteInputView;
 
 import org.json.JSONException;
@@ -40,9 +40,6 @@ public class WatchInputToGlassActivity extends WearableActivity
 
     private RelativeLayout m_charTouchLayout;
     private WatchWriteInputView m_charTouchArea;
-
-    private float m_touchX;
-    private float m_touchY;
 
     private DismissOverlayView mDismissOverlay;
     private final long TOUCH_PRESS_MSEC = 5000;
@@ -232,7 +229,7 @@ public class WatchInputToGlassActivity extends WearableActivity
             new WatchWriteInputView.OnTouchEventListener()
     {
         @Override
-        public void onTouchEvent(WatchWriteInputView.TouchEvent te)
+        public void onTouchEvent(TouchEvent te)
         {
 
             if (m_connectedThread != null && m_connectedThread.isAlive())

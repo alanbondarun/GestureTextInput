@@ -21,6 +21,7 @@ import com.alanb.gesturecommon.NanoTimer;
 import com.alanb.gesturecommon.OneDInputView;
 import com.alanb.gesturecommon.TaskPhraseLoader;
 import com.alanb.gesturecommon.TaskRecordWriter;
+import com.alanb.gesturecommon.TouchEvent;
 import com.alanb.gesturecommon.TouchFeedbackFrameLayout;
 import com.alanb.gesturecommon.WatchWriteInputView;
 import com.google.android.glass.widget.CardBuilder;
@@ -38,7 +39,7 @@ public class GlassOneDActivity extends Activity
     private KeyNode m_rootNode;
     // DO NOT modify this directly; use updateCurNode() instead
     private KeyNode m_curNode;
-    private ArrayList<OneDInputView.TouchEvent> m_touchArray;
+    private ArrayList<TouchEvent> m_touchArray;
     private TouchFeedbackFrameLayout m_feedbackFrameLayout;
 
     private String m_inputStr = "";
@@ -84,7 +85,7 @@ public class GlassOneDActivity extends Activity
                 break;
         }
 
-        m_touchArray = new ArrayList<OneDInputView.TouchEvent>();
+        m_touchArray = new ArrayList<TouchEvent>();
 
         m_inputTextView = (TextView) findViewById(R.id.o_input_text);
 
@@ -253,9 +254,9 @@ public class GlassOneDActivity extends Activity
             new OneDInputView.OnTouchEventListener()
             {
                 @Override
-                public void onTouchEvent(OneDInputView.TouchEvent te)
+                public void onTouchEvent(TouchEvent te)
                 {
-                    if (te == OneDInputView.TouchEvent.END)
+                    if (te == TouchEvent.END)
                     {
                         if (!m_phraseTimer.running())
                             m_phraseTimer.begin();
@@ -298,11 +299,11 @@ public class GlassOneDActivity extends Activity
                         updateNode(m_rootNode, true);
                         m_touchArray.clear();
                     }
-                    else if (te == OneDInputView.TouchEvent.DROP)
+                    else if (te == TouchEvent.DROP)
                     {
                         m_touchArray.add(te);
                     }
-                    else if (te == OneDInputView.TouchEvent.MULTITOUCH)
+                    else if (te == TouchEvent.MULTITOUCH)
                     {
                         updateNode(m_rootNode, true);
                         m_touchArray.clear();
@@ -350,7 +351,7 @@ public class GlassOneDActivity extends Activity
                             }
                             else
                             {
-                                m_touchArray.add(OneDInputView.TouchEvent.DROP);
+                                m_touchArray.add(TouchEvent.DROP);
                                 Log.d(TAG, "Touch drop: end reached");
                             }
                         }
@@ -359,13 +360,13 @@ public class GlassOneDActivity extends Activity
                 }
             };
 
-    private boolean isValidTouchSequence(ArrayList<OneDInputView.TouchEvent> events)
+    private boolean isValidTouchSequence(ArrayList<TouchEvent> events)
     {
         if (events.size() <= 0 ||
-                (events.get(events.size()-1) != OneDInputView.TouchEvent.DROP &&
-                        events.get(events.size()-1) != OneDInputView.TouchEvent.MULTITOUCH))
+                (events.get(events.size()-1) != TouchEvent.DROP &&
+                        events.get(events.size()-1) != TouchEvent.MULTITOUCH))
             return true;
-        if (events.size() == 1 && events.get(0) == OneDInputView.TouchEvent.DROP)
+        if (events.size() == 1 && events.get(0) == TouchEvent.DROP)
         {
             events.clear();
             return true;

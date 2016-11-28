@@ -21,7 +21,7 @@ import com.alanb.gesturecommon.OneDInputView;
 import com.alanb.gesturecommon.TaskPhraseLoader;
 import com.alanb.gesturecommon.TaskRecordWriter;
 import com.alanb.gesturecommon.TouchFeedbackFrameLayout;
-import com.alanb.gesturecommon.OneDInputView.TouchEvent;
+import com.alanb.gesturecommon.TouchEvent;
 
 import java.io.IOException;
 import java.util.ArrayList;

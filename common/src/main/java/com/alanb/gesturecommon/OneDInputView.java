@@ -8,11 +8,6 @@ import android.widget.LinearLayout;
 
 public class OneDInputView extends LinearLayout
 {
-    public static enum TouchEvent
-    {
-        AREA1, AREA2, AREA3, AREA4, DROP, END, MULTITOUCH
-    }
-
     public interface OnTouchListener
     {
         void onTouch(MotionEvent motionEvent);
