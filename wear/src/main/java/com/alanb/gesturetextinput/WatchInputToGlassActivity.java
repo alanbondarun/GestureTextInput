@@ -158,68 +158,56 @@ public class WatchInputToGlassActivity extends WearableActivity
 
     WatchWriteInputView.OnTouchListener wwTouchListener =
             new WatchWriteInputView.OnTouchListener()
-    {
-        private LongPressNotifyTask mmLongPressTask = null;
-        private int mmEventSendTurn = 0;
-        @Override
-        public void onTouch(MotionEvent motionEvent)
-        {
-            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN)
             {
-                mmLongPressTask = new LongPressNotifyTask();
-                mmLongPressTask.execute(new LongPressNotifyTaskData(
-                        getResources().getInteger(R.integer.watch_exit_touch_msec), mDismissOverlay));
-            }
-            else
-            {
-                if (mmLongPressTask != null)
+                private LongPressNotifyTask mmLongPressTask = null;
+                private int mmEventSendTurn = 0;
+                @Override
+                public void onTouch(MotionEvent motionEvent)
                 {
-                    mmLongPressTask.cancel(true);
-                    mmLongPressTask = null;
-                }
-            }
+                    if (motionEvent.getAction() == MotionEvent.ACTION_DOWN)
+                    {
+                        mmLongPressTask = new LongPressNotifyTask();
+                        mmLongPressTask.execute(new LongPressNotifyTaskData(
+                                getResources().getInteger(R.integer.watch_exit_touch_msec), mDismissOverlay));
+                    }
+                    else
+                    {
+                        if (mmLongPressTask != null)
+                        {
+                            mmLongPressTask.cancel(true);
+                            mmLongPressTask = null;
+                        }
+                    }
 
-            if (m_motionRecorder != null)
-            {
-                m_motionRecorder.write(motionEvent);
-            }
-            if (m_connectedThread != null && m_connectedThread.isAlive())
-            {
-                if (motionEvent.getAction() != MotionEvent.ACTION_MOVE ||
-                        isNewPeriod(mmEventSendTurn,
-                            Double.valueOf(getResources().getString(R.string.watch_bt_motion_send_rate))))
-                {
-                    JSONObject pos_actions = new JSONObject();
-                    JSONObject sendObject = new JSONObject();
-                    try
+                    if (m_motionRecorder != null)
                     {
-                        pos_actions.put(getResources().getString(R.string.wear_xpos_key),
-                                String.format(Locale.getDefault(), "%.3f", motionEvent.getX() / m_charTouchArea.getWidth()));
-                        pos_actions.put(getResources().getString(R.string.wear_ypos_key),
-                                String.format(Locale.getDefault(), "%.3f", motionEvent.getY() / m_charTouchArea.getHeight()));
-                        pos_actions.put(getResources().getString(R.string.wear_action_key), motionEvent.getAction());
-                        sendObject.put("pos", pos_actions);
-                        sendObject.put("ts", System.currentTimeMillis() - beginTime);
-                        byte[] json_bytes = sendObject.toString().concat(getString(R.string.bt_json_token)).
-                                getBytes(getResources().getString(R.string.default_json_charset));
-                        m_connectedThread.write(json_bytes);
+                        m_motionRecorder.write(motionEvent);
                     }
-                    catch (JSONException e)
+                    if (m_connectedThread != null && m_connectedThread.isAlive())
                     {
-                        e.printStackTrace();
-                    }
-                    catch (IOException e)
-                    {
-                        e.printStackTrace();
+                        if (motionEvent.getAction() != MotionEvent.ACTION_MOVE ||
+                                isNewPeriod(mmEventSendTurn,
+                                        Double.valueOf(getResources().getString(R.string.watch_bt_motion_send_rate))))
+                        {
+                            String builder = "";
+                            builder = builder.concat(String.format(Locale.getDefault(), "%.3f", motionEvent.getX() / m_charTouchArea.getWidth()));
+                            builder = builder.concat(",");
+                            builder = builder.concat(String.format(Locale.getDefault(), "%.3f", motionEvent.getY() / m_charTouchArea.getHeight()));
+                            builder = builder.concat(",");
+                            builder = builder.concat(String.valueOf(motionEvent.getAction()));
+                            builder = builder.concat(",");
+                            builder = builder.concat(String.valueOf(motionEvent.getPointerCount()));
+                            builder = builder.concat(getResources().getString(R.string.bt_json_token));
+                            byte[] data_bytes = builder.getBytes();
+                            m_connectedThread.write(data_bytes);
+                        }
+                        if (motionEvent.getAction() == MotionEvent.ACTION_MOVE)
+                        {
+                            mmEventSendTurn++;
+                        }
                     }
                 }
-                if (motionEvent.getAction() == MotionEvent.ACTION_MOVE)
-                {
-                    mmEventSendTurn++;
-                }
-            }
-        }
-    };
+            };
 
     private boolean isNewPeriod(int turn, double rate)
     {
@@ -228,12 +216,12 @@ public class WatchInputToGlassActivity extends WearableActivity
 
     WatchWriteInputView.OnTouchEventListener wwTouchEventListener =
             new WatchWriteInputView.OnTouchEventListener()
-    {
-        @Override
-        public void onTouchEvent(TouchEvent te)
-        {
+            {
+                @Override
+                public void onTouchEvent(TouchEvent te)
+                {
 
-            if (m_connectedThread != null && m_connectedThread.isAlive())
+            /*if (m_connectedThread != null && m_connectedThread.isAlive())
             {
                 JSONObject sendObject = new JSONObject();
                 try
@@ -252,9 +240,9 @@ public class WatchInputToGlassActivity extends WearableActivity
                 {
                     e.printStackTrace();
                 }
-            }
-        }
-    };
+            }*/
+                }
+            };
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
@@ -437,6 +425,7 @@ public class WatchInputToGlassActivity extends WearableActivity
 
         void write(byte[] bytes) {
             try {
+                //Log.d(TAG, "send data: " + new String(bytes, getResources().getString(R.string.default_json_charset)).trim());
                 mmOutStream.write(bytes);
                 mmOutStream.flush();
             } catch (IOException e) {

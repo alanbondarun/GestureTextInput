@@ -176,34 +176,26 @@ public class GlassWatchWriteActivity extends Activity
                             Log.d(TAG + "Recv", "data: " + recv_str.trim());
                             String[] recv_strs = recv_str.trim().split(getString(R.string.bt_json_token));
                             Log.d(TAG, "WW data start");
-                            for (String str : recv_strs)
+                            if (recv_strs.length >= 1)
                             {
                                 try
                                 {
+                                    String str = recv_strs[0];
                                     Log.d(TAG, "WW data: " + str);
-                                    jsonTouch = new JSONObject(str);
-
-                                    long timeStamp = jsonTouch.getLong("ts");
-                                    if (timeStamp < prevTimeStamp)
-                                        break;
-                                    prevTimeStamp = timeStamp;
-
-                                    if (jsonTouch.has("ev"))
+                                    String[] str_comma_sep = str.split(",");
+                                    if (str_comma_sep.length == 4)
                                     {
-                                        String teString = jsonTouch.getString("ev");
-                                        processTouchEvent(TouchEvent.valueOf(teString));
-                                    }
-                                    else if (jsonTouch.has("pos"))
-                                    {
-                                        JSONObject jsonTP = jsonTouch.getJSONObject("pos");
-                                        processTouchMotion(jsonTP.getDouble(getResources().getString(R.string.wear_xpos_key)),
-                                                jsonTP.getDouble(getResources().getString(R.string.wear_ypos_key)),
-                                                jsonTP.getInt(getResources().getString(R.string.wear_action_key)));
+                                        double px = Double.valueOf(str_comma_sep[0]);
+                                        double py = Double.valueOf(str_comma_sep[1]);
+                                        int paction = Integer.valueOf(str_comma_sep[2]);
+                                        int pmulti = Integer.valueOf(str_comma_sep[3]);
+                                        processTouchEvent(WatchWriteInputView.getTouchEventFromPos(px, py, paction, pmulti));
+                                        processTouchMotion(px, py, paction);
                                     }
                                 }
-                                catch (JSONException e)
+                                catch (NumberFormatException e1)
                                 {
-                                    e.printStackTrace();
+                                    e1.printStackTrace();
                                 }
                             }
                         }
@@ -298,8 +290,12 @@ public class GlassWatchWriteActivity extends Activity
         m_feedbackFrameLayout.setCursorRatio((float)x, (float)y, action);
     }
 
+    private TouchEvent prev_te = TouchEvent.AREA_OTHER;
     private void processTouchEvent(TouchEvent te)
     {
+        if (prev_te == te)
+            return;
+
         Log.d(TAG, "event = " + te.toString());
         if (te == TouchEvent.END)
         {
@@ -582,7 +578,7 @@ public class GlassWatchWriteActivity extends Activity
                         handle.obtainMessage(MESSAGE_ARRIVED, bytes, -1, buffer)
                                 .sendToTarget();
 
-                    Thread.sleep(25);
+                    Thread.sleep(20);
                 } catch (Exception e) {
                     Log.e(TAG, "disconnected", e);
                     connectionLost();
