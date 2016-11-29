@@ -173,7 +173,7 @@ public class GlassWatchWriteActivity extends Activity
                         try
                         {
                             String recv_str = new String(buffer, getResources().getString(R.string.default_json_charset));
-
+                            Log.d(TAG + "Recv", "data: " + recv_str.trim());
                             String[] recv_strs = recv_str.trim().split(getString(R.string.bt_json_token));
                             Log.d(TAG, "WW data start");
                             for (String str : recv_strs)

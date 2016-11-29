@@ -438,6 +438,7 @@ public class WatchInputToGlassActivity extends WearableActivity
         void write(byte[] bytes) {
             try {
                 mmOutStream.write(bytes);
+                mmOutStream.flush();
             } catch (IOException e) {
                 Log.e(TAG, "Exception during write", e);
             }

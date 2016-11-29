@@ -17,7 +17,7 @@ public class WatchWriteInputView extends LinearLayout
         void onTouchEvent(TouchEvent te);
     }
 
-    private final double TOUCH_SIZE_RATIO = 0.4;
+    private static final double TOUCH_SIZE_RATIO = 0.4;
     private TouchEvent prev_e = TouchEvent.AREA_OTHER;
     private boolean multi_occurred = false;
 
@@ -39,6 +39,63 @@ public class WatchWriteInputView extends LinearLayout
         this.m_onTouchListener = l;
     }
 
+    public static TouchEvent getTouchEventFromPos(double xrel, double yrel, int action, int multi)
+    {
+        if (multi >= 2)
+        {
+            return TouchEvent.MULTITOUCH;
+        }
+        if (action == MotionEvent.ACTION_DOWN
+                || action == MotionEvent.ACTION_MOVE)
+        {
+            if (0 <= xrel && xrel <= 1 && 0 <= yrel && yrel <= 1)
+            {
+                if (yrel <= TOUCH_SIZE_RATIO)
+                {
+                    if (xrel <= TOUCH_SIZE_RATIO)
+                    {
+                        return TouchEvent.AREA1;
+                    }
+                    else if (xrel >= 1.0 - TOUCH_SIZE_RATIO)
+                    {
+                        return TouchEvent.AREA2;
+                    }
+                    else
+                    {
+                        return TouchEvent.AREA_OTHER;
+                    }
+                }
+                else if (yrel >= 1.0 - TOUCH_SIZE_RATIO)
+                {
+                    if (xrel <= TOUCH_SIZE_RATIO)
+                    {
+                        return TouchEvent.AREA3;
+                    }
+                    else if (xrel >= 1.0 - TOUCH_SIZE_RATIO)
+                    {
+                        return TouchEvent.AREA4;
+                    }
+                    else
+                    {
+                        return TouchEvent.AREA_OTHER;
+                    }
+                }
+                else
+                {
+                    return TouchEvent.AREA_OTHER;
+                }
+            }
+            else
+            {
+                return TouchEvent.DROP;
+            }
+        }
+        else
+        {
+            return TouchEvent.END;
+        }
+    }
+
     @Override
     public boolean onTouchEvent(MotionEvent motionEvent)
     {
@@ -57,56 +114,10 @@ public class WatchWriteInputView extends LinearLayout
                 multi_occurred = true;
                 cur_e = TouchEvent.MULTITOUCH;
             }
-            else if (motionEvent.getAction() == MotionEvent.ACTION_DOWN
-                    || motionEvent.getAction() == MotionEvent.ACTION_MOVE)
-            {
-                double xrel = motionEvent.getX() / this.getWidth();
-                double yrel = motionEvent.getY() / this.getHeight();
-                if (0 <= xrel && xrel <= 1 && 0 <= yrel && yrel <= 1)
-                {
-                    if (yrel <= TOUCH_SIZE_RATIO)
-                    {
-                        if (xrel <= TOUCH_SIZE_RATIO)
-                        {
-                            cur_e = TouchEvent.AREA1;
-                        }
-                        else if (xrel >= 1.0 - TOUCH_SIZE_RATIO)
-                        {
-                            cur_e = TouchEvent.AREA2;
-                        }
-                        else
-                        {
-                            cur_e = TouchEvent.AREA_OTHER;
-                        }
-                    }
-                    else if (yrel >= 1.0 - TOUCH_SIZE_RATIO)
-                    {
-                        if (xrel <= TOUCH_SIZE_RATIO)
-                        {
-                            cur_e = TouchEvent.AREA3;
-                        }
-                        else if (xrel >= 1.0 - TOUCH_SIZE_RATIO)
-                        {
-                            cur_e = TouchEvent.AREA4;
-                        }
-                        else
-                        {
-                            cur_e = TouchEvent.AREA_OTHER;
-                        }
-                    }
-                    else
-                    {
-                        cur_e = TouchEvent.AREA_OTHER;
-                    }
-                }
-                else
-                {
-                    cur_e = TouchEvent.DROP;
-                }
-            }
             else
             {
-                cur_e = TouchEvent.END;
+                cur_e = getTouchEventFromPos(motionEvent.getX() / getWidth(), motionEvent.getY() / getHeight(),
+                        motionEvent.getAction(), motionEvent.getPointerCount());
             }
         }
         if (cur_e != prev_e && this.m_onTouchEventlistener != null)
