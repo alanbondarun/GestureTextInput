@@ -167,34 +167,47 @@ public class GlassWatchWriteActivity extends Activity
                         startListening();
                         break;
                     case MESSAGE_ARRIVED:
+                        byte[] buffer = (byte[]) msg.obj;
                         JSONObject jsonTouch = null;
+
                         try
                         {
-                            jsonTouch = new JSONObject(msg.getData().getString("Message"));
+                            String recv_str = new String(buffer, getResources().getString(R.string.default_json_charset));
 
-                            long timeStamp = jsonTouch.getLong("timestamp");
-                            if (timeStamp < prevTimeStamp)
-                                break;
-                            prevTimeStamp = timeStamp;
+                            String[] recv_strs = recv_str.trim().split(getString(R.string.bt_json_token));
+                            Log.d(TAG, "WW data start");
+                            for (String str : recv_strs)
+                            {
+                                try
+                                {
+                                    Log.d(TAG, "WW data: " + str);
+                                    jsonTouch = new JSONObject(str);
 
-                            if (jsonTouch.has("touchevent"))
-                            {
-                                JSONObject jsonTE = jsonTouch.getJSONObject("touchevent");
-                                String teString = jsonTE.getString(getResources().getString(R.string.wear_touch_key));
-                                processTouchEvent(TouchEvent.valueOf(teString));
-                            }
-                            else if (jsonTouch.has("touchpos"))
-                            {
-                                JSONObject jsonTP = jsonTouch.getJSONObject("touchpos");
-                                processTouchMotion(jsonTP.getDouble(getResources().getString(R.string.wear_xpos_key)),
-                                        jsonTP.getDouble(getResources().getString(R.string.wear_ypos_key)),
-                                        jsonTP.getInt(getResources().getString(R.string.wear_action_key)));
+                                    long timeStamp = jsonTouch.getLong("ts");
+                                    if (timeStamp < prevTimeStamp)
+                                        break;
+                                    prevTimeStamp = timeStamp;
+
+                                    if (jsonTouch.has("ev"))
+                                    {
+                                        String teString = jsonTouch.getString("ev");
+                                        processTouchEvent(TouchEvent.valueOf(teString));
+                                    }
+                                    else if (jsonTouch.has("pos"))
+                                    {
+                                        JSONObject jsonTP = jsonTouch.getJSONObject("pos");
+                                        processTouchMotion(jsonTP.getDouble(getResources().getString(R.string.wear_xpos_key)),
+                                                jsonTP.getDouble(getResources().getString(R.string.wear_ypos_key)),
+                                                jsonTP.getInt(getResources().getString(R.string.wear_action_key)));
+                                    }
+                                }
+                                catch (JSONException e)
+                                {
+                                    e.printStackTrace();
+                                }
                             }
                         }
-                        catch (JSONException e)
-                        {
-                            e.printStackTrace();
-                        }
+                        catch (IOException e) { e.printStackTrace(); }
                         break;
                     default:
                         break;
@@ -533,6 +546,7 @@ public class GlassWatchWriteActivity extends Activity
 
         handle.sendMessage(msg);
     }
+
     private class ConnectedThread extends Thread {
         private final BluetoothSocket mmSocket;
         private final InputStream mmInStream;
@@ -563,25 +577,11 @@ public class GlassWatchWriteActivity extends Activity
             while (true) {
                 try {
                     bytes = mmInStream.read(buffer);
+
                     if (bytes > 0)
-                    {
-                        String recv_str = new String(buffer, getResources().getString(R.string.default_json_charset));
-                        String[] recv_strs = recv_str.trim().split(getString(R.string.bt_json_token));
-                        for (String str: recv_strs)
-                        {
-                            Log.d(TAG, "message received: " + str);
-                            Message msg = handle.obtainMessage(MESSAGE_ARRIVED);
-                            Bundle data = new Bundle();
-                            data.putString("Message", str);
-                            msg.setData(data);
-                            handle.sendMessage(msg);
-                        }
-                    }
-                    if(!msgToSend.equals("")) {
-                        Log.e(TAG,"writing!");
-                        write(msgToSend.getBytes());
-                        setMsg("");
-                    }
+                        handle.obtainMessage(MESSAGE_ARRIVED, bytes, -1, buffer)
+                                .sendToTarget();
+
                     Thread.sleep(25);
                 } catch (Exception e) {
                     Log.e(TAG, "disconnected", e);
@@ -590,14 +590,12 @@ public class GlassWatchWriteActivity extends Activity
                 }
             }
         }
+
         public void connectionLost() {
             Message msg = handle.obtainMessage(STATE_CONNECTION_LOST);
             handle.sendMessage(msg);
         }
-        /**
-         * Write to the connected OutStream.
-         * @param buffer  The bytes to write
-         */
+
         public void write(byte[] buffer) {
             try {
                 mmOutStream.write(buffer);
@@ -616,11 +614,5 @@ public class GlassWatchWriteActivity extends Activity
                 Log.e(TAG, "close() of connect socket failed", e);
             }
         }
-    }
-
-    public synchronized void setMsg(String newMsg)
-    {
-        msgToSend = newMsg;
-        Log.d(TAG, "msg = " + msgToSend);
     }
 }

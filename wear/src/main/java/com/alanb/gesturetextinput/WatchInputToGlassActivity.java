@@ -30,6 +30,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 
@@ -52,6 +53,7 @@ public class WatchInputToGlassActivity extends WearableActivity
     private String m_btDeviceName, m_btDeviceMac;
 
     private UUID bt_uuid;
+    private long beginTime;
 
     ConnectThread mConnThread;
     ConnectedThread m_connectedThread;
@@ -101,6 +103,8 @@ public class WatchInputToGlassActivity extends WearableActivity
         {
             e.printStackTrace();
         }
+
+        beginTime = System.currentTimeMillis();
 
         bt_uuid = UUID.fromString(getResources().getString(R.string.bt_uuid_str));
         handle = new Handler(Looper.getMainLooper()) {
@@ -189,13 +193,22 @@ public class WatchInputToGlassActivity extends WearableActivity
                     JSONObject sendObject = new JSONObject();
                     try
                     {
-                        pos_actions.put(getResources().getString(R.string.wear_xpos_key), motionEvent.getX() / m_charTouchArea.getWidth());
-                        pos_actions.put(getResources().getString(R.string.wear_ypos_key), motionEvent.getY() / m_charTouchArea.getHeight());
+                        pos_actions.put(getResources().getString(R.string.wear_xpos_key),
+                                String.format(Locale.getDefault(), "%.3f", motionEvent.getX() / m_charTouchArea.getWidth()));
+                        pos_actions.put(getResources().getString(R.string.wear_ypos_key),
+                                String.format(Locale.getDefault(), "%.3f", motionEvent.getY() / m_charTouchArea.getHeight()));
                         pos_actions.put(getResources().getString(R.string.wear_action_key), motionEvent.getAction());
-                        sendObject.put("touchpos", pos_actions);
-                        sendObject.put("timestamp", System.currentTimeMillis());
-                        m_connectedThread.write(sendObject.toString());
-                    } catch (JSONException e)
+                        sendObject.put("pos", pos_actions);
+                        sendObject.put("ts", System.currentTimeMillis() - beginTime);
+                        byte[] json_bytes = sendObject.toString().concat(getString(R.string.bt_json_token)).
+                                getBytes(getResources().getString(R.string.default_json_charset));
+                        m_connectedThread.write(json_bytes);
+                    }
+                    catch (JSONException e)
+                    {
+                        e.printStackTrace();
+                    }
+                    catch (IOException e)
                     {
                         e.printStackTrace();
                     }
@@ -222,16 +235,20 @@ public class WatchInputToGlassActivity extends WearableActivity
 
             if (m_connectedThread != null && m_connectedThread.isAlive())
             {
-                JSONObject te_json = new JSONObject();
                 JSONObject sendObject = new JSONObject();
                 try
                 {
-                    te_json.put(getResources().getString(R.string.wear_touch_key), te.name());
-                    sendObject.put("touchevent", te_json);
-                    sendObject.put("timestamp", System.currentTimeMillis());
-                    m_connectedThread.write(sendObject.toString());
+                    sendObject.put("ev", te.name());
+                    sendObject.put("ts", System.currentTimeMillis() - beginTime);
+                    byte[] json_bytes = sendObject.toString().concat(getString(R.string.bt_json_token)).
+                            getBytes(getResources().getString(R.string.default_json_charset));
+                    m_connectedThread.write(json_bytes);
                 }
-                catch (JSONException e)
+                catch (JSONException e1)
+                {
+                    e1.printStackTrace();
+                }
+                catch (IOException e)
                 {
                     e.printStackTrace();
                 }
@@ -418,11 +435,9 @@ public class WatchInputToGlassActivity extends WearableActivity
             handle.sendMessage(msg);
         }
 
-        void write(String strData) {
+        void write(byte[] bytes) {
             try {
-
-                mmOutStream.write(strData.concat(getString(R.string.bt_json_token)).
-                        getBytes(getResources().getString(R.string.default_json_charset)));
+                mmOutStream.write(bytes);
             } catch (IOException e) {
                 Log.e(TAG, "Exception during write", e);
             }

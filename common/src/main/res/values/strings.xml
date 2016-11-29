@@ -1,9 +1,9 @@
 <resources>
     <string name="app_name">GestureTextInput</string>
     <string name="wear_touch_key">WearTouchKey</string>
-    <string name="wear_xpos_key">XPos</string>
-    <string name="wear_ypos_key">YPos</string>
-    <string name="wear_action_key">ACTION</string>
+    <string name="wear_xpos_key">px</string>
+    <string name="wear_ypos_key">py</string>
+    <string name="wear_action_key">act</string>
 
     <string name="end_of_input">&#x23ce;</string>
     <string name="done_input">&#x2713;</string>
