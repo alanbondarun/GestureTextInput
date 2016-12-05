@@ -256,6 +256,7 @@ public class GlassOneDActivity extends Activity
                 @Override
                 public void onTouchEvent(TouchEvent te)
                 {
+                    Log.d(TAG, "event: " + te.name());
                     if (te == TouchEvent.END)
                     {
                         if (!m_phraseTimer.running())
@@ -301,6 +302,8 @@ public class GlassOneDActivity extends Activity
                     }
                     else if (te == TouchEvent.DROP)
                     {
+                        updateNode(m_rootNode, true);
+                        m_touchArray.clear();
                         m_touchArray.add(te);
                     }
                     else if (te == TouchEvent.MULTITOUCH)
@@ -312,7 +315,7 @@ public class GlassOneDActivity extends Activity
                     else if (te != TouchEvent.AREA_OTHER)
                     {
                         KeyNode next_node = null;
-                        if (isValidTouchSequence(m_touchArray))
+                        if (isValidTouchSequence(m_touchArray) && (m_touchArray.size() <= 0 || m_touchArray.get(m_touchArray.size()-1) != te))
                         {
                             Log.d(TAG, "Touch = " + te);
                             if (m_touchArray.size() >= 2)
@@ -366,11 +369,6 @@ public class GlassOneDActivity extends Activity
                 (events.get(events.size()-1) != TouchEvent.DROP &&
                         events.get(events.size()-1) != TouchEvent.MULTITOUCH))
             return true;
-        if (events.size() == 1 && events.get(0) == TouchEvent.DROP)
-        {
-            events.clear();
-            return true;
-        }
         return false;
     }
 

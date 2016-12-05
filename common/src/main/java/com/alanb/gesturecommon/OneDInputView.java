@@ -53,18 +53,8 @@ public class OneDInputView extends LinearLayout
     private TouchEvent prev_e = TouchEvent.DROP;
     private boolean multi_occurred = false;
 
-    @Override
-    public boolean onTouchEvent(MotionEvent motionEvent)
+    public TouchEvent generateTouchEvent(MotionEvent motionEvent)
     {
-        if (this.m_touchW <= 0)
-        {
-            this.m_touchW = getWidth();
-        }
-        if (this.m_touchH <= 0)
-        {
-            this.m_touchH = getHeight();
-        }
-
         TouchEvent cur_e;
         if (multi_occurred && (motionEvent.getAction() == MotionEvent.ACTION_DOWN
                 || motionEvent.getAction() == MotionEvent.ACTION_MOVE))
@@ -117,6 +107,22 @@ public class OneDInputView extends LinearLayout
                 cur_e = TouchEvent.END;
             }
         }
+        return cur_e;
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent motionEvent)
+    {
+        if (this.m_touchW <= 0)
+        {
+            this.m_touchW = getWidth();
+        }
+        if (this.m_touchH <= 0)
+        {
+            this.m_touchH = getHeight();
+        }
+
+        TouchEvent cur_e = generateTouchEvent(motionEvent);
         if (cur_e != prev_e && this.m_onTouchEventlistener != null)
         {
             this.m_onTouchEventlistener.onTouchEvent(cur_e);
