@@ -1,0 +1,267 @@
+{
+  "keys": [
+    {
+      "show_str": "a b c\nd f h\ni j",
+      "input_char": "a",
+      "keys": [
+        {
+          "show_str": "a"
+        },
+        {
+          "show_str": "b  h\n  jc",
+          "input_char": "h",
+          "keys": [
+            {
+              "show_str": "b",
+              "input_char": "b"
+            },
+            {
+              "show_str": "h",
+              "input_char": "h"
+            },
+            {
+              "show_str": ""
+            },
+            {
+              "show_str": "jc",
+              "input_char": "c",
+              "keys": [
+                {
+                  "show_str": ""
+                },
+                {
+                  "show_str": ""
+                },
+                {
+                  "show_str": "j",
+                  "input_char": "j"
+                },
+                {
+                  "show_str": "c",
+                  "input_char": "c"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "show_str": "d  \ni f",
+          "input_char": "i",
+          "keys": [
+            {
+              "show_str": "d",
+              "input_char": "d"
+            },
+            {
+              "show_str": ""
+            },
+            {
+              "show_str": "i",
+              "input_char": "i"
+            },
+            {
+              "show_str": "f",
+              "input_char": "f"
+            }
+          ]
+        },
+        {
+          "show_str": ""
+        }
+      ]
+    },
+    {
+      "show_str": "e g k\nl m n\no p q",
+      "input_char": "e",
+      "keys": [
+        {
+          "show_str": "n  g\nlk  ",
+          "input_char": "n",
+          "keys": [
+            {
+              "show_str": "n",
+              "input_char": "n"
+            },
+            {
+              "show_str": "g",
+              "input_char": "g"
+            },
+            {
+              "show_str": "lk",
+              "input_char": "l",
+              "keys": [
+                {
+                  "show_str": ""
+                },
+                {
+                  "show_str": ""
+                },
+                {
+                  "show_str": "l",
+                  "input_char": "l"
+                },
+                {
+                  "show_str": "k",
+                  "input_char": "k"
+                }
+              ]
+            },
+            {
+              "show_str": ""
+            }
+          ]
+        },
+        {
+          "show_str": "e"
+        },
+        {
+          "show_str": ""
+        },
+        {
+          "show_str": "   m\nqp o",
+          "input_char": "o",
+          "keys": [
+            {
+              "show_str": ""
+            },
+            {
+              "show_str": "m",
+              "input_char": "m"
+            },
+            {
+              "show_str": "q\np",
+              "input_char": "p",
+              "keys": [
+                {
+                  "show_str": "q",
+                  "input_char": "q"
+                },
+                {
+                  "show_str": ""
+                },
+                {
+                  "show_str": "p",
+                  "input_char": "p"
+                },
+                {
+                  "show_str": ""
+                }
+              ]
+            },
+            {
+              "show_str": "o",
+              "input_char": "o"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "show_str": "r s t\nu v w\nx y z",
+      "input_char": "t",
+      "keys": [
+        {
+          "show_str": "r  u\nv   ",
+          "input_char": "r",
+          "keys": [
+            {
+              "show_str": "r",
+              "input_char": "r"
+            },
+            {
+              "show_str": "u",
+              "input_char": "u"
+            },
+            {
+              "show_str": "v",
+              "input_char": "v"
+            },
+            {
+              "show_str": ""
+            }
+          ]
+        },
+        {
+          "show_str": ""
+        },
+        {
+          "show_str": "t"
+        },
+        {
+          "show_str": "  xw\nzy s",
+          "input_char": "s",
+          "keys": [
+            {
+              "show_str": ""
+            },
+            {
+              "show_str": "xw",
+              "input_char": "w",
+              "keys": [
+                {
+                  "show_str": "x",
+                  "input_char": "x"
+                },
+                {
+                  "show_str": "w",
+                  "input_char": "w"
+                },
+                {
+                  "show_str": ""
+                },
+                {
+                  "show_str": ""
+                }
+              ]
+            },
+            {
+              "show_str": "z\ny",
+              "input_char": "y",
+              "keys": [
+                {
+                  "show_str": "z",
+                  "input_char": "z"
+                },
+                {
+                  "show_str": ""
+                },
+                {
+                  "show_str": "y",
+                  "input_char": "y"
+                },
+                {
+                  "show_str": ""
+                }
+              ]
+            },
+            {
+              "show_str": "s",
+              "input_char": "s"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "show_str": "FUNC",
+      "input_char": " ",
+      "keys": [
+        {
+          "show_str": ""
+        },
+        {
+          "show_str": "DONE",
+          "act": "done"
+        },
+        {
+          "show_str": "DEL",
+          "act": "delete"
+        },
+        {
+          "show_str": "SPC",
+          "input_char": " "
+        }
+      ]
+    }
+  ]
+}

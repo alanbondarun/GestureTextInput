@@ -8,6 +8,7 @@
         <item>3 Area, Alphabetical</item>
         <item>3 Area, Optimized</item>
         <item>3 Area, Optimized V2</item>
+        <item>3 Area, Opted &amp; diagonal-free</item>
     </string-array>
     <string name="prefkey_watch_layout">prefkey_watch_layout</string>
     <integer name="pref_watch_layout_default">3</integer>
