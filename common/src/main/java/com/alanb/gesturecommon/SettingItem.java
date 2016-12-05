@@ -1,4 +1,4 @@
-package com.alanb.gesturetextinput;
+package com.alanb.gesturecommon;
 
 public class SettingItem
 {

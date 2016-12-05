@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.alanb.gesturecommon.SettingItem;
+
 import java.util.ArrayList;
 
 public class SettingListAdapter extends BaseAdapter
