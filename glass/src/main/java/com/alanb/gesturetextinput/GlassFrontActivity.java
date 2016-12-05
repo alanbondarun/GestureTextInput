@@ -58,6 +58,9 @@ public class GlassFrontActivity extends Activity
             case R.id.watch_menu_item:
                 intent = new Intent(this, GlassWatchWriteActivity.class);
                 break;
+            case R.id.settings_item:
+                intent = new Intent(this, GlassSettingActivity.class);
+                break;
         }
         if (intent != null)
         {

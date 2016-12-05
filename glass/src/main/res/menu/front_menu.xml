@@ -6,4 +6,7 @@
     <item
         android:id="@+id/watch_menu_item"
         android:title="@string/menu_watch" />
+    <item
+        android:id="@+id/settings_item"
+        android:title="@string/menu_settings" />
 </menu>

@@ -6,7 +6,7 @@
     android:layout_centerHorizontal="true"
     android:layout_centerVertical="true"
     android:orientation="horizontal"
-    android:layout_width="400dip"
+    android:layout_width="360dip"
     android:layout_height="72dip">
 
     <TextView
@@ -16,7 +16,7 @@
         android:layout_weight="1"
         android:gravity="center"
         android:id="@+id/o_char_indi_1"
-        android:textSize="20sp" />
+        android:textSize="@dimen/glass_1d_showtext_size" />
     <TextView
         android:text=""
         android:layout_width="0dp"
@@ -30,7 +30,7 @@
         android:layout_weight="1"
         android:gravity="center"
         android:id="@+id/o_char_indi_2"
-        android:textSize="20sp" />
+        android:textSize="@dimen/glass_1d_showtext_size" />
     <TextView
         android:text=""
         android:layout_width="0dp"
@@ -44,7 +44,7 @@
         android:layout_weight="1"
         android:gravity="center"
         android:id="@+id/o_char_indi_3"
-        android:textSize="20sp" />
+        android:textSize="@dimen/glass_1d_showtext_size" />
     <TextView
         android:text=""
         android:layout_width="0dp"
@@ -58,5 +58,5 @@
         android:layout_weight="1"
         android:gravity="center"
         android:id="@+id/o_char_indi_4"
-        android:textSize="20sp" />
+        android:textSize="@dimen/glass_1d_showtext_size" />
 </com.alanb.gesturetextinput.GlassOneDInputView>

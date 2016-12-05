@@ -5,4 +5,5 @@
     <dimen name="glass_input_text_size_margin">52dip</dimen>
     <dimen name="glass_input_text_size_3line_margin">76dip</dimen>
     <dimen name="glass_watch_charview">20sp</dimen>
+    <dimen name="glass_1d_showtext_size">18sp</dimen>
 </resources>
