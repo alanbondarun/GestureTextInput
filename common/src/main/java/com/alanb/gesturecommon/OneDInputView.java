@@ -17,6 +17,10 @@ public class OneDInputView extends LinearLayout
         void onTouchEvent(TouchEvent te);
     }
 
+    private final float AREA_WEIGHT = 1;
+    private final float DEADZONE_WEIGHT = 0.2f;
+    private final float TOTAL_WEIGHT = (AREA_WEIGHT*4 + DEADZONE_WEIGHT*3);
+
     private OnTouchListener m_onTouchListener;
     private OnTouchEventListener m_onTouchEventlistener;
     private double m_touchW = 0, m_touchH = 0;
@@ -83,14 +87,25 @@ public class OneDInputView extends LinearLayout
                 double yrel = motionEvent.getY() / m_touchH;
                 if (0 <= xrel && xrel <= 1 && 0 <= yrel && yrel <= 1)
                 {
-                    if (xrel < 0.25)
-                        cur_e = TouchEvent.AREA1;
-                    else if (xrel < 0.5)
-                        cur_e = TouchEvent.AREA2;
-                    else if (xrel < 0.75)
-                        cur_e = TouchEvent.AREA3;
+                    double dquo = Math.floor(xrel / ((AREA_WEIGHT + DEADZONE_WEIGHT) / TOTAL_WEIGHT));
+                    double drem = xrel - dquo * ((AREA_WEIGHT + DEADZONE_WEIGHT) / TOTAL_WEIGHT);
+                    if (drem < AREA_WEIGHT / TOTAL_WEIGHT)
+                    {
+                        if ((Math.round(dquo)) == 0)
+                            cur_e = TouchEvent.AREA1;
+                        else if ((Math.round(dquo)) == 1)
+                            cur_e = TouchEvent.AREA2;
+                        else if ((Math.round(dquo)) == 2)
+                            cur_e = TouchEvent.AREA3;
+                        else if ((Math.round(dquo)) == 3)
+                            cur_e = TouchEvent.AREA4;
+                        else
+                            cur_e = TouchEvent.AREA_OTHER;
+                    }
                     else
-                        cur_e = TouchEvent.AREA4;
+                    {
+                        cur_e = TouchEvent.AREA_OTHER;
+                    }
                 }
                 else
                 {

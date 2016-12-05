@@ -342,7 +342,7 @@ public class OneDActivity extends AppCompatActivity {
                 m_touchArray.clear();
                 m_touchArray.add(te);
             }
-            else
+            else if (te != TouchEvent.AREA_OTHER)
             {
                 KeyNode next_node = null;
                 if (isValidTouchSequence(m_touchArray))

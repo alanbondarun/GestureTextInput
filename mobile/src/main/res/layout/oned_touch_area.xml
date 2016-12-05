@@ -9,30 +9,48 @@
     android:layout_height="60dip">
     <RelativeLayout
         android:id="@+id/o_touchArea1"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="0.25"
+        android:layout_weight="1"
         android:background="@color/colorTouchBackground">
     </RelativeLayout>
+    <TextView
+        android:text=""
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.2"
+        android:gravity="center" />
     <RelativeLayout
         android:id="@+id/o_touchArea2"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="0.25"
+        android:layout_weight="1"
         android:background="@color/colorTouchPink">
     </RelativeLayout>
+    <TextView
+        android:text=""
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.2"
+        android:gravity="center" />
     <RelativeLayout
         android:id="@+id/o_touchArea3"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="0.25"
+        android:layout_weight="1"
         android:background="@color/colorTouchBackground">
     </RelativeLayout>
+    <TextView
+        android:text=""
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.2"
+        android:gravity="center" />
     <RelativeLayout
         android:id="@+id/o_touchArea4"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="0.25"
+        android:layout_weight="1"
         android:background="@color/colorTouchPink">
     </RelativeLayout>
 </com.alanb.gesturecommon.OneDInputView>

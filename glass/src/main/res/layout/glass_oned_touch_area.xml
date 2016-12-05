@@ -11,33 +11,51 @@
 
     <TextView
         android:text=""
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="0.25"
+        android:layout_weight="1"
         android:gravity="center"
         android:id="@+id/o_char_indi_1"
         android:textSize="20sp" />
     <TextView
         android:text=""
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="0.25"
+        android:layout_weight="0.2"
+        android:gravity="center" />
+    <TextView
+        android:text=""
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
         android:gravity="center"
         android:id="@+id/o_char_indi_2"
         android:textSize="20sp" />
     <TextView
         android:text=""
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="0.25"
+        android:layout_weight="0.2"
+        android:gravity="center" />
+    <TextView
+        android:text=""
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
         android:gravity="center"
         android:id="@+id/o_char_indi_3"
         android:textSize="20sp" />
     <TextView
         android:text=""
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="0.25"
+        android:layout_weight="0.2"
+        android:gravity="center" />
+    <TextView
+        android:text=""
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
         android:gravity="center"
         android:id="@+id/o_char_indi_4"
         android:textSize="20sp" />
