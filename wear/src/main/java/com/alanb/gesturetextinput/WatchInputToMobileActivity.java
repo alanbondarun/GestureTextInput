@@ -28,6 +28,7 @@ public class WatchInputToMobileActivity extends WearableActivity
     private final String TAG = this.getClass().getName();
     private GoogleApiClient m_googleApiClient = null;
     private RelativeLayout m_charTouchLayout;
+    private WatchWriteInputView m_touchInputView;
 
     private DismissOverlayView mDismissOverlayView;
 
@@ -41,12 +42,12 @@ public class WatchInputToMobileActivity extends WearableActivity
 
         m_charTouchLayout = (RelativeLayout) findViewById(R.id.wm_touch_frame);
         LayoutInflater inflater = LayoutInflater.from(this);
-        WatchWriteInputView touchInputView = (WatchWriteInputView) inflater.inflate(R.layout.watch_touch_area,
+        m_touchInputView = (WatchWriteInputView) inflater.inflate(R.layout.watch_touch_area,
                 m_charTouchLayout, false);
-        m_charTouchLayout.addView(touchInputView);
+        m_charTouchLayout.addView(m_touchInputView);
 
-        touchInputView.setOnTouchListener(wwTouchListener);
-        touchInputView.setOnTouchEventListener(wwTouchEventListener);
+        m_touchInputView.setOnTouchListener(wwTouchListener);
+        m_touchInputView.setOnTouchEventListener(wwTouchEventListener);
 
         mDismissOverlayView = (DismissOverlayView) findViewById(R.id.wm_dismiss_overlay);
 
@@ -143,9 +144,9 @@ public class WatchInputToMobileActivity extends WearableActivity
 
             PutDataMapRequest putDataMapReq = PutDataMapRequest.create("/touchpos");
             putDataMapReq.getDataMap().putFloat(getResources().getString(R.string.wear_xpos_key),
-                    motionEvent.getX() / m_charTouchLayout.getWidth());
+                    motionEvent.getX() / m_touchInputView.getWidth());
             putDataMapReq.getDataMap().putFloat(getResources().getString(R.string.wear_ypos_key),
-                    motionEvent.getY() / m_charTouchLayout.getHeight());
+                    motionEvent.getY() / m_touchInputView.getHeight());
             putDataMapReq.getDataMap().putInt(getResources().getString(R.string.wear_action_key),
                     motionEvent.getAction());
 

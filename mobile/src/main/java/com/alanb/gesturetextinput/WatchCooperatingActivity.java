@@ -115,8 +115,7 @@ public class WatchCooperatingActivity extends AppCompatActivity
                         float xpos = dataMap.getFloat(getResources().getString(R.string.wear_xpos_key));
                         float ypos = dataMap.getFloat(getResources().getString(R.string.wear_ypos_key));
                         int action = dataMap.getInt(getResources().getString(R.string.wear_action_key));
-                        m_feedbackFrameLayout.setCursor(xpos * m_feedbackFrameLayout.getWidth(),
-                                ypos * m_feedbackFrameLayout.getHeight(), action);
+                        m_feedbackFrameLayout.setCursorRatio(xpos, ypos, action);
                     }
                 }
             }
