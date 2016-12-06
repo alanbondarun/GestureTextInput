@@ -123,6 +123,9 @@ public class GlassWatchWriteActivity extends Activity
             case 3:
                 m_rootNode = KeyNode.generateKeyTree(this, R.raw.key_value_watch_3area_opt_2);
                 break;
+            case 4:
+                m_rootNode = KeyNode.generateKeyTree(this, R.raw.key_value_watch_3area_diagfree);
+                break;
         }
 
         m_feedbackFrameLayout = (TouchFeedbackFrameLayout)
@@ -335,6 +338,8 @@ public class GlassWatchWriteActivity extends Activity
         }
         else if (te == TouchEvent.DROP)
         {
+            updateViews(m_rootNode);
+            m_gestureTouchAreas.clear();
             m_gestureTouchAreas.add(te);
         }
         else if (te == TouchEvent.MULTITOUCH)
@@ -399,7 +404,7 @@ public class GlassWatchWriteActivity extends Activity
                 (events.get(events.size()-1) != TouchEvent.DROP &&
                         events.get(events.size()-1) != TouchEvent.MULTITOUCH))
             return true;
-        return (events.size() == 1 && events.get(0) == TouchEvent.DROP);
+        return false;
     }
 
     private void doneTask()

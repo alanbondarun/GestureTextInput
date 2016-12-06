@@ -243,6 +243,7 @@ public class WatchCooperatingActivity extends AppCompatActivity
 
     private void processTouchEvent(TouchEvent te)
     {
+        Log.d(TAG, "event: " + te.name());
         if (te == TouchEvent.END)
         {
             if (!m_phraseTimer.running())
@@ -281,6 +282,8 @@ public class WatchCooperatingActivity extends AppCompatActivity
         }
         else if (te == TouchEvent.DROP)
         {
+            updateViews(m_rootNode);
+            m_gestureTouchAreas.clear();
             m_gestureTouchAreas.add(te);
         }
         else if (te == TouchEvent.MULTITOUCH)
@@ -345,7 +348,7 @@ public class WatchCooperatingActivity extends AppCompatActivity
                 (events.get(events.size()-1) != TouchEvent.DROP &&
                         events.get(events.size()-1) != TouchEvent.MULTITOUCH))
             return true;
-        return (events.size() == 1 && events.get(0) == TouchEvent.DROP);
+        return false;
     }
 
     private void doneTask()
