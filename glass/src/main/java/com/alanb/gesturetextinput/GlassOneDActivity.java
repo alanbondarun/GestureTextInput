@@ -77,15 +77,7 @@ public class GlassOneDActivity extends Activity
         SharedPreferences prefs = getSharedPreferences(getString(R.string.app_pref_key), MODE_PRIVATE);
         m_pref_layout = prefs.getInt(getString(R.string.prefkey_oned_layout),
                 getResources().getInteger(R.integer.pref_oned_layout_default));
-        switch (m_pref_layout)
-        {
-            case 0:
-                m_rootNode = KeyNode.generateKeyTree(this, R.raw.key_value_oned);
-                break;
-            case 1:
-                m_rootNode = KeyNode.generateKeyTree(this, R.raw.key_value_oned_opt);
-                break;
-        }
+        m_rootNode = KeyNode.keyTreeFromPref(this, KeyNode.KeyType.ONED, m_pref_layout);
         if (prefs.getInt(getString(R.string.prefkey_multitouch_to_cancel),
                 getResources().getInteger(R.integer.pref_multitouch_to_cancel_default)) == 0)
         {

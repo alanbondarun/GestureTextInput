@@ -158,30 +158,55 @@ public class KeyNode
         return rootNode;
     }
 
-    public static KeyNode keyTreeFromPref(Context context, int pref)
+    public enum KeyType
+    {
+        WATCHWRITE, ONED
+    }
+    public static KeyNode keyTreeFromPref(Context context, KeyType type, int pref)
     {
         KeyNode node = null;
-        switch (pref)
+
+        switch (type)
         {
-            case 0:
-                node = KeyNode.generateKeyTree(context, R.raw.key_value_watch_2area);
+            case WATCHWRITE:
+                switch (pref)
+                {
+                    case 0:
+                        node = KeyNode.generateKeyTree(context, R.raw.key_value_watch_2area);
+                        break;
+                    case 1:
+                        node = KeyNode.generateKeyTree(context, R.raw.key_value_watch_3area);
+                        break;
+                    case 2:
+                        node = KeyNode.generateKeyTree(context, R.raw.key_value_watch_3area_opt);
+                        break;
+                    case 3:
+                        node = KeyNode.generateKeyTree(context, R.raw.key_value_watch_3area_opt_2);
+                        break;
+                    case 4:
+                        node = KeyNode.generateKeyTree(context, R.raw.key_value_watch_3area_diagfree);
+                        break;
+                    case 5:
+                        node = KeyNode.generateKeyTree(context, R.raw.key_value_watch_3area_opt_3);
+                        break;
+                }
                 break;
-            case 1:
-                node = KeyNode.generateKeyTree(context, R.raw.key_value_watch_3area);
-                break;
-            case 2:
-                node = KeyNode.generateKeyTree(context, R.raw.key_value_watch_3area_opt);
-                break;
-            case 3:
-                node = KeyNode.generateKeyTree(context, R.raw.key_value_watch_3area_opt_2);
-                break;
-            case 4:
-                node = KeyNode.generateKeyTree(context, R.raw.key_value_watch_3area_diagfree);
-                break;
-            case 5:
-                node = KeyNode.generateKeyTree(context, R.raw.key_value_watch_3area_opt_3);
+            case ONED:
+                switch (pref)
+                {
+                    case 0:
+                        node = KeyNode.generateKeyTree(context, R.raw.key_value_oned);
+                        break;
+                    case 1:
+                        node = KeyNode.generateKeyTree(context, R.raw.key_value_oned_opt);
+                        break;
+                    case 2:
+                        node = KeyNode.generateKeyTree(context, R.raw.key_value_oned_opt_2);
+                        break;
+                }
                 break;
         }
+
         return node;
     }
 }
