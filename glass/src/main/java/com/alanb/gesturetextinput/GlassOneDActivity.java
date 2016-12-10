@@ -62,6 +62,8 @@ public class GlassOneDActivity extends Activity
 
     private MotionEventRecorder m_motionRecorder;
 
+    private boolean mEnableMultitouch = false;
+
     @Override
     protected void onCreate(Bundle bundle)
     {
@@ -83,6 +85,15 @@ public class GlassOneDActivity extends Activity
             case 1:
                 m_rootNode = KeyNode.generateKeyTree(this, R.raw.key_value_oned_opt);
                 break;
+        }
+        if (prefs.getInt(getString(R.string.prefkey_multitouch_to_cancel),
+                getResources().getInteger(R.integer.pref_multitouch_to_cancel_default)) == 0)
+        {
+            mEnableMultitouch = true;
+        }
+        else
+        {
+            mEnableMultitouch = false;
         }
 
         m_touchArray = new ArrayList<TouchEvent>();
@@ -306,7 +317,7 @@ public class GlassOneDActivity extends Activity
                         m_touchArray.clear();
                         m_touchArray.add(te);
                     }
-                    else if (te == TouchEvent.MULTITOUCH)
+                    else if (te == TouchEvent.MULTITOUCH && mEnableMultitouch)
                     {
                         updateNode(m_rootNode, true, false);
                         m_touchArray.clear();

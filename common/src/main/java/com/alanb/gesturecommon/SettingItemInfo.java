@@ -56,6 +56,11 @@ public class SettingItemInfo
                 .setPrefKey(context.getString(R.string.prefkey_task_mode))
                 .setDefaultItem(context.getResources().getInteger(R.integer.pref_task_mode_default))
                 .build(context));
+        mAllItems.add(new SettingItemInfo.Builder().setLabel(context.getResources().getString(R.string.pref_multitouch_to_cancel))
+                .setMenuLabelId(R.array.pref_multitouch_to_cancel_item)
+                .setPrefKey(context.getString(R.string.prefkey_multitouch_to_cancel))
+                .setDefaultItem(context.getResources().getInteger(R.integer.pref_multitouch_to_cancel_default))
+                .build(context));
         return mAllItems;
     }
 }

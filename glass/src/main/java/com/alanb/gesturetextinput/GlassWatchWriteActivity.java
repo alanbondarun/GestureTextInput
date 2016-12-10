@@ -69,6 +69,8 @@ public class GlassWatchWriteActivity extends Activity
     private TaskRecordWriter m_taskRecordWriter = null;
     private ArrayList<TaskRecordWriter.TimedAction> m_timedActions;
 
+    private boolean mEnableMultitouch = false;
+
     public static String msgToSend="";
     public static final int STATE_CONNECTION_STARTED = 0;
     public static final int STATE_CONNECTION_LOST = 1;
@@ -126,6 +128,15 @@ public class GlassWatchWriteActivity extends Activity
             case 4:
                 m_rootNode = KeyNode.generateKeyTree(this, R.raw.key_value_watch_3area_diagfree);
                 break;
+        }
+        if (prefs.getInt(getString(R.string.prefkey_multitouch_to_cancel),
+                getResources().getInteger(R.integer.pref_multitouch_to_cancel_default)) == 0)
+        {
+            mEnableMultitouch = true;
+        }
+        else
+        {
+            mEnableMultitouch = false;
         }
 
         m_feedbackFrameLayout = (TouchFeedbackFrameLayout)
@@ -352,7 +363,7 @@ public class GlassWatchWriteActivity extends Activity
             m_gestureTouchAreas.clear();
             m_gestureTouchAreas.add(te);
         }
-        else if (te == TouchEvent.MULTITOUCH)
+        else if (te == TouchEvent.MULTITOUCH && mEnableMultitouch)
         {
             updateViews(m_rootNode, false);
             m_gestureTouchAreas.clear();
