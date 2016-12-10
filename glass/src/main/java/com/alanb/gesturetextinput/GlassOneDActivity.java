@@ -193,7 +193,63 @@ public class GlassOneDActivity extends Activity
         {
             for (int ci = 0; ci < 4; ci++)
             {
-                String raw_str = node.getNextNode(ci).getShowStr();
+                KeyNode nextNode = node.getNextNode(ci);
+                String raw_str = "";
+
+                if (nextNode == null || nextNode.getShowStr().equals(""))
+                {
+                    int dx = 0;
+                    int cpos = -1;
+                    if (node.getParent() != null && node.getParent().getParent() != null)
+                    {
+                        int ord1 = 0;
+                        for (; ord1 < 4; ord1++)
+                        {
+                            if (node.getParent().getParent().getNextNode(ord1) == node.getParent())
+                                break;
+                        }
+
+                        int ord2 = 0;
+                        for (; ord2 < 4; ord2++)
+                        {
+                            if (node.getParent().getNextNode(ord2) == node)
+                                break;
+                        }
+
+                        if (ord1 == ord2)
+                            dx = 0;
+                        else
+                            dx = (ord2 - ord1) / abs(ord2 - ord1);
+                        cpos = ord2;
+                    }
+
+                    if (cpos >= 0 && (ci == cpos || (ci-cpos) / abs(ci-cpos) == dx))
+                    {
+                        KeyNode siblingNode = node.getParent();
+                        if (siblingNode != null)
+                        {
+                            siblingNode = siblingNode.getNextNode(ci);
+                            raw_str = siblingNode.getShowStr();
+                        }
+                    }
+                }
+                else
+                {
+                    raw_str = nextNode.getShowStr();
+                }
+
+                m_viewTexts.get(ci).setText(raw_str);
+            }
+        }
+        else
+        {
+            for (int ci=0; ci<4; ci++)
+            {
+                KeyNode parentNode = node.getParent();
+                String raw_str = "";
+                if (parentNode != null)
+                    raw_str = parentNode.getNextNode(ci).getShowStr();
+
                 m_viewTexts.get(ci).setText(raw_str);
             }
         }
@@ -336,7 +392,8 @@ public class GlassOneDActivity extends Activity
                         }
 
                         KeyNode next_node = null;
-                        if (isValidTouchSequence(m_touchArray) && (m_touchArray.size() <= 0 || m_touchArray.get(m_touchArray.size()-1) != te))
+                        if (isValidTouchSequence(m_touchArray) && (m_touchArray.size() <= 0 ||
+                                m_touchArray.get(m_touchArray.size()-1) != te))
                         {
                             if (m_touchArray.size() >= 2)
                             {
