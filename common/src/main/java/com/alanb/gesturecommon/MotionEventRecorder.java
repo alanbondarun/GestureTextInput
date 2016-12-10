@@ -49,7 +49,6 @@ public class MotionEventRecorder
             m_recordStream.write(stringBuilder.toString().getBytes());
         }
         catch (java.io.IOException e) { e.printStackTrace(); }
-        Log.d(TAG, "motion record added: " + stringBuilder.toString());
     }
 
     public void close()

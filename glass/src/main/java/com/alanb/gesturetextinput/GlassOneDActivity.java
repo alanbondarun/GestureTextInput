@@ -108,7 +108,7 @@ public class GlassOneDActivity extends Activity
         m_viewTexts.add((TextView) findViewById(R.id.o_char_indi_3));
         m_viewTexts.add((TextView) findViewById(R.id.o_char_indi_4));
 
-        updateNode(m_rootNode, true);
+        updateNode(m_rootNode, true, false);
 
         m_phraseTimer = new NanoTimer();
         initTask();
@@ -162,19 +162,19 @@ public class GlassOneDActivity extends Activity
         m_timedActions.clear();
     }
 
-    public void updateNode(KeyNode node, boolean refreshView)
+    public void updateNode(KeyNode node, boolean refreshView, boolean selected)
     {
         m_curNode = node;
         if (refreshView)
-            updateViews(node);
+            updateViews(node, selected);
     }
 
-    public void updateViews()
+    public void updateViews(boolean selected)
     {
-        updateViews(m_curNode);
+        updateViews(m_curNode, selected);
     }
 
-    public void updateViews(KeyNode node)
+    public void updateViews(KeyNode node, boolean selected)
     {
         m_inputTextView.setText(m_inputStr + getString(R.string.end_of_input));
 
@@ -192,14 +192,14 @@ public class GlassOneDActivity extends Activity
         {
             if (ci % 2 == 0)
             {
-                if (np != null && np.getNextNode(ci) == node)
+                if (selected && np != null && np.getNextNode(ci) == node)
                     m_viewTexts.get(ci).setBackgroundColor(getResources().getColor(R.color.colorGlassBackground));
                 else
                     m_viewTexts.get(ci).setBackgroundColor(getResources().getColor(R.color.colorGlassBackgroundWeak));
             }
             else
             {
-                if (np != null && np.getNextNode(ci) == node)
+                if (selected && np != null && np.getNextNode(ci) == node)
                     m_viewTexts.get(ci).setBackgroundColor(getResources().getColor(R.color.colorGlassPink));
                 else
                     m_viewTexts.get(ci).setBackgroundColor(getResources().getColor(R.color.colorGlassPinkWeak));
@@ -261,63 +261,72 @@ public class GlassOneDActivity extends Activity
                     {
                         if (!m_phraseTimer.running())
                             m_phraseTimer.begin();
-                        if (m_curNode != m_rootNode && m_curNode != null)
+                        if (m_curNode == null || m_curNode == m_rootNode || m_touchArray.size() <= 0 ||
+                                m_touchArray.get(m_touchArray.size()-1) == TouchEvent.AREA_OTHER)
                         {
-                            if (m_curNode.getAct() == KeyNode.Act.DELETE)
-                            {
-                                m_phraseTimer.check();
-                                Log.d(TAG, "Delete one character");
-                                m_inputStr = m_inputStr.substring(0, max(0, m_inputStr.length()-1));
-                                m_inc_fixed_num++;
-                                m_fix_num++;
-                                m_timedActions.add(new TaskRecordWriter.TimedAction(m_phraseTimer.getDiffInSeconds(), "del"));
-                            }
-                            else if (m_curNode.getAct() == KeyNode.Act.DONE)
-                            {
-                                Log.d(TAG, "Input Done");
-                                doneTask();
-                            }
-                            else if (m_curNode.getCharVal() != null)
-                            {
-                                m_phraseTimer.check();
-                                Log.d(TAG, "input char = " + m_curNode.getCharVal());
-                                m_inputStr += String.valueOf(m_curNode.getCharVal());
-                                m_timedActions.add(new TaskRecordWriter.TimedAction(m_phraseTimer.getDiffInSeconds(), m_curNode.getCharVal().toString()));
-                            }
-                            else
-                            {
-                                m_phraseTimer.check();
-                                m_timedActions.add(new TaskRecordWriter.TimedAction(m_phraseTimer.getDiffInSeconds(), "cancel"));
-                                m_canceled_num++;
-                            }
-                        }
-                        else
-                        {
+                            Log.d(TAG, "input canceled");
                             m_phraseTimer.check();
                             m_timedActions.add(new TaskRecordWriter.TimedAction(m_phraseTimer.getDiffInSeconds(), "cancel"));
                             m_canceled_num++;
                         }
-                        updateNode(m_rootNode, true);
+                        else if (m_curNode.getAct() == KeyNode.Act.DELETE)
+                        {
+                            Log.d(TAG, "delete");
+                            m_phraseTimer.check();
+                            m_inputStr = m_inputStr.substring(0, max(0, m_inputStr.length()-1));
+                            m_inc_fixed_num++;
+                            m_fix_num++;
+                            m_timedActions.add(new TaskRecordWriter.TimedAction(m_phraseTimer.getDiffInSeconds(), "del"));
+                        }
+                        else if (m_curNode.getAct() == KeyNode.Act.DONE)
+                        {
+                            Log.d(TAG, "input done");
+                            doneTask();
+                        }
+                        else if (m_curNode.getCharVal() != null)
+                        {
+                            m_phraseTimer.check();
+                            Log.d(TAG, "input char = " + m_curNode.getCharVal());
+                            m_inputStr += String.valueOf(m_curNode.getCharVal());
+                            m_timedActions.add(new TaskRecordWriter.TimedAction(m_phraseTimer.getDiffInSeconds(), m_curNode.getCharVal().toString()));
+                        }
+                        else
+                        {
+                            Log.d(TAG, "input canceled");
+                            m_phraseTimer.check();
+                            m_timedActions.add(new TaskRecordWriter.TimedAction(m_phraseTimer.getDiffInSeconds(), "cancel"));
+                            m_canceled_num++;
+                        }
+                        updateNode(m_rootNode, true, false);
                         m_touchArray.clear();
                     }
                     else if (te == TouchEvent.DROP)
                     {
-                        updateNode(m_rootNode, true);
+                        updateNode(m_rootNode, true, false);
                         m_touchArray.clear();
                         m_touchArray.add(te);
                     }
                     else if (te == TouchEvent.MULTITOUCH)
                     {
-                        updateNode(m_rootNode, true);
+                        updateNode(m_rootNode, true, false);
                         m_touchArray.clear();
                         m_touchArray.add(te);
                     }
-                    else if (te != TouchEvent.AREA_OTHER)
+                    else if (te == TouchEvent.AREA_OTHER)
                     {
+                        updateNode(m_curNode, true, false);
+                        m_touchArray.add(te);
+                    }
+                    else
+                    {
+                        if (m_touchArray.size() > 0 && m_touchArray.get(m_touchArray.size()-1) == TouchEvent.AREA_OTHER)
+                        {
+                            m_touchArray.remove(m_touchArray.size()-1);
+                        }
+
                         KeyNode next_node = null;
                         if (isValidTouchSequence(m_touchArray) && (m_touchArray.size() <= 0 || m_touchArray.get(m_touchArray.size()-1) != te))
                         {
-                            Log.d(TAG, "Touch = " + te);
                             if (m_touchArray.size() >= 2)
                             {
                                 int dx1 = te.ordinal() - m_touchArray.get(m_touchArray.size()-1).ordinal();
@@ -344,22 +353,20 @@ public class GlassOneDActivity extends Activity
 
                             if (next_node != null)
                             {
-                                updateNode(next_node, false);
+                                updateNode(next_node, true, true);
                                 m_touchArray.add(te);
                             }
                             else if (sibling_node != null)
                             {
-                                updateNode(sibling_node, true);
+                                updateNode(sibling_node, true, true);
                                 m_touchArray.add(te);
                             }
                             else
                             {
                                 m_touchArray.add(TouchEvent.DROP);
-                                Log.d(TAG, "Touch drop: end reached");
                             }
                         }
                     }
-                    updateViews();
                 }
             };
 

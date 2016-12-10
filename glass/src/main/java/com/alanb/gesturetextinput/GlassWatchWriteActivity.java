@@ -149,7 +149,7 @@ public class GlassWatchWriteActivity extends Activity
         m_viewTexts.add((TextView) findViewById(R.id.w_char_indi_3));
         m_viewTexts.add((TextView) findViewById(R.id.w_char_indi_4));
 
-        updateViews(m_rootNode);
+        updateViews(m_rootNode, false);
 
         m_phraseTimer = new NanoTimer();
         initTask();
@@ -298,16 +298,25 @@ public class GlassWatchWriteActivity extends Activity
     {
         if (prev_te == te)
             return;
+        prev_te = te;
 
         Log.d(TAG, "event = " + te.toString());
         if (te == TouchEvent.END)
         {
             if (!m_phraseTimer.running())
                 m_phraseTimer.begin();
-            if (m_curNode.getAct() == KeyNode.Act.DELETE)
+            if (m_curNode == null || m_curNode == m_rootNode || m_gestureTouchAreas.size() <= 0 ||
+                    m_gestureTouchAreas.get(m_gestureTouchAreas.size()-1) == TouchEvent.AREA_OTHER)
+            {
+                Log.d(TAG, "input canceled");
+                m_phraseTimer.check();
+                m_timedActions.add(new TaskRecordWriter.TimedAction(m_phraseTimer.getDiffInSeconds(), "cancel"));
+                m_canceled_num++;
+            }
+            else if (m_curNode.getAct() == KeyNode.Act.DELETE)
             {
                 m_phraseTimer.check();
-                Log.d(TAG, "Delete one character");
+                Log.d(TAG, "delete");
                 m_inputStr = m_inputStr.substring(0, max(0, m_inputStr.length()-1));
                 m_inc_fixed_num++;
                 m_fix_num++;
@@ -327,6 +336,7 @@ public class GlassWatchWriteActivity extends Activity
             }
             else
             {
+                Log.d(TAG, "input canceled");
                 m_phraseTimer.check();
                 m_timedActions.add(new TaskRecordWriter.TimedAction(m_phraseTimer.getDiffInSeconds(), "cancel"));
                 m_canceled_num++;
@@ -334,22 +344,32 @@ public class GlassWatchWriteActivity extends Activity
 
             // initialization for next touch(or gesture) input
             m_gestureTouchAreas.clear();
-            updateViews(m_rootNode);
+            updateViews(m_rootNode, false);
         }
         else if (te == TouchEvent.DROP)
         {
-            updateViews(m_rootNode);
+            updateViews(m_rootNode, false);
             m_gestureTouchAreas.clear();
             m_gestureTouchAreas.add(te);
         }
         else if (te == TouchEvent.MULTITOUCH)
         {
-            updateViews(m_rootNode);
+            updateViews(m_rootNode, false);
             m_gestureTouchAreas.clear();
             m_gestureTouchAreas.add(te);
         }
-        else if (te != TouchEvent.AREA_OTHER)
+        else if (te == TouchEvent.AREA_OTHER)
         {
+            updateViews(m_curNode, false);
+            m_gestureTouchAreas.add(te);
+        }
+        else
+        {
+            if (m_gestureTouchAreas.size() > 0 && m_gestureTouchAreas.get(m_gestureTouchAreas.size()-1) == TouchEvent.AREA_OTHER)
+            {
+                m_gestureTouchAreas.remove(m_gestureTouchAreas.size()-1);
+            }
+
             if (isValidTouchSequence(m_gestureTouchAreas))
             {
                 KeyNode next_node = null;
@@ -379,12 +399,12 @@ public class GlassWatchWriteActivity extends Activity
                 }
                 if (next_node != null)
                 {
-                    updateViews(next_node);
+                    updateViews(next_node, true);
                     m_gestureTouchAreas.add(te);
                 }
                 else if (sibling_node != null)
                 {
-                    updateViews(sibling_node);
+                    updateViews(sibling_node, true);
                     if (m_gestureTouchAreas.size() >= 1)
                         m_gestureTouchAreas.remove(m_gestureTouchAreas.size()-1);
                     m_gestureTouchAreas.add(te);
@@ -438,7 +458,7 @@ public class GlassWatchWriteActivity extends Activity
         prepareTask();
     }
 
-    private void updateViews(KeyNode node)
+    private void updateViews(KeyNode node, boolean selected)
     {
         m_inputTextView.setText(m_inputStr + getString(R.string.end_of_input));
 
@@ -456,14 +476,14 @@ public class GlassWatchWriteActivity extends Activity
         {
             if (ci == 0 || ci == 3)
             {
-                if (np != null && np.getNextNode(ci) == node)
+                if (selected && np != null && np.getNextNode(ci) == node)
                     m_viewTexts.get(ci).setBackgroundColor(getResources().getColor(R.color.colorGlassBackground));
                 else
                     m_viewTexts.get(ci).setBackgroundColor(getResources().getColor(R.color.colorGlassBackgroundWeak));
             }
             else
             {
-                if (np != null && np.getNextNode(ci) == node)
+                if (selected && np != null && np.getNextNode(ci) == node)
                     m_viewTexts.get(ci).setBackgroundColor(getResources().getColor(R.color.colorGlassPink));
                 else
                     m_viewTexts.get(ci).setBackgroundColor(getResources().getColor(R.color.colorGlassPinkWeak));
