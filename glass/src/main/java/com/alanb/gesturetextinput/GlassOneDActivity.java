@@ -421,12 +421,12 @@ public class GlassOneDActivity extends Activity
 
                             if (next_node != null)
                             {
-                                updateNode(next_node, true, true);
+                                updateNode(next_node, false, true);
                                 m_touchArray.add(te);
                             }
                             else if (sibling_node != null)
                             {
-                                updateNode(sibling_node, true, true);
+                                updateNode(sibling_node, false, true);
                                 m_touchArray.add(te);
                             }
                             else
@@ -434,6 +434,7 @@ public class GlassOneDActivity extends Activity
                                 m_touchArray.add(TouchEvent.DROP);
                             }
                         }
+                        updateViews(true);
                     }
                 }
             };
