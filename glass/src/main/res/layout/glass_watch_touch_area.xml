@@ -6,30 +6,37 @@
     android:layout_centerVertical="true"
     android:layout_gravity="center"
     android:orientation="vertical"
+    android:weightSum="1"
     android:layout_width="160dip"
     android:layout_height="160dip">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="0.5"
+        android:layout_height="0dp"
+        android:layout_weight="0.4"
+        android:weightSum="1"
         android:orientation="horizontal">
         <TextView
             android:text=""
             android:typeface="monospace"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.5"
+            android:layout_weight="0.4"
             android:gravity="center"
             android:background="@drawable/glass_layout_border"
             android:id="@+id/w_char_indi_1"
             android:textSize="@dimen/glass_watch_charview" />
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.2">
+        </LinearLayout>
         <TextView
             android:text=""
             android:typeface="monospace"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.5"
+            android:layout_weight="0.4"
             android:gravity="center"
             android:background="@drawable/glass_layout_border"
             android:id="@+id/w_char_indi_2"
@@ -37,25 +44,36 @@
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="0.5"
+        android:layout_height="0dp"
+        android:layout_weight="0.2">
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.4"
+        android:weightSum="1"
         android:orientation="horizontal">
         <TextView
             android:text=""
             android:typeface="monospace"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.5"
+            android:layout_weight="0.4"
             android:gravity="center"
             android:background="@drawable/glass_layout_border"
             android:id="@+id/w_char_indi_3"
             android:textSize="@dimen/glass_watch_charview" />
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.2">
+        </LinearLayout>
         <TextView
             android:text=""
             android:typeface="monospace"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.5"
+            android:layout_weight="0.4"
             android:gravity="center"
             android:background="@drawable/glass_layout_border"
             android:id="@+id/w_char_indi_4"
