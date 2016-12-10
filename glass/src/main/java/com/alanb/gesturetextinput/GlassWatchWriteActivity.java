@@ -111,24 +111,7 @@ public class GlassWatchWriteActivity extends Activity
         SharedPreferences prefs = getSharedPreferences(getString(R.string.app_pref_key), MODE_PRIVATE);
         m_pref_layout = prefs.getInt(getString(R.string.prefkey_watch_layout),
                 getResources().getInteger(R.integer.pref_watch_layout_default));
-        switch (m_pref_layout)
-        {
-            case 0:
-                m_rootNode = KeyNode.generateKeyTree(this, R.raw.key_value_watch_2area);
-                break;
-            case 1:
-                m_rootNode = KeyNode.generateKeyTree(this, R.raw.key_value_watch_3area);
-                break;
-            case 2:
-                m_rootNode = KeyNode.generateKeyTree(this, R.raw.key_value_watch_3area_opt);
-                break;
-            case 3:
-                m_rootNode = KeyNode.generateKeyTree(this, R.raw.key_value_watch_3area_opt_2);
-                break;
-            case 4:
-                m_rootNode = KeyNode.generateKeyTree(this, R.raw.key_value_watch_3area_diagfree);
-                break;
-        }
+        m_rootNode = KeyNode.keyTreeFromPref(this, m_pref_layout);
         if (prefs.getInt(getString(R.string.prefkey_multitouch_to_cancel),
                 getResources().getInteger(R.integer.pref_multitouch_to_cancel_default)) == 0)
         {
