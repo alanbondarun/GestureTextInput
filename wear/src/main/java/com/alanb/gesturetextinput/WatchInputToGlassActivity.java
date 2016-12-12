@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.alanb.gesturecommon.MathUtils;
 import com.alanb.gesturecommon.MotionEventRecorder;
 import com.alanb.gesturecommon.TouchEvent;
+import com.alanb.gesturecommon.WatchWriteCorneredView;
 import com.alanb.gesturecommon.WatchWriteInputView;
 
 import org.json.JSONException;
@@ -39,7 +40,7 @@ public class WatchInputToGlassActivity extends WearableActivity
     private final String TAG = this.getClass().getName();
     public static final String CONNECT_DEVICE = "Glass";
 
-    private WatchWriteInputView m_charTouchArea;
+    private WatchWriteCorneredView m_charTouchArea;
 
     private DismissOverlayView mDismissOverlay;
 
@@ -86,7 +87,7 @@ public class WatchInputToGlassActivity extends WearableActivity
 
         RelativeLayout m_charTouchLayout = (RelativeLayout) findViewById(R.id.w_touch_frame);
         LayoutInflater inflater = LayoutInflater.from(this);
-        m_charTouchArea = (WatchWriteInputView) inflater.inflate(R.layout.watch_touch_area,
+        m_charTouchArea = (WatchWriteCorneredView) inflater.inflate(R.layout.watch_touch_area_cornered,
                 m_charTouchLayout, false);
         m_charTouchLayout.addView(m_charTouchArea);
 
@@ -156,8 +157,8 @@ public class WatchInputToGlassActivity extends WearableActivity
         super.onDestroy();
     }
 
-    WatchWriteInputView.OnTouchListener wwTouchListener =
-            new WatchWriteInputView.OnTouchListener()
+    WatchWriteCorneredView.OnTouchListener wwTouchListener =
+            new WatchWriteCorneredView.OnTouchListener()
             {
                 private LongPressNotifyTask mmLongPressTask = null;
                 private int mmEventSendTurn = 0;
@@ -214,8 +215,8 @@ public class WatchInputToGlassActivity extends WearableActivity
         return !MathUtils.fequal(Math.floor((turn + 1)/rate) - Math.floor(turn/rate), 0);
     }
 
-    WatchWriteInputView.OnTouchEventListener wwTouchEventListener =
-            new WatchWriteInputView.OnTouchEventListener()
+    WatchWriteCorneredView.OnTouchEventListener wwTouchEventListener =
+            new WatchWriteCorneredView.OnTouchEventListener()
             {
                 @Override
                 public void onTouchEvent(TouchEvent te)

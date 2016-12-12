@@ -24,6 +24,7 @@ import com.alanb.gesturecommon.TaskPhraseLoader;
 import com.alanb.gesturecommon.TaskRecordWriter;
 import com.alanb.gesturecommon.TouchEvent;
 import com.alanb.gesturecommon.TouchFeedbackFrameLayout;
+import com.alanb.gesturecommon.WatchWriteCorneredView;
 import com.alanb.gesturecommon.WatchWriteInputView;
 import com.google.android.glass.widget.CardBuilder;
 
@@ -186,7 +187,7 @@ public class GlassWatchWriteActivity extends Activity
                                         double py = Double.valueOf(str_comma_sep[1]);
                                         int paction = Integer.valueOf(str_comma_sep[2]);
                                         int pmulti = Integer.valueOf(str_comma_sep[3]);
-                                        processTouchEvent(WatchWriteInputView.getTouchEventFromPos(px, py, paction, pmulti));
+                                        processTouchEvent(WatchWriteCorneredView.getTouchEventFromPos(px, py, paction, pmulti));
                                         processTouchMotion(px, py, paction);
                                     }
                                 }
