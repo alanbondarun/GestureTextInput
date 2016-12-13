@@ -168,6 +168,14 @@ public class WatchInputToGlassActivity extends WearableActivity
         {
             m_motionRecorder.close();
         }
+        if (mConnThread != null && mConnThread.isAlive())
+        {
+            mConnThread.quit();
+        }
+        if (m_connectedThread != null && m_connectedThread.isAlive())
+        {
+            m_connectedThread.cancel();
+        }
         super.onDestroy();
     }
 
@@ -371,11 +379,16 @@ public class WatchInputToGlassActivity extends WearableActivity
 
         void cancel()
         {
+            quit();
+            Message msg = handle.obtainMessage(READY_TO_CONN);
+            handle.sendMessage(msg);
+        }
+
+        void quit()
+        {
             try
             {
                 mmSocket.close();
-                Message msg = handle.obtainMessage(READY_TO_CONN);
-                handle.sendMessage(msg);
             }
             catch (IOException e) { }
         }

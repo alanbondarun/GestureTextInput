@@ -234,10 +234,14 @@ public class GlassWatchWriteActivity extends Activity
         {
             m_taskRecordWriter.close();
         }
-        if (mConnectedThread != null)
-            mConnectedThread.cancel();
-        if (accThread != null)
-            accThread.cancel();
+        if (mConnectedThread != null && mConnectedThread.isAlive())
+        {
+            mConnectedThread.quit();
+        }
+        if (accThread != null && accThread.isAlive())
+        {
+            accThread.quit();
+        }
         super.onDestroy();
     }
 
@@ -548,14 +552,20 @@ public class GlassWatchWriteActivity extends Activity
             Log.d(TAG, "AcceptThread finishing");
         }
 
-        /** Will cancel the listening socket, and cause the thread to finish */
-        public void cancel() {
-            try {
-                mmServerSocket.close();
-                Message msg = handle.obtainMessage(READY_TO_CONN);
-                handle.sendMessage(msg);
+        public void cancel()
+        {
+            quit();
+            Message msg = handle.obtainMessage(READY_TO_CONN);
+            handle.sendMessage(msg);
+        }
 
-            } catch (IOException e) { }
+        public void quit()
+        {
+            try
+            {
+                mmServerSocket.close();
+            }
+            catch (IOException e) { }
         }
     }
 
@@ -599,6 +609,10 @@ public class GlassWatchWriteActivity extends Activity
             Log.d(TAG, "ConnectedThread started");
             while (true) {
                 try {
+                    if (!mmSocket.isConnected())
+                    {
+                        Log.d(TAG, "disconnected from try");
+                    }
 
                     bytes = mmInStream.read(buffer);
 
@@ -631,12 +645,21 @@ public class GlassWatchWriteActivity extends Activity
             }
         }
 
-        public void cancel() {
-            try {
+        public void cancel()
+        {
+            quit();
+            Message msg = handle.obtainMessage(READY_TO_CONN);
+            handle.sendMessage(msg);
+        }
+
+        public void quit()
+        {
+            try
+            {
                 mmSocket.close();
-                Message msg = handle.obtainMessage(READY_TO_CONN);
-                handle.sendMessage(msg);
-            } catch (IOException e) {
+            }
+            catch (IOException e)
+            {
                 Log.e(TAG, "close() of connect socket failed", e);
             }
         }
