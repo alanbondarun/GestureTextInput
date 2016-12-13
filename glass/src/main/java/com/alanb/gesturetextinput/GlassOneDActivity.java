@@ -13,6 +13,7 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.alanb.gesturecommon.BreakTask;
 import com.alanb.gesturecommon.EditDistCalculator;
 import com.alanb.gesturecommon.KeyNode;
 import com.alanb.gesturecommon.MathUtils;
@@ -63,6 +64,7 @@ public class GlassOneDActivity extends Activity
     private MotionEventRecorder m_motionRecorder;
 
     private boolean mEnableMultitouch = false;
+    private boolean mBlockAutoBreak = true;
 
     @Override
     protected void onCreate(Bundle bundle)
@@ -87,6 +89,8 @@ public class GlassOneDActivity extends Activity
         {
             mEnableMultitouch = false;
         }
+        mBlockAutoBreak = (prefs.getInt(getString(R.string.prefkey_block_auto_break),
+                getResources().getInteger(R.integer.pref_block_auto_break_default)) == 0);
 
         m_touchArray = new ArrayList<TouchEvent>();
 
@@ -157,6 +161,8 @@ public class GlassOneDActivity extends Activity
     {
         if (!m_taskMode)
             return;
+        m_inputStr = "";
+        m_inputTextView.setText(m_inputStr + getString(R.string.end_of_input));
         m_taskStr = m_taskLoader.next();
         m_taskTextView.setText(m_taskStr);
         m_inc_fixed_num = 0;
@@ -271,31 +277,56 @@ public class GlassOneDActivity extends Activity
         if (!m_taskMode)
             return;
 
-        EditDistCalculator.EditInfo info = EditDistCalculator.calc(m_taskStr, m_inputStr);
-
-        double time_before_last = m_phraseTimer.getDiffInSeconds();
-        m_phraseTimer.check();
-        m_timedActions.add(new TaskRecordWriter.TimedAction(m_phraseTimer.getDiffInSeconds(), "done"));
-        m_phraseTimer.end();
-
-        if (m_taskRecordWriter != null)
+        if (!m_taskStr.equals(""))
         {
-            m_taskRecordWriter.write(m_taskRecordWriter.new InfoBuilder()
-                    .setInputTime(time_before_last)
-                    .setInputStr(m_inputStr)
-                    .setPresentedStr(m_taskStr)
-                    .setLayoutNum(m_pref_layout)
-                    .setNumC(info.num_correct)
-                    .setNumIf(m_inc_fixed_num)
-                    .setNumF(m_fix_num)
-                    .setNumInf(info.num_delete + info.num_insert + info.num_modify)
-                    .setNumCancel(m_canceled_num)
-                    .setTimedActions(m_timedActions));
-        }
+            EditDistCalculator.EditInfo info = EditDistCalculator.calc(m_taskStr, m_inputStr);
 
-        m_inputStr = "";
-        prepareTask();
+            double time_before_last = m_phraseTimer.getDiffInSeconds();
+            m_phraseTimer.check();
+            m_timedActions.add(new TaskRecordWriter.TimedAction(m_phraseTimer.getDiffInSeconds(), "done"));
+            m_phraseTimer.end();
+
+            if (m_taskRecordWriter != null)
+            {
+                m_taskRecordWriter.write(m_taskRecordWriter.new InfoBuilder()
+                        .setInputTime(time_before_last)
+                        .setInputStr(m_inputStr)
+                        .setPresentedStr(m_taskStr)
+                        .setLayoutNum(m_pref_layout)
+                        .setNumC(info.num_correct)
+                        .setNumIf(m_inc_fixed_num)
+                        .setNumF(m_fix_num)
+                        .setNumInf(info.num_delete + info.num_insert + info.num_modify)
+                        .setNumCancel(m_canceled_num)
+                        .setTimedActions(m_timedActions));
+            }
+
+            m_inputStr = "";
+            if (mBlockAutoBreak &&
+                    m_taskRecordWriter.getNumTask() % getResources().getInteger(R.integer.block_test_num) == 0)
+            {
+                m_taskStr = "";
+                m_taskTextView.setText(m_taskStr);
+                BreakTask breakTask = new BreakTask();
+                breakTask.setTaskEndListener(this.mBreakFinishListener);
+                breakTask.execute(getResources().getInteger(R.integer.block_break_ms));
+            }
+            else
+            {
+                prepareTask();
+            }
+        }
     }
+
+    private BreakTask.TaskEndListener mBreakFinishListener =
+            new BreakTask.TaskEndListener()
+    {
+        @Override
+        public void onFinish()
+        {
+            prepareTask();
+        }
+    };
 
     public OneDInputView.OnTouchListener m_onedTouchListener = new OneDInputView.OnTouchListener()
     {

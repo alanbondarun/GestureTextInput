@@ -14,6 +14,7 @@ public class TaskRecordWriter
     private final String TABLE_TOP = "layout,WPM,CER,NER,numC,numIF,numF,numINF," +
             "numCancel,presented_str,input_str,timed_actions\n";
     private FileOutputStream m_recordStream = null;
+    private int mNumTask = 0;
 
     public class InfoBuilder
     {
@@ -121,7 +122,11 @@ public class TaskRecordWriter
         }
         catch (java.io.IOException e) { e.printStackTrace(); }
         Log.d(TAG, "task record added: " + stringBuilder.toString());
+
+        mNumTask++;
     }
+
+    public int getNumTask() { return mNumTask; }
 
     public void close()
     {

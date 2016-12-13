@@ -89,6 +89,11 @@ public class SettingItemInfo
                 .setPrefKey(context.getString(R.string.prefkey_ww_shape))
                 .setDefaultItem(context.getResources().getInteger(R.integer.pref_ww_shape_default))
                 .build(context));
+        mAllItems.add(new SettingItemInfo.Builder().setLabel(context.getResources().getString(R.string.pref_block_auto_break))
+                .setMenuLabelId(R.array.pref_block_auto_break_item)
+                .setPrefKey(context.getString(R.string.prefkey_block_auto_break))
+                .setDefaultItem(context.getResources().getInteger(R.integer.pref_block_auto_break_default))
+                .build(context));
         return mAllItems;
     }
 }

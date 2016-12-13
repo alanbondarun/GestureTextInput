@@ -2,4 +2,8 @@
 <resources>
     <integer name="watch_exit_touch_msec">5000</integer>
     <string name="watch_bt_motion_send_rate">2</string>
+
+    <integer name="block_test_num">5</integer>
+    <integer name="block_break_ms">60000</integer>
+
 </resources>
