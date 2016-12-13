@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.alanb.gesturecommon.WatchWriteInputView
+<com.alanb.gesturecommon.WatchWriteSquareView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/w_touch_area"
     android:layout_centerHorizontal="true"
@@ -9,4 +9,4 @@
     android:background="@drawable/w_touch_back"
     android:layout_width="160dip"
     android:layout_height="160dip">
-</com.alanb.gesturecommon.WatchWriteInputView>
+</com.alanb.gesturecommon.WatchWriteSquareView>

@@ -28,7 +28,7 @@ public class SettingActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
 
-        m_items = SettingItemInfo.getAllItems(this);
+        m_items = SettingItemInfo.getAllItems(this, SettingItemInfo.AppType.MOBILE);
 
         m_adapter = new SettingListAdapter();
         m_inputListView = (ListView) findViewById(R.id.s_inputListView);

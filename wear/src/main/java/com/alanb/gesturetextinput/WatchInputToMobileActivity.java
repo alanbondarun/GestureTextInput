@@ -1,5 +1,6 @@
 package com.alanb.gesturetextinput;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,6 +15,7 @@ import com.alanb.gesturecommon.MotionEventRecorder;
 import com.alanb.gesturecommon.TouchEvent;
 import com.alanb.gesturecommon.WatchWriteCorneredView;
 import com.alanb.gesturecommon.WatchWriteInputView;
+import com.alanb.gesturecommon.WatchWriteSquareView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -29,7 +31,7 @@ public class WatchInputToMobileActivity extends WearableActivity
     private final String TAG = this.getClass().getName();
     private GoogleApiClient m_googleApiClient = null;
     private RelativeLayout m_charTouchLayout;
-    private WatchWriteCorneredView m_touchInputView;
+    private WatchWriteInputView m_touchInputView;
 
     private DismissOverlayView mDismissOverlayView;
 
@@ -41,10 +43,23 @@ public class WatchInputToMobileActivity extends WearableActivity
         setContentView(R.layout.watch_to_mobile);
         setAmbientEnabled();
 
+        SharedPreferences pref = getSharedPreferences(getString(R.string.app_pref_key), MODE_PRIVATE);
+        int ww_shape_pref = pref.getInt(getString(R.string.prefkey_ww_shape),
+                getResources().getInteger(R.integer.pref_ww_shape_default));
+        Log.d(TAG, Integer.toString(ww_shape_pref));
+
         m_charTouchLayout = (RelativeLayout) findViewById(R.id.wm_touch_frame);
         LayoutInflater inflater = LayoutInflater.from(this);
-        m_touchInputView = (WatchWriteCorneredView) inflater.inflate(R.layout.watch_touch_area,
-                m_charTouchLayout, false);
+        if (ww_shape_pref == 0)
+        {
+            m_touchInputView = (WatchWriteSquareView) inflater.inflate(R.layout.watch_touch_area,
+                    m_charTouchLayout, false);
+        }
+        else
+        {
+            m_touchInputView = (WatchWriteCorneredView) inflater.inflate(R.layout.watch_touch_area_cornered,
+                    m_charTouchLayout, false);
+        }
         m_charTouchLayout.addView(m_touchInputView);
 
         m_touchInputView.setOnTouchListener(wwTouchListener);

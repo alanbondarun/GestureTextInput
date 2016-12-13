@@ -6,7 +6,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
 
-public class WatchWriteInputView extends LinearLayout
+public abstract class WatchWriteInputView extends LinearLayout
 {
     public interface OnTouchListener
     {
@@ -17,7 +17,6 @@ public class WatchWriteInputView extends LinearLayout
         void onTouchEvent(TouchEvent te);
     }
 
-    private static final double TOUCH_SIZE_RATIO = 0.4;
     private TouchEvent prev_e = TouchEvent.AREA_OTHER;
     private boolean multi_occurred = false;
 
@@ -39,62 +38,7 @@ public class WatchWriteInputView extends LinearLayout
         this.m_onTouchListener = l;
     }
 
-    public static TouchEvent getTouchEventFromPos(double xrel, double yrel, int action, int multi)
-    {
-        if (multi >= 2)
-        {
-            return TouchEvent.MULTITOUCH;
-        }
-        if (action == MotionEvent.ACTION_DOWN
-                || action == MotionEvent.ACTION_MOVE)
-        {
-            if (0 <= xrel && xrel <= 1 && 0 <= yrel && yrel <= 1)
-            {
-                if (yrel <= TOUCH_SIZE_RATIO)
-                {
-                    if (xrel <= TOUCH_SIZE_RATIO)
-                    {
-                        return TouchEvent.AREA1;
-                    }
-                    else if (xrel >= 1.0 - TOUCH_SIZE_RATIO)
-                    {
-                        return TouchEvent.AREA2;
-                    }
-                    else
-                    {
-                        return TouchEvent.AREA_OTHER;
-                    }
-                }
-                else if (yrel >= 1.0 - TOUCH_SIZE_RATIO)
-                {
-                    if (xrel <= TOUCH_SIZE_RATIO)
-                    {
-                        return TouchEvent.AREA3;
-                    }
-                    else if (xrel >= 1.0 - TOUCH_SIZE_RATIO)
-                    {
-                        return TouchEvent.AREA4;
-                    }
-                    else
-                    {
-                        return TouchEvent.AREA_OTHER;
-                    }
-                }
-                else
-                {
-                    return TouchEvent.AREA_OTHER;
-                }
-            }
-            else
-            {
-                return TouchEvent.DROP;
-            }
-        }
-        else
-        {
-            return TouchEvent.END;
-        }
-    }
+    public abstract TouchEvent getTouchEventFromPos(double xrel, double yrel, int action, int multi);
 
     @Override
     public boolean onTouchEvent(MotionEvent motionEvent)

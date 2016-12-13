@@ -26,6 +26,7 @@ import com.alanb.gesturecommon.TouchEvent;
 import com.alanb.gesturecommon.TouchFeedbackFrameLayout;
 import com.alanb.gesturecommon.WatchWriteCorneredView;
 import com.alanb.gesturecommon.WatchWriteInputView;
+import com.alanb.gesturecommon.WatchWriteSquareView;
 import com.google.android.glass.widget.CardBuilder;
 
 import org.json.JSONException;
@@ -71,6 +72,7 @@ public class GlassWatchWriteActivity extends Activity
     private ArrayList<TaskRecordWriter.TimedAction> m_timedActions;
 
     private boolean mEnableMultitouch = false;
+    private boolean mUseCorneredShape = false;
 
     public static String msgToSend="";
     public static final int STATE_CONNECTION_STARTED = 0;
@@ -123,13 +125,32 @@ public class GlassWatchWriteActivity extends Activity
             mEnableMultitouch = false;
         }
 
+        if (prefs.getInt(getString(R.string.prefkey_ww_shape),
+            getResources().getInteger(R.integer.pref_ww_shape_default)) == 1)
+        {
+            mUseCorneredShape = true;
+        }
+        else
+        {
+            mUseCorneredShape = false;
+        }
+
         m_feedbackFrameLayout = (TouchFeedbackFrameLayout)
                 findViewById(R.id.w_touch_point_area);
         m_feedbackFrameLayout.attachFeedbackTo(m_feedbackFrameLayout);
 
         LayoutInflater inflater = LayoutInflater.from(this);
-        WatchWriteInputView inputView = (WatchWriteInputView) inflater.inflate(
-                R.layout.glass_watch_touch_area, m_feedbackFrameLayout, false);
+        WatchWriteInputView inputView = null;
+        if (mUseCorneredShape)
+        {
+            inputView = (WatchWriteInputView) inflater.inflate(
+                    R.layout.glass_watch_touch_area_cornered, m_feedbackFrameLayout, false);
+        }
+        else
+        {
+            inputView = (WatchWriteInputView) inflater.inflate(
+                    R.layout.glass_watch_touch_area, m_feedbackFrameLayout, false);
+        }
         m_feedbackFrameLayout.addView(inputView);
         m_feedbackFrameLayout.getFeedbackView().setPointColor(Color.argb(165, 255, 255, 255));
         m_feedbackFrameLayout.getFeedbackView().setRadius(20.0f);
@@ -187,7 +208,10 @@ public class GlassWatchWriteActivity extends Activity
                                         double py = Double.valueOf(str_comma_sep[1]);
                                         int paction = Integer.valueOf(str_comma_sep[2]);
                                         int pmulti = Integer.valueOf(str_comma_sep[3]);
-                                        processTouchEvent(WatchWriteCorneredView.getTouchEventFromPos(px, py, paction, pmulti));
+                                        if (mUseCorneredShape)
+                                            processTouchEvent(WatchWriteCorneredView.getTouchEvent(px, py, paction, pmulti));
+                                        else
+                                            processTouchEvent(WatchWriteSquareView.getTouchEvent(px, py, paction, pmulti));
                                         processTouchMotion(px, py, paction);
                                     }
                                 }

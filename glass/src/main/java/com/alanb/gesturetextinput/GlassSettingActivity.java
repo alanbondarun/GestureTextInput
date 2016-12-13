@@ -42,7 +42,7 @@ public class GlassSettingActivity extends Activity
 
     private ArrayList<CardBuilder> buildCards()
     {
-        ArrayList<SettingItemInfo> infos = SettingItemInfo.getAllItems(this);
+        ArrayList<SettingItemInfo> infos = SettingItemInfo.getAllItems(this, SettingItemInfo.AppType.GLASS);
         ArrayList<CardBuilder> cards = new ArrayList<CardBuilder>();
         SharedPreferences shared_pref = getSharedPreferences(getString(R.string.app_pref_key), MODE_PRIVATE);
 
@@ -71,7 +71,7 @@ public class GlassSettingActivity extends Activity
     {
         menu.clear();
 
-        SettingItemInfo info = SettingItemInfo.getAllItems(this).get(mSelectedMenu);
+        SettingItemInfo info = SettingItemInfo.getAllItems(this, SettingItemInfo.AppType.GLASS).get(mSelectedMenu);
         for (int ci=0; ci<info.getMenuLabels().length; ci++)
         {
             menu.add(Menu.NONE, ci, Menu.NONE, info.getMenuLabels()[ci]);
@@ -84,7 +84,7 @@ public class GlassSettingActivity extends Activity
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
-        SettingItemInfo info = SettingItemInfo.getAllItems(this).get(mSelectedMenu);
+        SettingItemInfo info = SettingItemInfo.getAllItems(this, SettingItemInfo.AppType.GLASS).get(mSelectedMenu);
         SharedPreferences prefs = getSharedPreferences(
                 getString(R.string.app_pref_key),
                 MODE_PRIVATE);

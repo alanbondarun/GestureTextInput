@@ -5,12 +5,11 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.widget.LinearLayout;
 
-public class WatchWriteCorneredView extends WatchWriteInputView
+public class WatchWriteSquareView extends WatchWriteInputView
 {
     private static final double TOUCH_SIZE_RATIO = 0.4;
-    private static final double CENTER_DZONE_RATIO = 0.28;
 
-    public WatchWriteCorneredView(Context context, AttributeSet set)
+    public WatchWriteSquareView(Context context, AttributeSet set)
     {
         super(context, set);
     }
@@ -30,15 +29,11 @@ public class WatchWriteCorneredView extends WatchWriteInputView
                 {
                     if (xrel <= TOUCH_SIZE_RATIO)
                     {
-                        if (xrel + yrel <= 1 - CENTER_DZONE_RATIO)
-                            return TouchEvent.AREA1;
-                        return TouchEvent.AREA_OTHER;
+                        return TouchEvent.AREA1;
                     }
                     else if (xrel >= 1.0 - TOUCH_SIZE_RATIO)
                     {
-                        if (xrel - yrel >= CENTER_DZONE_RATIO)
-                            return TouchEvent.AREA2;
-                        return TouchEvent.AREA_OTHER;
+                        return TouchEvent.AREA2;
                     }
                     else
                     {
@@ -49,15 +44,11 @@ public class WatchWriteCorneredView extends WatchWriteInputView
                 {
                     if (xrel <= TOUCH_SIZE_RATIO)
                     {
-                        if (yrel - xrel >= CENTER_DZONE_RATIO)
-                            return TouchEvent.AREA3;
-                        return TouchEvent.AREA_OTHER;
+                        return TouchEvent.AREA3;
                     }
                     else if (xrel >= 1.0 - TOUCH_SIZE_RATIO)
                     {
-                        if (xrel + yrel >= 1 + CENTER_DZONE_RATIO)
-                            return TouchEvent.AREA4;
-                        return TouchEvent.AREA_OTHER;
+                        return TouchEvent.AREA4;
                     }
                     else
                     {
@@ -83,6 +74,6 @@ public class WatchWriteCorneredView extends WatchWriteInputView
     @Override
     public TouchEvent getTouchEventFromPos(double xrel, double yrel, int action, int multi)
     {
-        return WatchWriteCorneredView.getTouchEvent(xrel, yrel, action, multi);
+        return WatchWriteSquareView.getTouchEvent(xrel, yrel, action, multi);
     }
 }

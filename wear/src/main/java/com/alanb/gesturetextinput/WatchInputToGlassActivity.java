@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -24,6 +25,7 @@ import com.alanb.gesturecommon.MotionEventRecorder;
 import com.alanb.gesturecommon.TouchEvent;
 import com.alanb.gesturecommon.WatchWriteCorneredView;
 import com.alanb.gesturecommon.WatchWriteInputView;
+import com.alanb.gesturecommon.WatchWriteSquareView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,7 +42,7 @@ public class WatchInputToGlassActivity extends WearableActivity
     private final String TAG = this.getClass().getName();
     public static final String CONNECT_DEVICE = "Glass";
 
-    private WatchWriteCorneredView m_charTouchArea;
+    private WatchWriteInputView m_charTouchArea;
 
     private DismissOverlayView mDismissOverlay;
 
@@ -85,10 +87,22 @@ public class WatchInputToGlassActivity extends WearableActivity
         setContentView(R.layout.watch_to_glass);
         setAmbientEnabled();
 
+        SharedPreferences pref = getSharedPreferences(getString(R.string.app_pref_key), MODE_PRIVATE);
+        int ww_shape_pref = pref.getInt(getString(R.string.prefkey_ww_shape),
+                getResources().getInteger(R.integer.pref_ww_shape_default));
+
         RelativeLayout m_charTouchLayout = (RelativeLayout) findViewById(R.id.w_touch_frame);
         LayoutInflater inflater = LayoutInflater.from(this);
-        m_charTouchArea = (WatchWriteCorneredView) inflater.inflate(R.layout.watch_touch_area_cornered,
-                m_charTouchLayout, false);
+        if (ww_shape_pref == 0)
+        {
+            m_charTouchArea = (WatchWriteSquareView) inflater.inflate(R.layout.watch_touch_area,
+                    m_charTouchLayout, false);
+        }
+        else
+        {
+            m_charTouchArea = (WatchWriteCorneredView) inflater.inflate(R.layout.watch_touch_area_cornered,
+                    m_charTouchLayout, false);
+        }
         m_charTouchLayout.addView(m_charTouchArea);
 
         m_charTouchArea.setOnTouchListener(wwTouchListener);
