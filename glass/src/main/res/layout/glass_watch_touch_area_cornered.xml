@@ -13,7 +13,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.4"
+        android:layout_weight="0.44"
         android:weightSum="1"
         android:orientation="horizontal">
         <TextView
@@ -21,7 +21,7 @@
             android:typeface="monospace"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.4"
+            android:layout_weight="0.44"
             android:gravity="center"
             android:background="@drawable/glass_layout_border"
             android:id="@+id/w_char_indi_1"
@@ -29,14 +29,14 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.2">
+            android:layout_weight="0.12">
         </LinearLayout>
         <TextView
             android:text=""
             android:typeface="monospace"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.4"
+            android:layout_weight="0.44"
             android:gravity="center"
             android:background="@drawable/glass_layout_border"
             android:id="@+id/w_char_indi_2"
@@ -45,12 +45,12 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.2">
+        android:layout_weight="0.12">
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.4"
+        android:layout_weight="0.44"
         android:weightSum="1"
         android:orientation="horizontal">
         <TextView
@@ -58,7 +58,7 @@
             android:typeface="monospace"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.4"
+            android:layout_weight="0.44"
             android:gravity="center"
             android:background="@drawable/glass_layout_border"
             android:id="@+id/w_char_indi_3"
@@ -66,14 +66,14 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.2">
+            android:layout_weight="0.12">
         </LinearLayout>
         <TextView
             android:text=""
             android:typeface="monospace"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.4"
+            android:layout_weight="0.44"
             android:gravity="center"
             android:background="@drawable/glass_layout_border"
             android:id="@+id/w_char_indi_4"
