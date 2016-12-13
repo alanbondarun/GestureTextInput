@@ -80,16 +80,8 @@ public class GlassWatchWriteActivity extends Activity
     public static final int READY_TO_CONN = 2;
     public static final int MESSAGE_ARRIVED = 3;
 
-    // our last connection
-    ConnectedThread mConnectedThread;// = new ConnectedThread(socket);
-    // track our connections
-    ArrayList<ConnectedThread> mConnThreads;
-    // bt adapter for all your bt needs (where we get all our bluetooth powers)
-    BluetoothAdapter myBt;
-    // list of sockets we have running (for multiple connections)
-    ArrayList<BluetoothSocket> mSockets = new ArrayList<BluetoothSocket>();
-    // list of addresses for devices we've connected to
-    ArrayList<String> mDeviceAddresses = new ArrayList<String>();
+    private ConnectedThread mConnectedThread;
+    private BluetoothAdapter myBt;
 
     private final String NAME = "GoogleGlassss";
     private UUID bt_uuid;
@@ -229,9 +221,8 @@ public class GlassWatchWriteActivity extends Activity
             }
         };
 
-        // ....
         myBt = BluetoothAdapter.getDefaultAdapter();
-        // run the "go get em" thread..
+
         accThread = new AcceptThread();
         accThread.start();
     }
@@ -251,9 +242,9 @@ public class GlassWatchWriteActivity extends Activity
     }
 
     public void startListening() {
-        if(accThread!=null) {
+        if(accThread!=null && accThread.isAlive()) {
             accThread.cancel();
-        }else if (mConnectedThread!= null) {
+        }else if (mConnectedThread!= null && mConnectedThread.isAlive()) {
             mConnectedThread.cancel();
         } else {
             accThread = new AcceptThread();
@@ -526,7 +517,7 @@ public class GlassWatchWriteActivity extends Activity
         }
 
         public void run() {
-            Log.e(TAG,"Running?");
+            Log.d(TAG, "AcceptThread start");
             BluetoothSocket socket = null;
             // Keep listening until exception occurs or a socket is returned
             while (true) {
@@ -553,6 +544,8 @@ public class GlassWatchWriteActivity extends Activity
                     break;
                 }
             }
+
+            Log.d(TAG, "AcceptThread finishing");
         }
 
         /** Will cancel the listening socket, and cause the thread to finish */
@@ -572,18 +565,7 @@ public class GlassWatchWriteActivity extends Activity
         mConnectedThread = new ConnectedThread(socket);
         mConnectedThread.start();
 
-        // Send the name of the connected device back to the UI Activity
-        // so the HH can show you it's working and stuff...
-        String devs="";
-        for(BluetoothSocket sock: mSockets) {
-            devs+=sock.getRemoteDevice().getName()+"\n";
-        }
-        // pass it to the UI....
         Message msg = handle.obtainMessage(STATE_CONNECTION_STARTED);
-        Bundle bundle = new Bundle();
-        bundle.putString("NAMES", devs);
-        msg.setData(bundle);
-
         handle.sendMessage(msg);
     }
 
@@ -614,8 +596,10 @@ public class GlassWatchWriteActivity extends Activity
             byte[] buffer = new byte[1024];
             int bytes;
 
+            Log.d(TAG, "ConnectedThread started");
             while (true) {
                 try {
+
                     bytes = mmInStream.read(buffer);
 
                     if (bytes > 0)
@@ -629,6 +613,8 @@ public class GlassWatchWriteActivity extends Activity
                     break;
                 }
             }
+
+            Log.d(TAG, "ConnectedThread finishing");
         }
 
         public void connectionLost() {
