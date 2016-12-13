@@ -15,7 +15,7 @@ public class GlassOneDInputView extends OneDInputView
     implements View.OnAttachStateChangeListener
 {
     private final String TAG = this.getClass().getName();
-    private static final float SWIPE_POSDIFF_THRESH = 1.2f;
+    private static final float SWIPE_POSDIFF_THRESH = 0.05f;
 
     public GlassOneDInputView(Context context, AttributeSet set)
     {
