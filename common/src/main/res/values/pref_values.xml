@@ -38,4 +38,12 @@
     </string-array>
     <string name="prefkey_multitouch_to_cancel">prefkey_multitouch_to_cancel</string>
     <integer name="pref_multitouch_to_cancel_default">1</integer>
+
+    <string name="pref_ww_shape">WatchWrite Shape</string>
+    <string-array name="pref_ww_shape_item">
+        <item>Square</item>
+        <item>Cornered</item>
+    </string-array>
+    <string name="prefkey_ww_shape">prefkey_ww_shape</string>
+    <integer name="pref_ww_shape_default">1</integer>
 </resources>

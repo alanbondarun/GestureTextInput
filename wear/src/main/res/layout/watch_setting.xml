@@ -7,9 +7,9 @@
     android:layout_height="match_parent"
     tools:context=".WatchFrontActivity"
     tools:deviceIds="wear"
-    android:id="@+id/wf_container">
+    android:id="@+id/ws_container">
     <ListView
-        android:id="@+id/wf_act_menu"
+        android:id="@+id/ws_settings"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_box="all">

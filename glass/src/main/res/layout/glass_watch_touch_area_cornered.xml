@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.alanb.gesturecommon.WatchWriteSquareView
+<com.alanb.gesturecommon.WatchWriteCorneredView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/w_char_view"
     android:layout_centerHorizontal="true"
@@ -79,4 +79,4 @@
             android:id="@+id/w_char_indi_4"
             android:textSize="@dimen/glass_watch_charview" />
     </LinearLayout>
-</com.alanb.gesturecommon.WatchWriteSquareView>
+</com.alanb.gesturecommon.WatchWriteCorneredView>

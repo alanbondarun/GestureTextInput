@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.alanb.gesturecommon.WatchWriteSquareView
+<com.alanb.gesturecommon.WatchWriteCorneredView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/w_touch_area"
+    android:id="@+id/w_touch_area_cornered"
     android:layout_centerHorizontal="true"
     android:layout_centerVertical="true"
     android:layout_gravity="center"
     android:orientation="vertical"
-    android:background="@drawable/w_touch_back"
+    android:background="@drawable/ww_touch_back_cornered"
     android:layout_width="160dip"
     android:layout_height="160dip">
-</com.alanb.gesturecommon.WatchWriteSquareView>
+</com.alanb.gesturecommon.WatchWriteCorneredView>

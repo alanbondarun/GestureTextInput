@@ -31,6 +31,9 @@
         <activity
             android:name=".WatchInputToMobileActivity"
             android:theme="@style/AppTheme" />
+        <activity
+            android:name=".WatchSettingActivity"
+            android:theme="@android:style/Theme.DeviceDefault" />
     </application>
 
 </manifest>
